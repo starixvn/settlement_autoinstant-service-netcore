@@ -1,0 +1,7 @@
+﻿namespace AutoInstant.Constants
+{
+    public static class MatchStatus
+    {
+        public const int Failed = 3;
+    }
+}

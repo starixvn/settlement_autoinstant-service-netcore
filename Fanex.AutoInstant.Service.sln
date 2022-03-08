@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.AutoInstant.Service", "Sources\Fanex.AutoInstant.Service\Fanex.AutoInstant.Service.csproj", "{6264FC18-5176-43B8-9BF4-75E8E7352821}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{0A050A54-1302-4E32-A9E0-87D0A9BB15E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A42C9CE6-BF09-43B1-8478-08A177CEC54D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoInstant.Result", "Sources\AutoInstant.Result\AutoInstant.Result.csproj", "{512E80A9-7274-481B-9CF6-FA005550F9CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoInstant", "Sources\AutoInstant\AutoInstant.csproj", "{2CBA7248-6295-462B-809F-753B51EFDE37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoInstant.Result.UnitTests", "Tests\AutoInstant.Result.UnitTests\AutoInstant.Result.UnitTests.csproj", "{45026CE4-C636-4294-AF40-CA02733CDBCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoInstant.UnitTests", "Tests\AutoInstant.UnitTests\AutoInstant.UnitTests.csproj", "{C72CA455-A0F5-4E3A-BF5E-9E4D625A3C57}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6264FC18-5176-43B8-9BF4-75E8E7352821}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6264FC18-5176-43B8-9BF4-75E8E7352821}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6264FC18-5176-43B8-9BF4-75E8E7352821}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6264FC18-5176-43B8-9BF4-75E8E7352821}.Release|Any CPU.Build.0 = Release|Any CPU
+		{512E80A9-7274-481B-9CF6-FA005550F9CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{512E80A9-7274-481B-9CF6-FA005550F9CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{512E80A9-7274-481B-9CF6-FA005550F9CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{512E80A9-7274-481B-9CF6-FA005550F9CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CBA7248-6295-462B-809F-753B51EFDE37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CBA7248-6295-462B-809F-753B51EFDE37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CBA7248-6295-462B-809F-753B51EFDE37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CBA7248-6295-462B-809F-753B51EFDE37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45026CE4-C636-4294-AF40-CA02733CDBCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45026CE4-C636-4294-AF40-CA02733CDBCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45026CE4-C636-4294-AF40-CA02733CDBCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45026CE4-C636-4294-AF40-CA02733CDBCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C72CA455-A0F5-4E3A-BF5E-9E4D625A3C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C72CA455-A0F5-4E3A-BF5E-9E4D625A3C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C72CA455-A0F5-4E3A-BF5E-9E4D625A3C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C72CA455-A0F5-4E3A-BF5E-9E4D625A3C57}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6264FC18-5176-43B8-9BF4-75E8E7352821} = {0A050A54-1302-4E32-A9E0-87D0A9BB15E3}
+		{512E80A9-7274-481B-9CF6-FA005550F9CB} = {0A050A54-1302-4E32-A9E0-87D0A9BB15E3}
+		{2CBA7248-6295-462B-809F-753B51EFDE37} = {0A050A54-1302-4E32-A9E0-87D0A9BB15E3}
+		{45026CE4-C636-4294-AF40-CA02733CDBCF} = {A42C9CE6-BF09-43B1-8478-08A177CEC54D}
+		{C72CA455-A0F5-4E3A-BF5E-9E4D625A3C57} = {A42C9CE6-BF09-43B1-8478-08A177CEC54D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7DFF2475-ED65-4895-AFBD-4785D23730FD}
+	EndGlobalSection
+EndGlobal
