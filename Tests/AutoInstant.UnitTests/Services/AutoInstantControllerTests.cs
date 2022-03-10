@@ -1,7 +1,9 @@
 ﻿using AutoInstant.Services;
 using NSubstitute;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using AutoInstant.Models;
 using Xunit;
 
@@ -23,19 +25,19 @@ namespace AutoInstant.UnitTests.Services
         }
 
         [Fact]
-        public async Task ProcessAsync_HasMatches_InvokeProcessMethod()
+        public void ProcessAsync_HasMatches_InvokeProcessMethod()
         {
             // Arrange
-            var match = new Match { MatchId = 123, IsChecking = false };
-            var matches = new List<Match> { match };
+            var fixture = new Fixture();
+            var matches = fixture.CreateMany<Match>(2).ToList();
 
             matchSettlingPoolService.PeekNewMatch().Returns(matches);
 
             // Act
-            await controller.ProcessAsync();
+            controller.ProcessAsync();
 
             // Assert
-            await matchSettleController.Received().Process(match);
+            matchSettleController.Received().Process(Arg.Any<Match>());
         }
     }
 }
