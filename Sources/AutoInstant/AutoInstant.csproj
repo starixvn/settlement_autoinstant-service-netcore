@@ -10,8 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Fanex.Caching" Version="2.2.2" />
     <PackageReference Include="Fanex.Data.Repository" Version="4.2.2" />
+    <PackageReference Include="Fanex.Settlement.ScaleOut" Version="2.0.0.7" />
     <PackageReference Include="Kaden.Extensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="ONEbook.UM" Version="3.1.3" />

@@ -1,9 +1,13 @@
 ﻿using AutoInstant.Result.Services;
 using AutoInstant.Services;
+using AutoMapper;
 using Fanex.Caching;
 using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
+using Fanex.Settlement.ScaleOut;
+using Fanex.Settlement.ScaleOut.Services;
 using Kaden.XmlConverter;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ONEbook.UM.AspNetCore;
@@ -49,6 +53,16 @@ namespace Fanex.AutoInstant.Service
             service.AddSingleton<IUMCacheService, UMCacheService>();
             service.AddSingleton<IUMRestClient, UMRestClient>();
             service.AddSingleton<ONEbook.UM.Services.IMaintenanceService, ONEbook.UM.Services.MaintenanceService>();
+            service.AddTransient<ScaleOutSettleService, ScaleOutSettleServiceImp>();
+            service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(typeof(ScaleOutMappingProfile));
+            });
+
+            var mapper = mapperConfig.CreateMapper();
+            service.AddSingleton(mapper);
+
             ConfigureRedis(service, configuration);
         }
 
