@@ -15,17 +15,17 @@
   <Function Name="Scale Out TransDb">
     <Function Name="NAP_Admin_Settlement_Validation_Ticket">
       <Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBTXN" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBTXN.bodb02.bodbAdminNet" />
-      <Setting Key="NAP_Admin_Settlement_Validation_Ticket_SITEDB01" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="SITEDB01.bodb02.bodbAdminNet" />
+      <Setting Key="NAP_Admin_Settlement_Validation_Ticket_SITEDB01" SpName="NAP_Admin_Settlement_Validation_Ticket_UAT1" DbName="SITEDB01.bodb02.bodbAdminNet" />
     </Function>
 
     <Function Name="NAP_Set_AutoInstant_GetTicketInfo">
       <Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBTXN" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBTXN.bodb02.bodbAdminNet" />
-      <Setting Key="NAP_Set_AutoInstant_GetTicketInfo_SITEDB01" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="SITEDB01.bodb02.bodbAdminNet" />
+      <Setting Key="NAP_Set_AutoInstant_GetTicketInfo_SITEDB01" SpName="NAP_Set_AutoInstant_GetTicketInfo_UAT1" DbName="SITEDB01.bodb02.bodbAdminNet" />
     </Function>
 
     <Function Name="NAP_Admin_Settlement_1_InstantCalculation_Push">
       <Setting Key="NAP_Admin_Settlement_1_InstantCalculation_Push_DBTXN" SpName="NAP_Admin_Settlement_1_InstantCalculation_Push" DbName="DBTXN.bodb02.bodbAdminNet" />
-      <Setting Key="NAP_Admin_Settlement_1_InstantCalculation_Push_SITEDB01" SpName="NAP_Admin_Settlement_1_InstantCalculation_Push" DbName="SITEDB01.bodb02.bodbAdminNet" />
+      <Setting Key="NAP_Admin_Settlement_1_InstantCalculation_Push_SITEDB01" SpName="NAP_Admin_Settlement_1_InstantCalculation_Push_UAT1" DbName="SITEDB01.bodb02.bodbAdminNet" />
     </Function>
   </Function>
 </Functions>
