@@ -58,6 +58,11 @@ namespace AutoInstant.Services
                 return requestChecking;
             }
 
+            var updateResult = await UpdateResult(criteria, match.TypeId);
+            if (updateResult.ErrorCode > 0)
+            {
+                return updateResult;
+            }
             await UpdateMatchInfo(criteria, match.TypeId);
             Execute(criteria);
 
@@ -111,16 +116,37 @@ namespace AutoInstant.Services
             };
         }
 
+        private async Task<Models.Result> UpdateResult(PushingCalculationCriteria criteria, int typeId)
+        {
+            var updateResultCriteria = new UpdateResultCriteria
+            {
+                MatchId = criteria.MatchId,
+                TypeId = typeId,
+                InstantKey = criteria.InstantKey,
+                HomeValue = criteria.HomeScore,
+                AwayValue = criteria.AwayScore
+            };
+
+            await repository.ExecuteAsync(updateResultCriteria);
+
+            return new Models.Result
+            {
+                ErrorCode = updateResultCriteria.Errcode,
+                ErrorMessage = updateResultCriteria.ErrMsg
+            };
+        }
+
         private async Task<Models.Result> ValidateBeforeExecute(PushingCalculationCriteria criteria)
         {
             var request = new EventTicketRequest
             {
                 MatchId = criteria.MatchId,
                 Action = criteria.Action,
-                SpName = criteria.GetSettingKey(),
+                SpName = "NAP_Admin_Settlement_1_InstantCalculation_Push",
                 IsAuto = true,
                 Mode = criteria.Mode
             };
+
             var resultMessage = await scaleOutSettleService.ValidateEventAndTicket(request);
             return new Models.Result
             {
