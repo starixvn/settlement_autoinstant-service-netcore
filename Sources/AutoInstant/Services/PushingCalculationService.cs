@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoInstant.Constants;
 using AutoInstant.Criteria;
@@ -46,35 +45,23 @@ namespace AutoInstant.Services
 
         public async Task<Models.Result> Push(Match match, MatchChecking matchChecking)
         {
-            var resourceResult = GetResource(matchChecking.GoalRecord, match, match.TypeId);
-            var criteria = pushingCalculationCriteriaService.CreateCriteria(match);
-            criteria.InstantKey = match.InstantKey;
-            criteria.ResourceResult = resourceResult;
-            criteria.BroadcastSessionId = Guid.NewGuid().ToString();
-
-            var requestChecking = await ValidateBeforeExecute(criteria);
-            if (requestChecking.ErrorCode > 0)
+            var resourceResult = await GetResource(matchChecking.GoalRecord, match, match.TypeId);
+            
+            var result = await ValidateBeforeExecute(match);
+            if (result.ErrorCode == 0)
             {
-                return requestChecking;
+                await UpdateResult(match);
+                await UpdateMatchInfo(match, resourceResult);
+                Execute(match, resourceResult);
             }
 
-            var updateResult = await UpdateResult(criteria, match.TypeId);
-            if (updateResult.ErrorCode > 0)
-            {
-                return updateResult;
-            }
-            await UpdateMatchInfo(criteria, match.TypeId);
-            Execute(criteria);
-
-            return new Models.Result
-            {
-                ErrorCode = criteria.ErrCode,
-                ErrorMessage = criteria.ErrMsg
-            };
+            return result;
         }
 
-        private void Execute(PushingCalculationCriteria criteria)
+        private void Execute(Match match, string resourceResult)
         {
+            var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
+
             foreach (var server in appSettingsKey.SiteDbServer)
             {
                 criteria.DbServer = server;
@@ -82,9 +69,9 @@ namespace AutoInstant.Services
             }
         }
 
-        private string GetResource(string goalRecord, Match match, int typeId)
+        private async Task<string> GetResource(string goalRecord, Match match, int typeId)
         {
-            var ticketInfo = GetTicketInfo(match);
+            var ticketInfo = await GetTicketInfo(match.MatchId);
             var goal = new Goal
             {
                 GoalRecord = goalRecord,
@@ -96,19 +83,17 @@ namespace AutoInstant.Services
                               : resultsService.FullTimeResults(goal);
         }
 
-        private MatchTicketChecking GetTicketInfo(Match match)
+        private async Task<MatchTicketChecking> GetTicketInfo(int matchId)
         {
             var listTicketInfo = new List<MatchTicketChecking>();
-            appSettingsKey.SiteDbServer.ForEach(async server =>
-           {
-               var criteria = new MatchTicketCheckingCriteria
-               {
-                   MatchId = match.MatchId,
-                   DbServer = server
-               };
-               var ticketInfo = await repository.GetAsync<MatchTicketChecking>(criteria) ?? new MatchTicketChecking();
-               listTicketInfo.Add(ticketInfo);
-           });
+            var criteria = new MatchTicketCheckingCriteria { MatchId = matchId };
+            foreach (var server in appSettingsKey.SiteDbServer)
+            {
+                criteria.DbServer = server;
+                var item = await repository.GetAsync<MatchTicketChecking>(criteria) ?? new MatchTicketChecking();
+                listTicketInfo.Add(item);
+            }
+
             return new MatchTicketChecking
             {
                 IsExistFgNg = listTicketInfo.Exists(item => item.IsExistFgNg),
@@ -116,38 +101,32 @@ namespace AutoInstant.Services
             };
         }
 
-        private async Task<Models.Result> UpdateResult(PushingCalculationCriteria criteria, int typeId)
+        private async Task UpdateResult(Match match)
         {
             var updateResultCriteria = new UpdateResultCriteria
             {
-                MatchId = criteria.MatchId,
-                TypeId = typeId,
-                InstantKey = criteria.InstantKey,
-                HomeValue = criteria.HomeScore,
-                AwayValue = criteria.AwayScore
+                MatchId = match.MatchId,
+                TypeId = match.TypeId,
+                InstantKey = match.InstantKey,
+                HomeValue = match.HomeValue.ToString(),
+                AwayValue = match.AwayValue.ToString()
             };
 
             await repository.ExecuteAsync(updateResultCriteria);
-
-            return new Models.Result
-            {
-                ErrorCode = updateResultCriteria.Errcode,
-                ErrorMessage = updateResultCriteria.ErrMsg
-            };
         }
 
-        private async Task<Models.Result> ValidateBeforeExecute(PushingCalculationCriteria criteria)
+        private async Task<Models.Result> ValidateBeforeExecute(Match match)
         {
             var request = new EventTicketRequest
             {
-                MatchId = criteria.MatchId,
-                Action = criteria.Action,
+                MatchId = match.MatchId,
+                Action = "CAL",
                 SpName = "NAP_Admin_Settlement_1_InstantCalculation_Push",
                 IsAuto = true,
-                Mode = criteria.Mode
+                Mode = Mode(match.TypeId)
             };
-
             var resultMessage = await scaleOutSettleService.ValidateEventAndTicket(request);
+
             return new Models.Result
             {
                 ErrorCode = resultMessage.ErrorCode,
@@ -155,27 +134,29 @@ namespace AutoInstant.Services
             };
         }
 
-        private async Task UpdateMatchInfo(PushingCalculationCriteria criteria, int typeId)
+        private static string Mode(int typeId) => typeId == SettleType.FirstHalf ? ModeType.FirstHalf : ModeType.SecondHalf;
+
+        private async Task UpdateMatchInfo(Match match, string resourceResult)
         {
             var requestUpdateInfo = new UpdateMatchInfoRequest
             {
-                MatchId = criteria.MatchId,
-                Action = criteria.Action,
-                AdminId = criteria.AdminId,
-                ResourceResult = criteria.ResourceResult,
-                Mode = criteria.Mode,
-                IsAuto = true
+                MatchId = match.MatchId,
+                Action = "CAL",
+                AdminId = 0,
+                ResourceResult = resourceResult,
+                IsAuto = true,
+                Mode = Mode(match.TypeId)
             };
 
-            if (typeId == SettleType.FirstHalf)
+            if (match.TypeId == SettleType.FirstHalf)
             {
-                requestUpdateInfo.HalfTimeAway = int.TryParse(criteria.AwayScore, out int away) ? away : 0;
-                requestUpdateInfo.HalfTimeHome = int.TryParse(criteria.HomeScore, out int home) ? home : 0;
+                requestUpdateInfo.HalfTimeHome = match.HomeValue;
+                requestUpdateInfo.HalfTimeAway = match.AwayValue;
             }
             else
             {
-                requestUpdateInfo.FullTimeAway = int.TryParse(criteria.AwayScore, out int away) ? away : 0;
-                requestUpdateInfo.FullTimeHome = int.TryParse(criteria.HomeScore, out int home) ? home : 0;
+                requestUpdateInfo.FullTimeHome = match.HomeValue;
+                requestUpdateInfo.FullTimeAway = match.AwayValue;
             }
 
             await scaleOutSettleService.UpdateMatchInfo(requestUpdateInfo);

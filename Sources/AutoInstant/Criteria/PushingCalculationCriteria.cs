@@ -1,6 +1,7 @@
 ﻿using AutoInstant.Models;
 using Fanex.Data;
 using Fanex.Data.Repository;
+using System;
 
 namespace AutoInstant.Criteria
 {
@@ -16,6 +17,7 @@ namespace AutoInstant.Criteria
             MatchId = match.MatchId;
             HomeScore = match.HomeValue.ToString();
             AwayScore = match.AwayValue.ToString();
+            InstantKey = match.InstantKey;
         }
 
         public int AdminId { get; set; }
@@ -38,7 +40,7 @@ namespace AutoInstant.Criteria
 
         public bool IsAutoInst { get; set; }
 
-        public string BroadcastSessionId { get; set; }
+        public string BroadcastSessionId = Guid.NewGuid().ToString();
 
         public int ErrCode { get; set; }
 

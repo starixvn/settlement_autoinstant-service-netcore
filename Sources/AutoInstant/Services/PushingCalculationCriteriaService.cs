@@ -6,16 +6,16 @@ namespace AutoInstant.Services
 {
     public interface PushingCalculationCriteriaService
     {
-        PushingCalculationCriteria CreateCriteria(Match match);
+        PushingCalculationCriteria CreateCriteria(Match match, string resourceResult);
     }
 
     public class PushingCalculationCriteriaServiceImp : PushingCalculationCriteriaService
     {
-        public PushingCalculationCriteria CreateCriteria(Match match)
+        public PushingCalculationCriteria CreateCriteria(Match match, string resourceResult)
         {
             return match.TypeId == SettleType.FirstHalf
-                ? (PushingCalculationCriteria)(new PushingCalculationHalftimeCriteria(match))
-                : (PushingCalculationCriteria)(new PushingCalculationFullTimeCriteria(match));
+                ? new PushingCalculationHalftimeCriteria(match, resourceResult)
+                : new PushingCalculationFullTimeCriteria(match, resourceResult);
         }
     }
 }
