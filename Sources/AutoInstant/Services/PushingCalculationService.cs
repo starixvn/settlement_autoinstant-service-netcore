@@ -51,6 +51,7 @@ namespace AutoInstant.Services
         {
             var resourceResult = await GetResource(matchChecking.GoalRecord, match, match.TypeId);
             
+
             var result = await ValidateBeforeExecute(match);
             if (result.ErrorCode == 0)
             {
@@ -115,7 +116,8 @@ namespace AutoInstant.Services
                 Action = "CAL",
                 SpName = "NAP_Admin_Settlement_1_InstantCalculation_Push",
                 IsAuto = true,
-                Mode = Mode(match.TypeId)
+                Mode = Mode(match.TypeId),
+                InstantKey = match.InstantKey
             };
             var resultMessage = await scaleOutSettleService.ValidateEventAndTicket(request);
 
