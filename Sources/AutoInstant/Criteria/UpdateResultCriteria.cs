@@ -6,7 +6,7 @@ namespace AutoInstant.Criteria
     {
         public int MatchId { get; set; }
 
-        public int SourceId { get; set; } = 100;
+        public int SourceId { get; set; } = 5;
 
         public int TypeId { get; set; }
 
