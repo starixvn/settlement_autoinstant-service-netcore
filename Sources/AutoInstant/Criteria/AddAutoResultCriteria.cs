@@ -15,7 +15,7 @@ namespace AutoInstant.Criteria
 
         public int AwayValue { get; set; }
 
-        public int StatusId { get; } = MatchStatus.Failed;
+        public int StatusId { get; set; } 
 
         public int InstantKey { get; set; }
 

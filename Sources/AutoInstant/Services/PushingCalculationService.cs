@@ -29,18 +29,22 @@ namespace AutoInstant.Services
 
         private readonly ScaleOutSettleService scaleOutSettleService;
 
+        private readonly AutoInstantResultService autoInstantResultService;
+
         public PushingCalculationServiceImp(
             IDynamicRepository repository,
             ResultsService resultsService,
             PushingCalculationCriteriaService pushingCalculationCriteriaService,
             IOptions<AppSettingsKey> appSettingsKey,
-            ScaleOutSettleService scaleOutSettleService)
+            ScaleOutSettleService scaleOutSettleService,
+            AutoInstantResultService autoInstantResultService)
         {
             this.repository = repository;
             this.resultsService = resultsService;
             this.pushingCalculationCriteriaService = pushingCalculationCriteriaService;
             this.appSettingsKey = appSettingsKey.Value;
             this.scaleOutSettleService = scaleOutSettleService;
+            this.autoInstantResultService = autoInstantResultService;
         }
 
         public async Task<Models.Result> Push(Match match, MatchChecking matchChecking)
@@ -50,7 +54,7 @@ namespace AutoInstant.Services
             var result = await ValidateBeforeExecute(match);
             if (result.ErrorCode == 0)
             {
-                await UpdateResult(match);
+                await autoInstantResultService.Update(match, false, MatchStatus.Completed);
                 await UpdateMatchInfo(match, resourceResult);
                 Execute(match, resourceResult);
             }
@@ -101,19 +105,7 @@ namespace AutoInstant.Services
             };
         }
 
-        private async Task UpdateResult(Match match)
-        {
-            var updateResultCriteria = new UpdateResultCriteria
-            {
-                MatchId = match.MatchId,
-                TypeId = match.TypeId,
-                InstantKey = match.InstantKey,
-                HomeValue = match.HomeValue.ToString(),
-                AwayValue = match.AwayValue.ToString()
-            };
-
-            await repository.ExecuteAsync(updateResultCriteria);
-        }
+       
 
         private async Task<Models.Result> ValidateBeforeExecute(Match match)
         {
