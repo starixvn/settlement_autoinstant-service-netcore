@@ -24,6 +24,8 @@ namespace AutoInstant.Criteria
 
         public int MatchId { get; set; }
 
+        public string BetStatus { get; set; }
+
         public int InstantKey { get; set; }
 
         public string HomeScore { get; set; }

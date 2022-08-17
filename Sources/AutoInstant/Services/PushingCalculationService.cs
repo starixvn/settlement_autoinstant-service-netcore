@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoInstant.Constants;
 using AutoInstant.Criteria;
@@ -49,23 +50,23 @@ namespace AutoInstant.Services
 
         public async Task<Models.Result> Push(Match match, MatchChecking matchChecking)
         {
-            var resourceResult = await GetResource(matchChecking.GoalRecord, match, match.TypeId);
-            
-
+            var goal = await GetGoal(matchChecking.GoalRecord, match.MatchId);
+            var resourceResult = match.TypeId == SettleType.FirstHalf ? resultsService.HalftimeResults(goal) : resultsService.FullTimeResults(goal);
+            var betStatus = GetBetStatus(goal, matchChecking);
             var result = await ValidateBeforeExecute(match);
             if (result.ErrorCode == 0)
             {
                 await autoInstantResultService.Update(match, false, MatchStatus.Completed);
                 await UpdateMatchInfo(match, resourceResult);
-                Execute(match, resourceResult);
+                Execute(match, resourceResult, betStatus);
             }
 
             return result;
         }
 
-        private void Execute(Match match, string resourceResult)
+        private void Execute(Match match, string resourceResult, string betStatus)
         {
-            var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
+            var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult, betStatus);
 
             foreach (var server in appSettingsKey.SiteDbServer)
             {
@@ -74,18 +75,23 @@ namespace AutoInstant.Services
             }
         }
 
-        private async Task<string> GetResource(string goalRecord, Match match, int typeId)
+        private string GetBetStatus(Goal goal, MatchChecking matchChecking)
         {
-            var ticketInfo = await GetTicketInfo(match.MatchId);
-            var goal = new Goal
+            var betStatus = matchChecking.BetStatus;
+            betStatus += pushingCalculationCriteriaService.BetStatusHTFL(betStatus, matchChecking, goal);
+            betStatus += pushingCalculationCriteriaService.BetStatusFL(betStatus, matchChecking, goal);
+            return betStatus;
+        }
+
+        private async Task<Goal> GetGoal(string goalRecord, int matchId)
+        {
+            var ticketInfo = await GetTicketInfo(matchId);
+            return new Goal
             {
                 GoalRecord = goalRecord,
                 IsExistFgNg = ticketInfo.IsExistFgNg,
                 IsExistHtFgNg = ticketInfo.IsExistHtFgNg
             };
-
-            return typeId == SettleType.FirstHalf ? resultsService.HalftimeResults(goal)
-                              : resultsService.FullTimeResults(goal);
         }
 
         private async Task<MatchTicketChecking> GetTicketInfo(int matchId)
@@ -105,8 +111,6 @@ namespace AutoInstant.Services
                 IsExistHtFgNg = listTicketInfo.Exists(item => item.IsExistHtFgNg)
             };
         }
-
-       
 
         private async Task<Models.Result> ValidateBeforeExecute(Match match)
         {

@@ -38,6 +38,8 @@ namespace AutoInstant.Models
 
         public string GoalRecord { get; set; }
 
+        public string BetStatus { get; set; }
+
         public bool IsSettingOff
         {
             get
