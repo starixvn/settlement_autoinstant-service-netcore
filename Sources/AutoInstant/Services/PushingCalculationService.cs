@@ -52,21 +52,21 @@ namespace AutoInstant.Services
         {
             var goal = await GetGoal(matchChecking.GoalRecord, match.MatchId);
             var resourceResult = match.TypeId == SettleType.FirstHalf ? resultsService.HalftimeResults(goal) : resultsService.FullTimeResults(goal);
-            var betStatus = GetBetStatus(goal, matchChecking);
             var result = await ValidateBeforeExecute(match);
             if (result.ErrorCode == 0)
             {
                 await autoInstantResultService.Update(match, false, MatchStatus.Completed);
-                await UpdateMatchInfo(match, resourceResult);
-                Execute(match, resourceResult, betStatus);
+                var betStatus = GetBetStatus(goal, matchChecking);
+                await UpdateMatchInfo(match, resourceResult, betStatus);
+                Execute(match, resourceResult);
             }
 
             return result;
         }
 
-        private void Execute(Match match, string resourceResult, string betStatus)
+        private void Execute(Match match, string resourceResult)
         {
-            var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult, betStatus);
+            var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
 
             foreach (var server in appSettingsKey.SiteDbServer)
             {
@@ -78,8 +78,9 @@ namespace AutoInstant.Services
         private string GetBetStatus(Goal goal, MatchChecking matchChecking)
         {
             var betStatus = matchChecking.BetStatus;
-            betStatus += pushingCalculationCriteriaService.BetStatusHTFL(betStatus, matchChecking, goal);
-            betStatus += pushingCalculationCriteriaService.BetStatusFL(betStatus, matchChecking, goal);
+            betStatus = pushingCalculationCriteriaService.RemoveOldValue(betStatus);
+            betStatus += pushingCalculationCriteriaService.BetStatusHTFL(matchChecking, goal);
+            betStatus += pushingCalculationCriteriaService.BetStatusFL(matchChecking, goal);
             return betStatus;
         }
 
@@ -90,7 +91,9 @@ namespace AutoInstant.Services
             {
                 GoalRecord = goalRecord,
                 IsExistFgNg = ticketInfo.IsExistFgNg,
-                IsExistHtFgNg = ticketInfo.IsExistHtFgNg
+                IsExistHtFgNg = ticketInfo.IsExistHtFgNg,
+                IsExistsFG = ticketInfo.IsExistFG,
+                IsExistsHTFG = ticketInfo.IsExistHTFG
             };
         }
 
@@ -108,7 +111,9 @@ namespace AutoInstant.Services
             return new MatchTicketChecking
             {
                 IsExistFgNg = listTicketInfo.Exists(item => item.IsExistFgNg),
-                IsExistHtFgNg = listTicketInfo.Exists(item => item.IsExistHtFgNg)
+                IsExistHtFgNg = listTicketInfo.Exists(item => item.IsExistHtFgNg),
+                IsExistFG = listTicketInfo.Exists(item => item.IsExistFG),
+                IsExistHTFG = listTicketInfo.Exists(item => item.IsExistHTFG)
             };
         }
 
@@ -134,7 +139,7 @@ namespace AutoInstant.Services
 
         private static string Mode(int typeId) => typeId == SettleType.FirstHalf ? ModeType.FirstHalf : ModeType.SecondHalf;
 
-        private async Task UpdateMatchInfo(Match match, string resourceResult)
+        private async Task UpdateMatchInfo(Match match, string resourceResult, string betStatus)
         {
             var requestUpdateInfo = new UpdateMatchInfoRequest
             {
@@ -143,7 +148,8 @@ namespace AutoInstant.Services
                 AdminId = 0,
                 ResourceResult = resourceResult,
                 IsAuto = true,
-                Mode = Mode(match.TypeId)
+                Mode = Mode(match.TypeId),
+                BetStatus = betStatus
             };
 
             if (match.TypeId == SettleType.FirstHalf)
