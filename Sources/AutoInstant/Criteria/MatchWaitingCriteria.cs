@@ -9,9 +9,6 @@ namespace AutoInstant.Criteria
             return true;
         }
 
-        public override string GetSettingKey()
-        {
-            return "NAP_Set_AutoInstant_ScheduleSel";
-        }
+        public override string GetSettingKey() => "NAP_Set_AutoInstant_ScheduleSel";
     }
 }

@@ -40,7 +40,7 @@ namespace AutoInstant.Criteria
 
         public bool IsAutoInst { get; set; }
 
-        public string BroadcastSessionId = Guid.NewGuid().ToString();
+        public string BroadcastSessionId { get; } = Guid.NewGuid().ToString();
 
         public int ErrCode { get; set; }
 
@@ -49,14 +49,8 @@ namespace AutoInstant.Criteria
         [SpParam(Ignored = true)]
         public string DbServer { get; set; }
 
-        public override string GetSettingKey()
-        {
-            return $"NAP_Admin_Settlement_1_InstantCalculation_Push_{DbServer}";
-        }
+        public override string GetSettingKey() => $"NAP_Admin_Settlement_1_InstantCalculation_Push_{DbServer}";
 
-        public override bool IsValid()
-        {
-            return MatchId > 0;
-        }
+        public override bool IsValid() => MatchId > 0;
     }
 }
