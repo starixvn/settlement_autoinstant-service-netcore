@@ -46,16 +46,20 @@ namespace AutoInstant.Services
                 return string.Empty;
             }
 
-            var indexOfHalfTimeFL = betStatus.IndexOf(HalfTimeFl);
-            if (indexOfHalfTimeFL > -1)
-            {
-                betStatus.Remove(indexOfHalfTimeFL, 8);
-            }
+            betStatus = removeBetStatus(HTFGHomeBetStatus, betStatus);
+            betStatus = removeBetStatus(HTFGAwayBetStatus, betStatus);
+            betStatus = removeBetStatus(FGHomeBetStatus, betStatus);
+            betStatus = removeBetStatus(FGAwayBetStatus, betStatus);
 
-            var indexOfFL = betStatus.IndexOf(Fl);
-            if (indexOfHalfTimeFL > -1)
+            return betStatus;
+        }
+
+        private string removeBetStatus(string key, string betStatus)
+        {
+            var indexOfKey = betStatus.IndexOf(key);
+            if (indexOfKey > -1)
             {
-                betStatus.Remove(indexOfFL, 8);
+                return betStatus.Remove(indexOfKey, key.Length);
             }
 
             return betStatus;
