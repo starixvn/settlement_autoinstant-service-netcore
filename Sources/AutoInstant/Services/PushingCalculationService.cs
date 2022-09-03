@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoInstant.Constants;
 using AutoInstant.Criteria;
@@ -10,6 +11,7 @@ using Fanex.Data.Repository;
 using Fanex.Settlement.ScaleOut.Request;
 using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
+using Match = AutoInstant.Models.Match;
 
 namespace AutoInstant.Services
 {
@@ -56,7 +58,7 @@ namespace AutoInstant.Services
             if (result.ErrorCode == 0)
             {
                 await autoInstantResultService.Update(match, false, MatchStatus.Completed);
-                var betStatus = GetBetStatus(goal, matchChecking);
+                var betStatus = GetBetStatus(goal, matchChecking, match);
                 await UpdateMatchInfo(match, resourceResult, betStatus);
                 Execute(match, resourceResult);
             }
@@ -75,12 +77,11 @@ namespace AutoInstant.Services
             }
         }
 
-        private string GetBetStatus(Goal goal, MatchChecking matchChecking)
+        private string GetBetStatus(Goal goal, MatchChecking matchChecking, Match match)
         {
-            var betStatus = matchChecking.BetStatus;
-            betStatus = pushingCalculationCriteriaService.RemoveOldValue(betStatus);
-            betStatus += pushingCalculationCriteriaService.BetStatusHTFL(matchChecking, goal);
-            betStatus += pushingCalculationCriteriaService.BetStatusFL(matchChecking, goal);
+            var betStatus = matchChecking.BetStatus ?? String.Empty;
+            betStatus += match.TypeId == SettleType.FirstHalf ? pushingCalculationCriteriaService.BetStatusHtFl(matchChecking, goal, betStatus) : string.Empty;
+            betStatus += pushingCalculationCriteriaService.BetStatusFl(matchChecking, goal, betStatus);
             return betStatus;
         }
 
@@ -92,8 +93,8 @@ namespace AutoInstant.Services
                 GoalRecord = goalRecord,
                 IsExistFgNg = ticketInfo.IsExistFgNg,
                 IsExistHtFgNg = ticketInfo.IsExistHtFgNg,
-                IsExistsFG = ticketInfo.IsExistFG,
-                IsExistsHTFG = ticketInfo.IsExistHTFG
+                IsExistFG = ticketInfo.IsExistFG,
+                IsExistHTFG = ticketInfo.IsExistHTFG
             };
         }
 

@@ -1,4 +1,5 @@
-﻿using AutoInstant.Constants;
+﻿using System.Linq;
+using AutoInstant.Constants;
 using AutoInstant.Criteria;
 using AutoInstant.Models;
 using AutoInstant.Result.Models;
@@ -9,28 +10,26 @@ namespace AutoInstant.Services
     {
         PushingCalculationCriteria CreateCriteria(Match match, string resourceResult);
 
-        string BetStatusHTFL(MatchChecking matchChecking, Goal goal);
+        string BetStatusHtFl(MatchChecking matchChecking, Goal goal, string betStatus);
 
-        string BetStatusFL(MatchChecking matchChecking, Goal goal);
-
-        string RemoveOldValue(string betStatus);
+        string BetStatusFl(MatchChecking matchChecking, Goal goal, string betStatus);
     }
 
     public class PushingCalculationCriteriaServiceImp : PushingCalculationCriteriaService
     {
-        private readonly char HomeValue = 'H';
+        private readonly char homeValue = 'H';
 
-        private readonly string FGHomeBetStatus = "FL:1-0;";
+        private readonly string fgHomeBetStatus = "FL:1-0;";
 
-        private readonly string FGAwayBetStatus = "FL:2-0;";
+        private readonly string fgAwayBetStatus = "FL:2-0;";
 
-        private readonly string HTFGHomeBetStatus = "1FL:1-0;";
+        private readonly string htfgHomeBetStatus = "1FL:1-0;";
 
-        private readonly string HTFGAwayBetStatus = "1FL:2-0;";
+        private readonly string htfgAwayBetStatus = "1FL:2-0;";
 
-        private readonly string Fl = "FL";
+        private readonly string fl = "FL";
 
-        private readonly string HalfTimeFl = "1FL";
+        private readonly string halfTimeFl = "1FL";
 
         public PushingCalculationCriteria CreateCriteria(Match match, string resourceResult)
         {
@@ -39,49 +38,29 @@ namespace AutoInstant.Services
                 : new PushingCalculationFullTimeCriteria(match, resourceResult);
         }
 
-        public string RemoveOldValue(string betStatus)
+        public string BetStatusHtFl(MatchChecking matchChecking, Goal goal, string betStatus)
         {
-            if (betStatus == null)
+            var goalRecord = matchChecking.GoalRecord ?? string.Empty;
+            var goalOnly = goalRecord.Split(";").First();
+            var isNotExistBetStatusHtFl = !betStatus.Contains(halfTimeFl);
+            if (goalOnly.Length > 0 && goal.IsExistHTFG && isNotExistBetStatusHtFl)
             {
-                return string.Empty;
-            }
-
-            betStatus = removeBetStatus(HTFGHomeBetStatus, betStatus);
-            betStatus = removeBetStatus(HTFGAwayBetStatus, betStatus);
-            betStatus = removeBetStatus(FGHomeBetStatus, betStatus);
-            betStatus = removeBetStatus(FGAwayBetStatus, betStatus);
-
-            return betStatus;
-        }
-
-        private string removeBetStatus(string key, string betStatus)
-        {
-            var indexOfKey = betStatus.IndexOf(key);
-            if (indexOfKey > -1)
-            {
-                return betStatus.Remove(indexOfKey, key.Length);
-            }
-
-            return betStatus;
-        }
-
-        public string BetStatusHTFL(MatchChecking matchChecking, Goal goal)
-        {
-            var goalOnly = matchChecking.GoalRecord.Replace(";", string.Empty);
-            if (goalOnly.Length > 0 && goal.IsExistsHTFG)
-            {
-                return matchChecking.GoalRecord[0] == HomeValue ? HTFGHomeBetStatus : HTFGAwayBetStatus;
+                return goalOnly[0] == homeValue ? htfgHomeBetStatus : htfgAwayBetStatus;
             }
 
             return string.Empty;
         }
 
-        public string BetStatusFL(MatchChecking matchChecking, Goal goal)
+        public string BetStatusFl(MatchChecking matchChecking, Goal goal, string betStatus)
         {
-            var goalOnly = matchChecking.GoalRecord.Replace(";", string.Empty);
-            if (goalOnly.Length > 0 && goal.IsExistsFG)
+            var goalRecord = matchChecking.GoalRecord ?? string.Empty;
+            var goalOnly = goalRecord.Replace(";", string.Empty);
+            var indexOfHtFl = betStatus.IndexOf(halfTimeFl);
+            var betStatusExcludeHtFl = indexOfHtFl > -1 ? betStatus.Remove(indexOfHtFl, 8) : betStatus;
+            var isNotExistBetStatusFl = !betStatusExcludeHtFl.Contains(fl);
+            if (goalOnly.Length > 0 && goal.IsExistFG && isNotExistBetStatusFl)
             {
-                return matchChecking.GoalRecord[0] == HomeValue ? FGHomeBetStatus : FGAwayBetStatus;
+                return goalOnly[0] == homeValue ? fgHomeBetStatus : fgAwayBetStatus;
             }
 
             return string.Empty;
