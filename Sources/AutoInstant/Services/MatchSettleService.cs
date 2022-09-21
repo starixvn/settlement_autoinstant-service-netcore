@@ -47,7 +47,8 @@ namespace AutoInstant.Services
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                  await logService.ActionLog(match, matchChecking, result.ErrorMessage);
+                    await logService.ActionLog(match, matchChecking, result.ErrorMessage);
+                    await autoInstantResultService.Insert(match, matchChecking);
                 }
             }
             catch (AutoInstantException exception)

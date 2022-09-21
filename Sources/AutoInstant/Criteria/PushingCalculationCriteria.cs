@@ -1,5 +1,7 @@
 ﻿using AutoInstant.Models;
+using Fanex.Data;
 using Fanex.Data.Repository;
+using System;
 
 namespace AutoInstant.Criteria
 {
@@ -15,6 +17,7 @@ namespace AutoInstant.Criteria
             MatchId = match.MatchId;
             HomeScore = match.HomeValue.ToString();
             AwayScore = match.AwayValue.ToString();
+            InstantKey = match.InstantKey;
         }
 
         public int AdminId { get; set; }
@@ -37,18 +40,17 @@ namespace AutoInstant.Criteria
 
         public bool IsAutoInst { get; set; }
 
+        public string BroadcastSessionId { get; } = Guid.NewGuid().ToString();
+
         public int ErrCode { get; set; }
 
         public string ErrMsg { get; set; }
 
-        public override string GetSettingKey()
-        {
-            return "NAP_Admin_Settlement_1_InstantCalculation_Push";
-        }
+        [SpParam(Ignored = true)]
+        public string DbServer { get; set; }
 
-        public override bool IsValid()
-        {
-            return MatchId > 0;
-        }
+        public override string GetSettingKey() => $"NAP_Admin_Settlement_1_InstantCalculation_Push_{DbServer}";
+
+        public override bool IsValid() => MatchId > 0;
     }
 }

@@ -81,13 +81,13 @@ namespace AutoInstant.UnitTests.Services
                 TypeId = SettleType.SecondHalf
             };
             var matchChecking = new MatchChecking();
-            var fakeCriteria = new PushingCalculationHalftimeCriteria(match)
+            var fakeCriteria = new PushingCalculationHalftimeCriteria(match, "")
             {
                 ErrCode = 1,
                 ErrMsg = "Fail"
             };
 
-            pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>()).Returns(fakeCriteria);
+            pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), Arg.Any<string>()).Returns(fakeCriteria);
             var pushingCalculationService = new PushingCalculationServiceImp(repository, resultsService, pushingCalculationCriteriaService);
 
             // Act

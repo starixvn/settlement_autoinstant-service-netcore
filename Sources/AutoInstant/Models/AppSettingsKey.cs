@@ -1,4 +1,6 @@
-﻿namespace AutoInstant.Models
+﻿using System.Collections.Generic;
+
+namespace AutoInstant.Models
 {
     public class AppSettingsKey
     {
@@ -7,5 +9,7 @@
         public int RetryInterval { get; set; }
 
         public string EnvironmentName { get; set; }
+
+        public List<string> SiteDbServer { get; set; }
     }
 }

@@ -36,11 +36,9 @@ namespace AutoInstant.Models
 
         public bool IsInstCalculated { get; set; }
 
-        public bool IsExistHtFgNg { get; set; }
-
-        public bool IsExistFgNg { get; set; }
-
         public string GoalRecord { get; set; }
+
+        public string BetStatus { get; set; }
 
         public bool IsSettingOff
         {

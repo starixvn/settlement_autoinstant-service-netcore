@@ -6,6 +6,10 @@
 
         public bool IsExistFgNg { get; set; }
 
+        public bool IsExistHTFG { get; set; }
+
+        public bool IsExistFG { get; set; }
+
         public string GoalRecord { get; set; }
     }
 }

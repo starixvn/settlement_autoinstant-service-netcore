@@ -9,6 +9,8 @@ namespace AutoInstant.Services
 {
     public interface AutoInstantResultService
     {
+        Task Update(Match match, bool isInstCalculated, int statusId);
+
         Task Insert(Match match, MatchChecking matchChecking);
     }
 
@@ -21,24 +23,30 @@ namespace AutoInstant.Services
             this.repository = repository;
         }
 
+        public async Task Update(Match match, bool isInstCalculated, int statusId)
+        {
+            var updateResultCriteria = new AddAutoResultCriteria
+            {
+                MatchId = match.MatchId,
+                HomeValue = match.HomeValue,
+                AwayValue = match.AwayValue,
+                TypeId = match.TypeId,
+                InstantKey = match.InstantKey,
+                IsInstCalculated = isInstCalculated,
+                ChildMatchType = match.ChildMatchType,
+                StatusId = statusId,
+                SourceId = match.ChildMatchType == MatchType.Corner ? Source.AdminSite : Source.SoccerWay
+            };
+
+            await repository.ExecuteAsync(updateResultCriteria);
+        }
+
         public async Task Insert(Match match, MatchChecking matchChecking)
         {
             var isInstCalculated = IsManualInstCalculated(match, matchChecking);
             if (!IsCalculated(match, matchChecking))
             {
-                var criteria = new AddAutoResultCriteria
-                {
-                    MatchId = match.MatchId,
-                    HomeValue = match.HomeValue,
-                    AwayValue = match.AwayValue,
-                    TypeId = match.TypeId,
-                    InstantKey = match.InstantKey,
-                    IsInstCalculated = isInstCalculated,
-                    ChildMatchType = match.ChildMatchType,
-                    SourceId = match.ChildMatchType == MatchType.Corner ? Source.AdminSite : Source.SoccerWay
-                };
-
-                await repository.ExecuteAsync(criteria);
+                await Update(match, isInstCalculated, MatchStatus.Failed);
             }
         }
 

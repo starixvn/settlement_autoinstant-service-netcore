@@ -22,14 +22,8 @@ namespace AutoInstant.Criteria
 
         public string IP { get; } = string.Empty;
 
-        public override bool IsValid()
-        {
-            return MatchId > 0 && ActionId > 0;
-        }
+        public override bool IsValid() => MatchId > 0 && ActionId > 0;
 
-        public override string GetSettingKey()
-        {
-            return "WriteLog_UserLog_Settle";
-        }
+        public override string GetSettingKey() => "WriteLog_UserLog_Settle";
     }
 }

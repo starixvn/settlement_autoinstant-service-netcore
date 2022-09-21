@@ -12,14 +12,8 @@ namespace AutoInstant.Criteria
 
         public string AwayScore { get; set; }
 
-        public override bool IsValid()
-        {
-            return MatchId > 0;
-        }
+        public override bool IsValid() => MatchId > 0;
 
-        public override string GetSettingKey()
-        {
-            return "NAP_Set_AutoInstant_GetMatchInfo";
-        }
+        public override string GetSettingKey() => "NAP_Set_AutoInstant_GetMatchInfo";
     }
 }
