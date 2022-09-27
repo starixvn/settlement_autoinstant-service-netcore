@@ -56,7 +56,7 @@ namespace AutoInstant.Services
         {
             var goalRecord = matchChecking.GoalRecord ?? string.Empty;
             var goalOnly = goalRecord.Replace(";", string.Empty);
-            var indexOfHtFl = betStatus.IndexOf(halfTimeFl, StringComparison.CurrentCulture);
+            var indexOfHtFl = betStatus.IndexOf(halfTimeFl, StringComparison.Ordinal);
             var betStatusExcludeHtFl = indexOfHtFl > -1 ? betStatus.Remove(indexOfHtFl, 8) : betStatus;
             var isNotExistBetStatusFl = !betStatusExcludeHtFl.Contains(fl);
             if (goalOnly.Length > 0 && goal.IsExistFG && isNotExistBetStatusFl)
