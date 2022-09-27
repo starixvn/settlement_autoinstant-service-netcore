@@ -25,7 +25,7 @@ namespace AutoInstant.UnitTests.Services
             };
 
             // Act
-            var criteria = service.CreateCriteria(match);
+            var criteria = service.CreateCriteria(match, string.Empty);
 
             // Assert
             Assert.IsType<PushingCalculationHalftimeCriteria>(criteria);
@@ -41,7 +41,7 @@ namespace AutoInstant.UnitTests.Services
             };
 
             // Act
-            var criteria = service.CreateCriteria(match);
+            var criteria = service.CreateCriteria(match, string.Empty);
 
             // Assert
             Assert.IsType<PushingCalculationFullTimeCriteria>(criteria);

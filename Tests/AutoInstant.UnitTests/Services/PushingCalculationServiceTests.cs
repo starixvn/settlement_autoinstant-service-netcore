@@ -1,12 +1,16 @@
-﻿using System.Threading.Tasks;
-using AutoInstant.Constants;
+﻿using AutoInstant.Constants;
 using AutoInstant.Criteria;
 using AutoInstant.Models;
 using AutoInstant.Result.Models;
 using AutoInstant.Result.Services;
 using AutoInstant.Services;
 using Fanex.Data.Repository;
+using Fanex.Settlement.ScaleOut.Models;
+using Fanex.Settlement.ScaleOut.Request;
+using Fanex.Settlement.ScaleOut.Services;
+using Microsoft.Extensions.Options;
 using NSubstitute;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace AutoInstant.UnitTests.Services
@@ -16,14 +20,25 @@ namespace AutoInstant.UnitTests.Services
         private readonly IDynamicRepository repository;
         private readonly ResultsService resultsService;
         private readonly PushingCalculationCriteriaService pushingCalculationCriteriaService;
+        private IOptions<AppSettingsKey> appSettingsKey;
+        private readonly ScaleOutSettleService scaleOutSettleService;
+
+        private readonly AutoInstantResultService autoInstantResultService;
 
         public PushingCalculationServiceTests()
         {
             pushingCalculationCriteriaService = Substitute.For<PushingCalculationCriteriaService>();
             repository = Substitute.For<IDynamicRepository>();
             resultsService = Substitute.For<ResultsService>();
+            scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
+            autoInstantResultService = Substitute.For<AutoInstantResultService>();
+
+            appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = new() { "ABC" } });
+
             resultsService.HalftimeResults(Arg.Any<Goal>()).Returns("HalftimeResults");
             resultsService.FullTimeResults(Arg.Any<Goal>()).Returns("FullTimeResults");
+
+            scaleOutSettleService.ValidateEventAndTicket(Arg.Any<EventTicketRequest>()).Returns(new ResultMessage { ErrorMessage = "" });
         }
 
         [Fact]
@@ -35,17 +50,26 @@ namespace AutoInstant.UnitTests.Services
                 TypeId = SettleType.FirstHalf,
             };
             var matchChecking = new MatchChecking();
-            pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>()).Returns(new PushingCalculationCriteria(new Match()));
 
-            var pushingCalculationService = new PushingCalculationServiceImp(repository, resultsService, pushingCalculationCriteriaService);
+            pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), "HalftimeResults")
+                .Returns(new PushingCalculationCriteria(new Match()) { ResourceResult = "HalftimeResults" });
+
+            var pushingCalculationService = new PushingCalculationServiceImp(
+                repository,
+                resultsService,
+                pushingCalculationCriteriaService,
+                scaleOutSettleService,
+                autoInstantResultService,
+                appSettingsKey
+                );
 
             // Act
             var result = await pushingCalculationService.Push(match, matchChecking);
 
             // Assert
-            await repository.Received().ExecuteAsync(Arg.Is<PushingCalculationCriteria>(criteria =>
-                criteria.ResourceResult == "HalftimeResults"
-            ));
+            repository.Received().Execute(Arg.Is<PushingCalculationCriteria>(criteria =>
+               criteria.ResourceResult == "HalftimeResults"
+           ));
             Assert.Equal(result.ErrorMessage, string.Empty);
         }
 
@@ -58,17 +82,25 @@ namespace AutoInstant.UnitTests.Services
                 TypeId = SettleType.SecondHalf
             };
             var matchChecking = new MatchChecking();
-            pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>()).Returns(new PushingCalculationCriteria(new Match()));
+            pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), Arg.Any<string>())
+                .Returns(new PushingCalculationCriteria(new Match()) { ResourceResult = "FullTimeResults" });
 
-            var pushingCalculationService = new PushingCalculationServiceImp(repository, resultsService, pushingCalculationCriteriaService);
+            var pushingCalculationService = new PushingCalculationServiceImp(
+                repository,
+                resultsService,
+                pushingCalculationCriteriaService,
+                scaleOutSettleService,
+                autoInstantResultService,
+                appSettingsKey
+                );
 
             // Act
             var result = await pushingCalculationService.Push(match, matchChecking);
 
             // Assert
-            await repository.Received().ExecuteAsync(Arg.Is<PushingCalculationCriteria>(criteria =>
-                 criteria.ResourceResult == "FullTimeResults"
-            ));
+            repository.Received().Execute(Arg.Is<PushingCalculationCriteria>(criteria =>
+                criteria.ResourceResult == "FullTimeResults"
+           ));
             Assert.Equal(result.ErrorMessage, string.Empty);
         }
 
@@ -86,9 +118,19 @@ namespace AutoInstant.UnitTests.Services
                 ErrCode = 1,
                 ErrMsg = "Fail"
             };
+            scaleOutSettleService.ValidateEventAndTicket(Arg.Any<EventTicketRequest>()).Returns(new ResultMessage { ErrorMessage = "Fail" });
 
             pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), Arg.Any<string>()).Returns(fakeCriteria);
-            var pushingCalculationService = new PushingCalculationServiceImp(repository, resultsService, pushingCalculationCriteriaService);
+
+            var pushingCalculationService = new PushingCalculationServiceImp(
+                   repository,
+                   resultsService,
+                   pushingCalculationCriteriaService,
+                   scaleOutSettleService,
+                   autoInstantResultService,
+                   appSettingsKey
+                   );
+
 
             // Act
             var result = await pushingCalculationService.Push(match, matchChecking);

@@ -1,10 +1,8 @@
-﻿using AutoInstant.Services;
-using NSubstitute;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoInstant.Models;
+using AutoInstant.Services;
+using NSubstitute;
+using System.Linq;
 using Xunit;
 
 namespace AutoInstant.UnitTests.Services

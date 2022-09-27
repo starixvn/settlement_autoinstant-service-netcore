@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using AutoInstant.Constants;
+﻿using AutoInstant.Constants;
 using AutoInstant.Criteria;
 using AutoInstant.Models;
 using AutoInstant.Result.Models;
@@ -11,6 +7,9 @@ using Fanex.Data.Repository;
 using Fanex.Settlement.ScaleOut.Request;
 using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Match = AutoInstant.Models.Match;
 
 namespace AutoInstant.Services
@@ -38,9 +37,9 @@ namespace AutoInstant.Services
             IDynamicRepository repository,
             ResultsService resultsService,
             PushingCalculationCriteriaService pushingCalculationCriteriaService,
-            IOptions<AppSettingsKey> appSettingsKey,
             ScaleOutSettleService scaleOutSettleService,
-            AutoInstantResultService autoInstantResultService)
+            AutoInstantResultService autoInstantResultService,
+            IOptions<AppSettingsKey> appSettingsKey)
         {
             this.repository = repository;
             this.resultsService = resultsService;
