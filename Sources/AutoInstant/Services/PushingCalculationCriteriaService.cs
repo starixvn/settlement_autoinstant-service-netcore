@@ -1,8 +1,9 @@
-﻿using System.Linq;
-using AutoInstant.Constants;
+﻿using AutoInstant.Constants;
 using AutoInstant.Criteria;
 using AutoInstant.Models;
 using AutoInstant.Result.Models;
+using System;
+using System.Linq;
 
 namespace AutoInstant.Services
 {
@@ -55,7 +56,7 @@ namespace AutoInstant.Services
         {
             var goalRecord = matchChecking.GoalRecord ?? string.Empty;
             var goalOnly = goalRecord.Replace(";", string.Empty);
-            var indexOfHtFl = betStatus.IndexOf(halfTimeFl);
+            var indexOfHtFl = betStatus.IndexOf(halfTimeFl, StringComparison.Ordinal);
             var betStatusExcludeHtFl = indexOfHtFl > -1 ? betStatus.Remove(indexOfHtFl, 8) : betStatus;
             var isNotExistBetStatusFl = !betStatusExcludeHtFl.Contains(fl);
             if (goalOnly.Length > 0 && goal.IsExistFG && isNotExistBetStatusFl)
