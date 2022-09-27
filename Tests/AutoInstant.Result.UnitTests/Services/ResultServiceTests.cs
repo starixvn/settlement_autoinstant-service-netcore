@@ -41,7 +41,9 @@ namespace AutoInstant.Result.UnitTests.Services
         {
             // Arrange
             var goal = Arg.Any<Goal>();
+
             resourceService.Halftime(goal).Returns(new List<XmlResource>());
+
             var resultsService = new ResultsServiceImp(xmlConvertService, resourceService);
 
             // Act
