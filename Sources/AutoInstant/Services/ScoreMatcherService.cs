@@ -1,29 +1,27 @@
-﻿using System.Threading.Tasks;
-using AutoInstant.Models;
+﻿using AutoInstant.Models;
 
-namespace AutoInstant.Services
+namespace AutoInstant.Services;
+
+public interface ScoreMatcherService
 {
-    public interface ScoreMatcherService
+    Task<bool> IsScoreMatch(Match match);
+}
+
+public class ScoreMatcherServiceImp : ScoreMatcherService
+{
+    private readonly ScoreService scoreService;
+
+    public ScoreMatcherServiceImp(ScoreService scoreService)
     {
-        Task<bool> IsScoreMatch(Match match);
+        this.scoreService = scoreService;
     }
 
-    public class ScoreMatcherServiceImp : ScoreMatcherService
+    public async Task<bool> IsScoreMatch(Match match)
     {
-        private readonly ScoreService scoreService;
+        var scores = await scoreService.GetScore(match.MatchId);
 
-        public ScoreMatcherServiceImp(ScoreService scoreService)
-        {
-            this.scoreService = scoreService;
-        }
-
-        public async Task<bool> IsScoreMatch(Match match)
-        {
-            var scores = await scoreService.GetScore(match.MatchId);
-
-            return scores.Find(x => x.HomeValue == match.HomeValue.ToString()
-                                    && x.AwayValue == match.AwayValue.ToString()
-                                    && x.TypeId == match.TypeId) != null;
-        }
+        return scores.Find(x => x.HomeValue == match.HomeValue.ToString()
+                                && x.AwayValue == match.AwayValue.ToString()
+                                && x.TypeId == match.TypeId) != null;
     }
 }

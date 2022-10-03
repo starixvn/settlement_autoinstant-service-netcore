@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
+﻿namespace AutoInstant.Models;
 
-namespace AutoInstant.Models
+public class Pool
 {
-    public class Pool
+    public Pool()
     {
-        public Pool()
-        {
-            Matches = new List<Match>();
-        }
-
-        public List<Match> Matches { get; set; }
+        Matches = new List<Match>();
     }
+
+    public List<Match> Matches { get; set; }
 }

@@ -1,56 +1,54 @@
-﻿using System.Threading.Tasks;
-using AutoInstant.Constants;
-using AutoInstant.Models;
+﻿using AutoInstant.Models;
+using MatchType = AutoInstant.Constants.MatchType;
 
-namespace AutoInstant.Services
+namespace AutoInstant.Services;
+
+public interface MatchSettleController
 {
-    public interface MatchSettleController
+    Task Process(Match match);
+}
+
+public class MatchSettleControllerImp : MatchSettleController
+{
+    private readonly MatchSettleService matchSettleService;
+
+    private readonly ScoreRetryService scoreRetryService;
+
+    private readonly MatchSettlingPoolService matchSettlingPoolService;
+
+    private readonly MatchQueryService matchQueryService;
+
+    public MatchSettleControllerImp(
+        MatchSettleService matchSettleService,
+        ScoreRetryService scoreRetryService,
+        MatchSettlingPoolService matchSettlingPoolService,
+        MatchQueryService matchQueryService)
     {
-        Task Process(Match match);
+        this.matchSettleService = matchSettleService;
+        this.scoreRetryService = scoreRetryService;
+        this.matchSettlingPoolService = matchSettlingPoolService;
+        this.matchQueryService = matchQueryService;
     }
 
-    public class MatchSettleControllerImp : MatchSettleController
+    public async Task Process(Match match)
     {
-        private readonly MatchSettleService matchSettleService;
-
-        private readonly ScoreRetryService scoreRetryService;
-
-        private readonly MatchSettlingPoolService matchSettlingPoolService;
-
-        private readonly MatchQueryService matchQueryService;
-
-        public MatchSettleControllerImp(
-            MatchSettleService matchSettleService,
-            ScoreRetryService scoreRetryService,
-            MatchSettlingPoolService matchSettlingPoolService,
-            MatchQueryService matchQueryService)
+        try
         {
-            this.matchSettleService = matchSettleService;
-            this.scoreRetryService = scoreRetryService;
-            this.matchSettlingPoolService = matchSettlingPoolService;
-            this.matchQueryService = matchQueryService;
+            match.IsChecking = true;
+            var isScoreMatch = MatchType.Corner == match.ChildMatchType || await scoreRetryService.IsScoreMatch(match);
+            var matchCheckingInfo = await matchQueryService.GetMatchInfo(match);
+            if (isScoreMatch)
+            {
+                await matchSettleService.ScoreMatched(match, matchCheckingInfo);
+            }
+            else
+            {
+                matchSettleService.ScoreMismatched(match, matchCheckingInfo);
+            }
         }
-
-        public async Task Process(Match match)
+        finally
         {
-            try
-            {
-                match.IsChecking = true;
-                var isScoreMatch = MatchType.Corner == match.ChildMatchType || await scoreRetryService.IsScoreMatch(match);
-                var matchCheckingInfo = await matchQueryService.GetMatchInfo(match);
-                if (isScoreMatch)
-                {
-                   await matchSettleService.ScoreMatched(match, matchCheckingInfo);
-                }
-                else
-                {
-                    matchSettleService.ScoreMismatched(match, matchCheckingInfo);
-                }
-            }
-            finally
-            {
-                matchSettlingPoolService.Remove(match);
-            }
+            matchSettlingPoolService.Remove(match);
         }
     }
 }

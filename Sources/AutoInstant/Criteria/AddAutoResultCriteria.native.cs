@@ -1,30 +1,28 @@
 ﻿using AutoInstant.Constants;
-using Fanex.Data.Repository;
 
-namespace AutoInstant.Criteria
+namespace AutoInstant.Criteria;
+
+public class AddAutoResultCriteria : NonQueryCommand
 {
-    public class AddAutoResultCriteria : NonQueryCommand
-    {
-        public int MatchId { get; set; }
+    public int MatchId { get; set; }
 
-        public int SourceId { get; set; } = Source.SoccerWay;
+    public int SourceId { get; set; } = Source.SoccerWay;
 
-        public int TypeId { get; set; }
+    public int TypeId { get; set; }
 
-        public int HomeValue { get; set; }
+    public int HomeValue { get; set; }
 
-        public int AwayValue { get; set; }
+    public int AwayValue { get; set; }
 
-        public int StatusId { get; set; } 
+    public int StatusId { get; set; }
 
-        public int InstantKey { get; set; }
+    public int InstantKey { get; set; }
 
-        public int ChildMatchType { get; set; }
+    public int ChildMatchType { get; set; }
 
-        public bool IsInstCalculated { get; set; }
+    public bool IsInstCalculated { get; set; }
 
-        public override bool IsValid() => MatchId > 0;
+    public override bool IsValid() => MatchId > 0;
 
-        public override string GetSettingKey() => "NAP_Set_AutoPayoutResultIns";
-    }
+    public override string GetSettingKey() => "NAP_Set_AutoPayoutResultIns";
 }

@@ -1,30 +1,26 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿namespace AutoInstant.Exceptions;
 
-namespace AutoInstant.Exceptions
+[Serializable]
+public class ScoreChangedException : AutoInstantException
 {
-    [Serializable]
-    public class ScoreChangedException : AutoInstantException
+    public ScoreChangedException()
     {
-        public ScoreChangedException()
-        {
-            IsShowOnReferenceActions = true;
-            Description = "Failed: Detect score changed.";
-        }
+        IsShowOnReferenceActions = true;
+        Description = "Failed: Detect score changed.";
+    }
 
-        public ScoreChangedException(string message)
-            : base(message)
-        {
-        }
+    public ScoreChangedException(string message)
+        : base(message)
+    {
+    }
 
-        public ScoreChangedException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    public ScoreChangedException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        protected ScoreChangedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+    protected ScoreChangedException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
     }
 }

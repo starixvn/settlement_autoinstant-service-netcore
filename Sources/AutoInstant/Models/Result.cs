@@ -1,9 +1,8 @@
-﻿namespace AutoInstant.Models
-{
-    public class Result
-    {
-        public int ErrorCode { get; set; }
+﻿namespace AutoInstant.Models;
 
-        public string ErrorMessage { get; set; }
-    }
+public class Result
+{
+    public int ErrorCode { get; set; }
+
+    public string ErrorMessage { get; set; }
 }

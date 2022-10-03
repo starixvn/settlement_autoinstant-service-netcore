@@ -1,36 +1,34 @@
 ﻿using AutoInstant.Exceptions;
 using AutoInstant.Models;
-using System;
 
-namespace AutoInstant.Services
+namespace AutoInstant.Services;
+
+public interface ValidationScoreChangeService
 {
-    public interface ValidationScoreChangeService
-    {
-        void VerifyScoreChanged(Match match, MatchChecking matchChecking);
-    }
+    void VerifyScoreChanged(Match match, MatchChecking matchChecking);
+}
 
-    public class ValidationScoreChangeServiceImp : ValidationScoreChangeService
+public class ValidationScoreChangeServiceImp : ValidationScoreChangeService
+{
+    public void VerifyScoreChanged(Match match, MatchChecking matchChecking)
     {
-        public void VerifyScoreChanged(Match match, MatchChecking matchChecking)
+        if (IsWrongScore(match, matchChecking))
         {
-            if (IsWrongScore(match, matchChecking))
+            if (matchChecking.InstantKey > match.InstantKey)
             {
-                if (matchChecking.InstantKey > match.InstantKey)
-                {
-                    var score = $"{matchChecking.PreviousHomeScore}-{matchChecking.PreviousAwayScore}";
-                    throw new ManualCalculatedException(score, true);
-                }
-                else
-                {
-                    throw new ScoreChangedException();
-                }
+                var score = $"{matchChecking.PreviousHomeScore}-{matchChecking.PreviousAwayScore}";
+                throw new ManualCalculatedException(score, true);
+            }
+            else
+            {
+                throw new ScoreChangedException();
             }
         }
+    }
 
-        private static bool IsWrongScore(Match match, MatchChecking matchChecking)
-        {
-            return match.HomeValue < Convert.ToInt32(matchChecking.PreviousHomeScore)
-                || match.AwayValue < Convert.ToInt32(matchChecking.PreviousAwayScore);
-        }
+    private static bool IsWrongScore(Match match, MatchChecking matchChecking)
+    {
+        return match.HomeValue < Convert.ToInt32(matchChecking.PreviousHomeScore)
+            || match.AwayValue < Convert.ToInt32(matchChecking.PreviousAwayScore);
     }
 }

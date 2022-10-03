@@ -1,19 +1,16 @@
-﻿using System.Xml.Serialization;
+﻿namespace AutoInstant.Result.Models;
 
-namespace AutoInstant.Result.Models
+public class XmlResource
 {
-    public class XmlResource
-    {
-        [XmlAttribute("Id")]
-        public string ResourceId { get; set; }
+    [XmlAttribute("Id")]
+    public string ResourceId { get; set; }
 
-        [XmlAttribute]
-        public string HomeValue { get; set; }
+    [XmlAttribute]
+    public string HomeValue { get; set; }
 
-        [XmlAttribute]
-        public int SettlementStatusId { get; set; }
+    [XmlAttribute]
+    public int SettlementStatusId { get; set; }
 
-        [XmlAttribute]
-        public int ResultStatusId { get; set; }
-    }
+    [XmlAttribute]
+    public int ResultStatusId { get; set; }
 }

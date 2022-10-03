@@ -1,29 +1,25 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿namespace AutoInstant.Exceptions;
 
-namespace AutoInstant.Exceptions
+[Serializable]
+public class ManualCalculatedException : AutoInstantException
 {
-    [Serializable]
-    public class ManualCalculatedException : AutoInstantException
+    public ManualCalculatedException()
     {
-        public ManualCalculatedException()
-        {
-        }
+    }
 
-        public ManualCalculatedException(string liveScore, bool isSendToLetsTalk)
-        {
-            IsSendToLetsTalk = isSendToLetsTalk;
-            Description = $"Failed: Score {liveScore} has been calculated already.";
-        }
+    public ManualCalculatedException(string liveScore, bool isSendToLetsTalk)
+    {
+        IsSendToLetsTalk = isSendToLetsTalk;
+        Description = $"Failed: Score {liveScore} has been calculated already.";
+    }
 
-        public ManualCalculatedException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    public ManualCalculatedException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        protected ManualCalculatedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+    protected ManualCalculatedException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
     }
 }

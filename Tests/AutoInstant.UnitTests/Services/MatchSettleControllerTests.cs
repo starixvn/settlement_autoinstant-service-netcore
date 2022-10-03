@@ -1,89 +1,86 @@
 ﻿using AutoInstant.Models;
 using AutoInstant.Services;
-using NSubstitute;
-using Xunit;
 
-namespace AutoInstant.UnitTests.Services
+namespace AutoInstant.UnitTests.Services;
+
+public class MatchSettleControllerTests
 {
-    public class MatchSettleControllerTests
+    private readonly MatchSettleService matchSettleService;
+    private readonly ScoreRetryService scoreRetryService;
+    private readonly MatchSettlingPoolService matchSettlingPoolService;
+    private readonly MatchSettleController matchSettleController;
+    private readonly MatchChecking matchChecking = new MatchChecking();
+
+    public MatchSettleControllerTests()
     {
-        private readonly MatchSettleService matchSettleService;
-        private readonly ScoreRetryService scoreRetryService;
-        private readonly MatchSettlingPoolService matchSettlingPoolService;
-        private readonly MatchSettleController matchSettleController;
-        private readonly MatchChecking matchChecking = new MatchChecking();
+        matchSettleService = Substitute.For<MatchSettleService>();
+        scoreRetryService = Substitute.For<ScoreRetryService>();
+        matchSettlingPoolService = Substitute.For<MatchSettlingPoolService>();
+        var matchQueryService = Substitute.For<MatchQueryService>();
+        matchQueryService.GetMatchInfo(Arg.Any<Match>()).Returns(matchChecking);
 
-        public MatchSettleControllerTests()
+        matchSettleController = new MatchSettleControllerImp(
+            matchSettleService,
+            scoreRetryService,
+            matchSettlingPoolService,
+            matchQueryService);
+    }
+
+    [Fact]
+    public void Process_ScoreIsMatched_InvokeRightMethods()
+    {
+        // Arrange
+        var match = new Match
         {
-            matchSettleService = Substitute.For<MatchSettleService>();
-            scoreRetryService = Substitute.For<ScoreRetryService>();
-            matchSettlingPoolService = Substitute.For<MatchSettlingPoolService>();
-            var matchQueryService = Substitute.For<MatchQueryService>();
-            matchQueryService.GetMatchInfo(Arg.Any<Match>()).Returns(matchChecking);
+            IsChecking = false
+        };
+        scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(true);
 
-            matchSettleController = new MatchSettleControllerImp(
-                matchSettleService,
-                scoreRetryService,
-                matchSettlingPoolService,
-                matchQueryService);
-        }
+        // Act
+        matchSettleController.Process(match);
 
-        [Fact]
-        public void Process_ScoreIsMatched_InvokeRightMethods()
+        // Assert
+        Assert.True(match.IsChecking);
+        matchSettleService.Received().ScoreMatched(Arg.Is<Match>(m => m == match), matchChecking);
+        matchSettlingPoolService.Received().Remove(match);
+    }
+
+    [Fact]
+    public void Process_IsCornerMatch_InvokeRightMethods()
+    {
+        // Arrange
+        var match = new Match
         {
-            // Arrange
-            var match = new Match
-            {
-                IsChecking = false
-            };
-            scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(true);
+            IsChecking = false,
+            ChildMatchType = 204
+        };
+        scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(false);
 
-            // Act
-            matchSettleController.Process(match);
+        // Act
+        matchSettleController.Process(match);
 
-            // Assert
-            Assert.True(match.IsChecking);
-            matchSettleService.Received().ScoreMatched(Arg.Is<Match>(m => m == match), matchChecking);
-            matchSettlingPoolService.Received().Remove(match);
-        }
+        // Assert
+        Assert.True(match.IsChecking);
+        matchSettleService.Received().ScoreMatched(Arg.Is<Match>(m => m == match), matchChecking);
+        matchSettlingPoolService.Received().Remove(match);
+    }
 
-        [Fact]
-        public void Process_IsCornerMatch_InvokeRightMethods()
+    [Fact]
+    public void Process_ScoreIsNotMatched_InvokeRightMethods()
+    {
+        // Arrange
+        var match = new Match
         {
-            // Arrange
-            var match = new Match
-            {
-                IsChecking = false,
-                ChildMatchType = 204
-            };
-            scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(false);
+            IsChecking = false
+        };
+        scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(false);
 
-            // Act
-            matchSettleController.Process(match);
+        // Act
+        matchSettleController.Process(match);
 
-            // Assert
-            Assert.True(match.IsChecking);
-            matchSettleService.Received().ScoreMatched(Arg.Is<Match>(m => m == match), matchChecking);
-            matchSettlingPoolService.Received().Remove(match);
-        }
-
-        [Fact]
-        public void Process_ScoreIsNotMatched_InvokeRightMethods()
-        {
-            // Arrange
-            var match = new Match
-            {
-                IsChecking = false
-            };
-            scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(false);
-
-            // Act
-            matchSettleController.Process(match);
-
-            // Assert
-            Assert.True(match.IsChecking);
-            matchSettleService.Received().ScoreMismatched(Arg.Is<Match>(m => m == match), matchChecking);
-            matchSettlingPoolService.Received().Remove(Arg.Is<Match>(m => m == match));
-        }
+        // Assert
+        Assert.True(match.IsChecking);
+        matchSettleService.Received().ScoreMismatched(Arg.Is<Match>(m => m == match), matchChecking);
+        matchSettlingPoolService.Received().Remove(Arg.Is<Match>(m => m == match));
     }
 }

@@ -1,53 +1,51 @@
 ﻿using AutoInstant.Result.Models;
 using Kaden.XmlConverter;
-using System.Collections.Generic;
 
-namespace AutoInstant.Result.Services
+namespace AutoInstant.Result.Services;
+
+public interface ResultsService
 {
-    public interface ResultsService
-    {
-        string HalftimeResults(Goal goal);
+    string HalftimeResults(Goal goal);
 
-        string FullTimeResults(Goal goal);
+    string FullTimeResults(Goal goal);
+}
+
+public class ResultsServiceImp : ResultsService
+{
+    private readonly XmlConvertService xmlConvertService;
+
+    private readonly ResourceService resourceService;
+
+    public ResultsServiceImp(
+        XmlConvertService xmlConvertService,
+        ResourceService resourceService)
+    {
+        this.xmlConvertService = xmlConvertService;
+        this.resourceService = resourceService;
     }
 
-    public class ResultsServiceImp : ResultsService
+    public string HalftimeResults(Goal goal)
     {
-        private readonly XmlConvertService xmlConvertService;
+        var resources = resourceService.Halftime(goal);
+        return SerializeObjectToString(resources);
+    }
 
-        private readonly ResourceService resourceService;
+    public string FullTimeResults(Goal goal)
+    {
+        var resources = resourceService.FullTime(goal);
+        return SerializeObjectToString(resources);
+    }
 
-        public ResultsServiceImp(
-            XmlConvertService xmlConvertService,
-            ResourceService resourceService)
+    private string SerializeObjectToString(List<XmlResource> resources)
+    {
+        if (resources.Count > 0)
         {
-            this.xmlConvertService = xmlConvertService;
-            this.resourceService = resourceService;
+            var xmlResults = new XmlResults { Resources = resources };
+            return xmlConvertService.Serialize(xmlResults);
         }
-
-        public string HalftimeResults(Goal goal)
+        else
         {
-            var resources = resourceService.Halftime(goal);
-            return SerializeObjectToString(resources);
-        }
-
-        public string FullTimeResults(Goal goal)
-        {
-            var resources = resourceService.FullTime(goal);
-            return SerializeObjectToString(resources);
-        }
-
-        private string SerializeObjectToString(List<XmlResource> resources)
-        {
-            if (resources.Count > 0)
-            {
-                var xmlResults = new XmlResults { Resources = resources };
-                return xmlConvertService.Serialize(xmlResults);
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return string.Empty;
         }
     }
 }

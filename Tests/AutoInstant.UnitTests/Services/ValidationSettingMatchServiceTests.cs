@@ -1,107 +1,103 @@
-﻿using AutoInstant.Constants;
-using AutoInstant.Exceptions;
+﻿using AutoInstant.Exceptions;
 using AutoInstant.Models;
 using AutoInstant.Services;
-using Xunit;
 
-namespace AutoInstant.UnitTests.Services
+namespace AutoInstant.UnitTests.Services;
+
+public class ValidationSettingMatchServiceTests
 {
-    
-    public class ValidationSettingMatchServiceTests
+    private const byte Instant = 2;
+
+    private static readonly byte OffSettingStatus = 1;
+
+    private readonly ValidationSettingMatchService service;
+
+    public ValidationSettingMatchServiceTests()
     {
-        private const byte Instant = 2;
+        service = new ValidationSettingMatchServiceImp();
+    }
 
-        private static readonly byte OffSettingStatus = 1;
-
-        private readonly ValidationSettingMatchService service;
-
-        public ValidationSettingMatchServiceTests()
+    [Fact]
+    public void VerifySettingMatch_SettingOnAndUndecidedPendingOff_NotThrowException()
+    {
+        // Arrange
+        var matchChecking = new MatchChecking
         {
-            service = new ValidationSettingMatchServiceImp();
-        }
+            AutoSetting = Instant,
+            SettlementStatus = 0
+        };
 
-        [Fact]
-        public void VerifySettingMatch_SettingOnAndUndecidedPendingOff_NotThrowException()
+        // Assert
+        var exception = Record.Exception(() => service.VerifySettingMatch(matchChecking));
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void VerifySettingMatch_MatchIsSettingOff_ThrowException()
+    {
+        // Arrange
+        var matchChecking = new MatchChecking
         {
-            // Arrange
-            var matchChecking = new MatchChecking
-            {
-                AutoSetting = Instant,
-                SettlementStatus = 0
-            };
+            AutoSetting = OffSettingStatus
+        };
 
-            // Assert
-            var exception = Record.Exception(() => service.VerifySettingMatch(matchChecking));
-            Assert.Null(exception);
-        }
+        // Assert
+        Assert.Throws<SettingOffException>(() => service.VerifySettingMatch(matchChecking));
+    }
 
-        [Fact]
-        public void VerifySettingMatch_MatchIsSettingOff_ThrowException()
+    [Fact]
+    public void VerifySettingMatch_MatchIsMtdHold_ThrowException()
+    {
+        // Arrange
+        var matchChecking = new MatchChecking
         {
-            // Arrange
-            var matchChecking = new MatchChecking
-            {
-                AutoSetting = OffSettingStatus
-            };
+            AutoSetting = Instant,
+            SettlementStatus = 16
+        };
 
-            // Assert
-            Assert.Throws<SettingOffException>(() => service.VerifySettingMatch(matchChecking));
-        }
+        // Assert
+        Assert.Throws<RemarkException>(() => service.VerifySettingMatch(matchChecking));
+    }
 
-        [Fact]
-        public void VerifySettingMatch_MatchIsMtdHold_ThrowException()
+    [Fact]
+    public void VerifySettingMatch_MatchIsUndecided_ThrowException()
+    {
+        // Arrange
+        var matchChecking = new MatchChecking
         {
-            // Arrange
-            var matchChecking = new MatchChecking
-            {
-                AutoSetting = Instant,
-                SettlementStatus = 16
-            };
+            AutoSetting = Instant,
+            SettlementStatus = 64
+        };
 
-            // Assert
-            Assert.Throws<RemarkException>(() => service.VerifySettingMatch(matchChecking));
-        }
+        // Assert
+        Assert.Throws<RemarkException>(() => service.VerifySettingMatch(matchChecking));
+    }
 
-        [Fact]
-        public void VerifySettingMatch_MatchIsUndecided_ThrowException()
+    [Fact]
+    public void VerifySettingMatch_MatchIsPending_ThrowException()
+    {
+        // Arrange
+        var matchChecking = new MatchChecking
         {
-            // Arrange
-            var matchChecking = new MatchChecking
-            {
-                AutoSetting = Instant,
-                SettlementStatus = 64
-            };
+            AutoSetting = Instant,
+            SettlementStatus = 1
+        };
 
-            // Assert
-            Assert.Throws<RemarkException>(() => service.VerifySettingMatch(matchChecking));
-        }
+        // Assert
+        Assert.Throws<RemarkException>(() => service.VerifySettingMatch(matchChecking));
+    }
 
-        [Fact]
-        public void VerifySettingMatch_MatchIsPending_ThrowException()
+    [Fact]
+    public void VerifySettingMatch_MatchIsHoldKey_ThrowException()
+    {
+        // Arrange
+        var matchChecking = new MatchChecking
         {
-            // Arrange
-            var matchChecking = new MatchChecking
-            {
-                AutoSetting = Instant,
-                SettlementStatus = 1
-            };
+            AutoSetting = Instant,
+            SettlementStatus = 2
+        };
 
-            // Assert
-            Assert.Throws<RemarkException>(() => service.VerifySettingMatch(matchChecking));
-        }
-
-        [Fact]
-        public void VerifySettingMatch_MatchIsHoldKey_ThrowException()
-        {
-            // Arrange
-            var matchChecking = new MatchChecking
-            {
-                AutoSetting = Instant,
-                SettlementStatus = 2
-            };
-
-            // Assert
-            Assert.Throws<RemarkException>(() => service.VerifySettingMatch(matchChecking));
-        }
+        // Assert
+        Assert.Throws<RemarkException>(() => service.VerifySettingMatch(matchChecking));
     }
 }

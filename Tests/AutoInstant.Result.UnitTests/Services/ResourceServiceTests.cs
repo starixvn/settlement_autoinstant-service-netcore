@@ -1,11 +1,9 @@
 ﻿using AutoInstant.Result.Models;
 using AutoInstant.Result.Services;
-using NSubstitute;
-using Xunit;
 
 namespace AutoInstant.Result.UnitTests.Services;
-{
-    public class ResourceServiceTests
+
+public class ResourceServiceTests
 {
     private readonly ActionResourceService actionResourceService;
 
@@ -129,5 +127,4 @@ namespace AutoInstant.Result.UnitTests.Services;
         // Assert
         Assert.Single(actual);
     }
-}
 }

@@ -1,36 +1,32 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿namespace AutoInstant.Services;
 
-namespace AutoInstant.Services
+public interface AutoInstantController
 {
-    public interface AutoInstantController
+    Task ProcessAsync();
+}
+
+public class AutoInstantControllerImp : AutoInstantController
+{
+    private readonly MatchSettlingPoolService matchSettlingPoolService;
+
+    private readonly MatchSettleController matchSettleController;
+
+    public AutoInstantControllerImp(
+        MatchSettlingPoolService matchSettlingPoolService,
+        MatchSettleController matchSettleService)
     {
-        Task ProcessAsync();
+        this.matchSettlingPoolService = matchSettlingPoolService;
+        this.matchSettleController = matchSettleService;
     }
 
-    public class AutoInstantControllerImp : AutoInstantController
+    public async Task ProcessAsync()
     {
-        private readonly MatchSettlingPoolService matchSettlingPoolService;
+        var newMatches = (await matchSettlingPoolService.PeekNewMatch()).Where(n => !n.IsChecking).ToList();
 
-        private readonly MatchSettleController matchSettleController;
-
-        public AutoInstantControllerImp(
-            MatchSettlingPoolService matchSettlingPoolService,
-            MatchSettleController matchSettleService)
+        newMatches.ForEach(m =>
         {
-            this.matchSettlingPoolService = matchSettlingPoolService;
-            this.matchSettleController = matchSettleService;
-        }
-
-        public async Task ProcessAsync()
-        {
-            var newMatches = (await matchSettlingPoolService.PeekNewMatch()).Where(n => !n.IsChecking).ToList();
-
-            newMatches.ForEach(m =>
-            {
-                Task.Run(() => matchSettleController.Process(m))
-                    .ConfigureAwait(false);
-            });
-        }
+            Task.Run(() => matchSettleController.Process(m))
+                .ConfigureAwait(false);
+        });
     }
 }

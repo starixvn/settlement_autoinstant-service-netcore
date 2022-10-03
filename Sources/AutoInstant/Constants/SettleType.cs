@@ -1,9 +1,8 @@
-﻿namespace AutoInstant.Constants
-{
-    public static class SettleType
-    {
-        public const int FirstHalf = 101;
+﻿namespace AutoInstant.Constants;
 
-        public const int SecondHalf = 102;
-    }
+public static class SettleType
+{
+    public const int FirstHalf = 101;
+
+    public const int SecondHalf = 102;
 }

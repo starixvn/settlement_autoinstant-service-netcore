@@ -2,83 +2,80 @@
 using AutoInstant.Exceptions;
 using AutoInstant.Models;
 using AutoInstant.Services;
-using Xunit;
 
-namespace AutoInstant.UnitTests.Services
+namespace AutoInstant.UnitTests.Services;
+
+public class ValidationStatusMatchServiceTests
 {
-    
-    public class ValidationStatusMatchServiceTests
+    private readonly ValidationStatusMatchService service;
+
+    public ValidationStatusMatchServiceTests()
     {
-        private readonly ValidationStatusMatchService service;
+        service = new ValidationStatusMatchServiceImp();
+    }
 
-        public ValidationStatusMatchServiceTests()
+    [Fact]
+    public void VerifyStatusMatch_NotThrowException()
+    {
+        // Arrange
+
+        var matchChecking = new MatchChecking
         {
-            service = new ValidationStatusMatchServiceImp();
-        }
+            IsInstCalculated = false,
+            IsCalculatedFT = false,
+            IsCalculatedHT = true,
+        };
 
-        [Fact]
-        public void VerifyStatusMatch_NotThrowException()
+        // Assert
+        var exception = Record.Exception(() => service.VerifyStatusMatch(new Match(), matchChecking));
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void VerifyStatusMatch_MatchIsManualInstCalculated_ThrowException()
+    {
+        // Arrange
+        var match = new Match
         {
-            // Arrange
+            HomeValue = 1,
+            AwayValue = 2
+        };
 
-            var matchChecking = new MatchChecking
-            {
-                IsInstCalculated = false,
-                IsCalculatedFT = false,
-                IsCalculatedHT = true,
-            };
-
-            // Assert
-            var exception = Record.Exception(() => service.VerifyStatusMatch(new Match(), matchChecking));
-            Assert.Null(exception);
-        }
-
-        [Fact]
-        public void VerifyStatusMatch_MatchIsManualInstCalculated_ThrowException()
+        var matchChecking = new MatchChecking
         {
-            // Arrange
-            var match = new Match
-            {
-                HomeValue = 1,
-                AwayValue = 2
-            };
+            IsInstCalculated = true,
+            PreviousHomeScore = "1",
+            PreviousAwayScore = "1"
+        };
 
-            var matchChecking = new MatchChecking
-            {
-                IsInstCalculated = true,
-                PreviousHomeScore = "1",
-                PreviousAwayScore = "1"
-            };
+        // Assert
+        Assert.Throws<ManualCalculatedException>(() => service.VerifyStatusMatch(match, matchChecking));
+    }
 
-            // Assert
-            Assert.Throws<ManualCalculatedException>(() => service.VerifyStatusMatch(match, matchChecking));
-        }
-
-        [Fact]
-        public void VerifyStatusMatch_MatchIsCalculatedFT_ThrowException()
+    [Fact]
+    public void VerifyStatusMatch_MatchIsCalculatedFT_ThrowException()
+    {
+        // Arrange
+        var matchChecking = new MatchChecking
         {
-            // Arrange
-            var matchChecking = new MatchChecking
-            {
-                IsCalculatedFT = true,
-            };
+            IsCalculatedFT = true,
+        };
 
-            // Assert
-            Assert.Throws<FTCalculatedException>(() => service.VerifyStatusMatch(new Match { TypeId = SettleType.SecondHalf }, matchChecking));
-        }
+        // Assert
+        Assert.Throws<FTCalculatedException>(() => service.VerifyStatusMatch(new Match { TypeId = SettleType.SecondHalf }, matchChecking));
+    }
 
-        [Fact]
-        public void VerifyStatusMatch_IsHalfTimeNotDone_ThrowException()
+    [Fact]
+    public void VerifyStatusMatch_IsHalfTimeNotDone_ThrowException()
+    {
+        // Arrange
+        var matchChecking = new MatchChecking
         {
-            // Arrange
-            var matchChecking = new MatchChecking
-            {
-                IsCalculatedHT = false,
-                TypeId = SettleType.SecondHalf
-            };
+            IsCalculatedHT = false,
+            TypeId = SettleType.SecondHalf
+        };
 
-            // Assert
-            Assert.Throws<HalfTimeNotDoneException>(() => service.VerifyStatusMatch(new Match(), matchChecking));
-        }
+        // Assert
+        Assert.Throws<HalfTimeNotDoneException>(() => service.VerifyStatusMatch(new Match(), matchChecking));
     }
 }

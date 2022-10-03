@@ -1,47 +1,44 @@
-﻿using System.Threading.Tasks;
-using AutoInstant.Exceptions;
+﻿using AutoInstant.Exceptions;
 using AutoInstant.Models;
-using Fanex.Data.Repository;
 
-namespace AutoInstant.Services
+namespace AutoInstant.Services;
+
+public interface LogService
 {
-    public interface LogService
-    {
-        Task ActionLog(Match match, MatchChecking matchChecking, string message);
+    Task ActionLog(Match match, MatchChecking matchChecking, string message);
 
-        Task ActionLog(Match match, MatchChecking matchChecking, AutoInstantException exception);
+    Task ActionLog(Match match, MatchChecking matchChecking, AutoInstantException exception);
+}
+
+public class LogServiceImp : LogService
+{
+    private readonly IDynamicRepository repository;
+
+    private readonly LogCriteriaService logCriteriaService;
+
+    public LogServiceImp(
+        IDynamicRepository repository,
+        LogCriteriaService logCriteriaService)
+    {
+        this.repository = repository;
+        this.logCriteriaService = logCriteriaService;
     }
 
-    public class LogServiceImp : LogService
+    public async Task ActionLog(Match match, MatchChecking matchChecking, string message)
     {
-        private readonly IDynamicRepository repository;
+        var criteria = logCriteriaService.HideCreateCriteria(match, matchChecking);
+        criteria.Remark = message;
+        await repository.ExecuteAsync(criteria);
+    }
 
-        private readonly LogCriteriaService logCriteriaService;
+    public async Task ActionLog(Match match, MatchChecking matchChecking, AutoInstantException exception)
+    {
+        var criteria = exception.IsShowOnReferenceActions
+            ? logCriteriaService.ShowCreateCriteria(match, matchChecking)
+            : logCriteriaService.HideCreateCriteria(match, matchChecking);
 
-        public LogServiceImp(
-            IDynamicRepository repository,
-            LogCriteriaService logCriteriaService)
-        {
-            this.repository = repository;
-            this.logCriteriaService = logCriteriaService;
-        }
+        criteria.Remark = exception.Description;
 
-        public async Task ActionLog(Match match, MatchChecking matchChecking, string message)
-        {
-            var criteria = logCriteriaService.HideCreateCriteria(match, matchChecking);
-            criteria.Remark = message;
-            await repository.ExecuteAsync(criteria);
-        }
-
-        public async Task ActionLog(Match match, MatchChecking matchChecking, AutoInstantException exception)
-        {
-            var criteria = exception.IsShowOnReferenceActions
-                ? logCriteriaService.ShowCreateCriteria(match, matchChecking)
-                : logCriteriaService.HideCreateCriteria(match, matchChecking);
-
-            criteria.Remark = exception.Description;
-
-            await repository.ExecuteAsync(criteria);
-        }
+        await repository.ExecuteAsync(criteria);
     }
 }

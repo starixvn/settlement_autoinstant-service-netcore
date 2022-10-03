@@ -1,14 +1,11 @@
-﻿using Fanex.Data.Repository;
+﻿namespace AutoInstant.Criteria;
 
-namespace AutoInstant.Criteria
+public class MatchWaitingCriteria : CriteriaBase
 {
-    public class MatchWaitingCriteria : CriteriaBase
+    public override bool IsValid()
     {
-        public override bool IsValid()
-        {
-            return true;
-        }
-
-        public override string GetSettingKey() => "NAP_Set_AutoInstant_ScheduleSel";
+        return true;
     }
+
+    public override string GetSettingKey() => "NAP_Set_AutoInstant_ScheduleSel";
 }

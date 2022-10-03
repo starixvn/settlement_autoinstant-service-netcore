@@ -1,30 +1,26 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿namespace AutoInstant.Exceptions;
 
-namespace AutoInstant.Exceptions
+[Serializable]
+public class SettingOffException : AutoInstantException
 {
-    [Serializable]
-    public class SettingOffException : AutoInstantException
+    public SettingOffException()
     {
-        public SettingOffException()
-        {
-            IsSendToLetsTalk = false;
-            Description = "Failed: Cannot execute Auto Instant calculate due to setting turned off.";
-        }
+        IsSendToLetsTalk = false;
+        Description = "Failed: Cannot execute Auto Instant calculate due to setting turned off.";
+    }
 
-        public SettingOffException(string message)
-            : base(message)
-        {
-        }
+    public SettingOffException(string message)
+        : base(message)
+    {
+    }
 
-        public SettingOffException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    public SettingOffException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        protected SettingOffException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+    protected SettingOffException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
     }
 }

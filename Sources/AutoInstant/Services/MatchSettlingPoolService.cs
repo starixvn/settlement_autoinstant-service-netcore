@@ -1,53 +1,49 @@
 ﻿using AutoInstant.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace AutoInstant.Services
+namespace AutoInstant.Services;
+
+public interface MatchSettlingPoolService
 {
-    public interface MatchSettlingPoolService
-    {
-        Task<List<Match>> PeekNewMatch();
+    Task<List<Match>> PeekNewMatch();
 
-        void Remove(Match match);
+    void Remove(Match match);
+}
+
+public class MatchSettlingPoolServiceImp : MatchSettlingPoolService
+{
+    private readonly MatchByLeagueService matchByLeagueService;
+
+    private readonly List<Match> poolOfMatches;
+
+    private readonly object lockObject;
+
+    public MatchSettlingPoolServiceImp(MatchByLeagueService matchByLeagueService)
+    {
+        this.matchByLeagueService = matchByLeagueService;
+
+        poolOfMatches = new List<Match>();
+        lockObject = new object();
     }
 
-    public class MatchSettlingPoolServiceImp : MatchSettlingPoolService
+    public List<Match> PoolOfMatches => poolOfMatches;
+
+    public async Task<List<Match>> PeekNewMatch()
     {
-        private readonly MatchByLeagueService matchByLeagueService;
-
-        private readonly List<Match> poolOfMatches;
-
-        private readonly object lockObject;
-
-        public MatchSettlingPoolServiceImp(MatchByLeagueService matchByLeagueService)
+        var matches = await matchByLeagueService.GetMatches();
+        lock (lockObject)
         {
-            this.matchByLeagueService = matchByLeagueService;
+            var newMatches = matches.Except(poolOfMatches).ToList();
+            poolOfMatches.AddRange(newMatches);
 
-            poolOfMatches = new List<Match>();
-            lockObject = new object();
+            return newMatches;
         }
+    }
 
-        public List<Match> PoolOfMatches => poolOfMatches;
-
-        public async Task<List<Match>> PeekNewMatch()
+    public void Remove(Match match)
+    {
+        lock (lockObject)
         {
-            var matches = await matchByLeagueService.GetMatches();
-            lock (lockObject)
-            {
-                var newMatches = matches.Except(poolOfMatches).ToList();
-                poolOfMatches.AddRange(newMatches);
-
-                return newMatches;
-            }
-        }
-
-        public void Remove(Match match)
-        {
-            lock (lockObject)
-            {
-                poolOfMatches.RemoveAll(m => m.MatchId == match.MatchId);
-            }
+            poolOfMatches.RemoveAll(m => m.MatchId == match.MatchId);
         }
     }
 }

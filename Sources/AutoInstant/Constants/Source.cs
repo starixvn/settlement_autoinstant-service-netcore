@@ -1,9 +1,8 @@
-﻿namespace AutoInstant.Constants
-{
-    public static class Source
-    {
-        public const int SoccerWay = 5;
+﻿namespace AutoInstant.Constants;
 
-        public const int AdminSite = 100;
-    }
+public static class Source
+{
+    public const int SoccerWay = 5;
+
+    public const int AdminSite = 100;
 }

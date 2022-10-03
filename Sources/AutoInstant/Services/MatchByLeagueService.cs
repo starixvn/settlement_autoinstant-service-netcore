@@ -1,51 +1,46 @@
 ﻿using AutoInstant.Models;
-using Fanex.Caching;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 
-namespace AutoInstant.Services
+
+namespace AutoInstant.Services;
+
+public interface MatchByLeagueService
 {
-    public interface MatchByLeagueService
+    Task<List<Match>> GetMatches();
+}
+
+public class MatchByLeagueServiceImp : MatchByLeagueService
+{
+    private const string KEY_LEAGUEID = "Settlement-AutoPayout-AutoInstant-LeagueId";
+
+    private readonly ICache cache;
+
+    private readonly MatchQueryService matchQueryService;
+
+    private readonly AppSettingsKey appSettingsKey;
+
+    public MatchByLeagueServiceImp(MatchQueryService matchQueryService, ICache cache, IOptions<AppSettingsKey> appSettingsKey)
     {
-        Task<List<Match>> GetMatches();
+        this.matchQueryService = matchQueryService;
+        this.cache = cache;
+        this.appSettingsKey = appSettingsKey.Value;
     }
 
-    public class MatchByLeagueServiceImp : MatchByLeagueService
+    public async Task<List<Match>> GetMatches()
     {
-        private const string KEY_LEAGUEID = "Settlement-AutoPayout-AutoInstant-LeagueId";
+        var matches = await matchQueryService.GetWaitingMatches();
 
-        private readonly ICache cache;
+        cache.TryGet(KEY_LEAGUEID, out int leagueId);
 
-        private readonly MatchQueryService matchQueryService;
-
-        private readonly AppSettingsKey appSettingsKey;
-
-        public MatchByLeagueServiceImp(MatchQueryService matchQueryService, ICache cache, IOptions<AppSettingsKey> appSettingsKey)
+        switch (appSettingsKey.EnvironmentName)
         {
-            this.matchQueryService = matchQueryService;
-            this.cache = cache;
-            this.appSettingsKey = appSettingsKey.Value;
-        }
-
-        public async Task<List<Match>> GetMatches()
-        {
-            var matches = await matchQueryService.GetWaitingMatches();
-
-            cache.TryGet(KEY_LEAGUEID, out int leagueId);
-
-            switch (appSettingsKey.EnvironmentName)
-            {
-                case "PRO":
-                    return leagueId > 0
-                        ? (from m in matches where m.LeagueId != leagueId select m).ToList()
-                        : matches;
-                case "UAT":
-                    return (from m in matches where m.LeagueId == leagueId select m).ToList();
-                default:
-                    return matches;
-            }
+            case "PRO":
+                return leagueId > 0
+                    ? (from m in matches where m.LeagueId != leagueId select m).ToList()
+                    : matches;
+            case "UAT":
+                return (from m in matches where m.LeagueId == leagueId select m).ToList();
+            default:
+                return matches;
         }
     }
 }
