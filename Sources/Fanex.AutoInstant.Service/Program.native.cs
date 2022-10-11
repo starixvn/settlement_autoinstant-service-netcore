@@ -15,7 +15,7 @@ builder.Services.AddHostedService<AutoInstantService>();
 
 var app = builder.Build();
 
-if (builder.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
