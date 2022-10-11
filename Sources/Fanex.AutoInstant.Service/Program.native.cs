@@ -28,9 +28,8 @@ app.UseEndpoints(endpoints =>
         async context => { await context.Response.WriteAsync("Fanex.AutoInstant.Service"); });
 });
 
-
 #if DEBUG
 app.Run();
 #else
-app.Run("http://0.0.0.0:5000")
+await app.RunAsync("http://0.0.0.0:5000");
 #endif

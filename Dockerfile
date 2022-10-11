@@ -11,7 +11,7 @@ RUN dotnet restore -v n
 
 COPY ./Sources/Fanex.AutoInstant.Service .
 
-RUN dotnet publish -r linux-x64 --self-contained false -c Release -o /app 
+RUN dotnet publish -r linux-x64 --self-contained false -c release -o /app 
 
 FROM hub.nexdev.net/base/dotnet/core/aspnet:6.0 AS base
 
