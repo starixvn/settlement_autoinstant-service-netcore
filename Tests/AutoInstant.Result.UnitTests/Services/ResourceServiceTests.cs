@@ -1,133 +1,130 @@
 ﻿using AutoInstant.Result.Models;
 using AutoInstant.Result.Services;
-using NSubstitute;
-using Xunit;
 
-namespace AutoInstant.Result.UnitTests.Services
+namespace AutoInstant.Result.UnitTests.Services;
+
+public class ResourceServiceTests
 {
-    public class ResourceServiceTests
+    private readonly ActionResourceService actionResourceService;
+
+    private readonly GoalRecordService goalRecordService;
+
+    public ResourceServiceTests()
     {
-        private readonly ActionResourceService actionResourceService;
+        actionResourceService = Substitute.For<ActionResourceService>();
+        goalRecordService = Substitute.For<GoalRecordService>();
+    }
 
-        private readonly GoalRecordService goalRecordService;
+    [Fact]
+    public void Halftime_HtFgNgAndFgNgIsNotExisted_ReturnsEmptyResources()
+    {
+        // Arrange
+        var goal = new Goal();
+        var service = new ResourceServiceImp(actionResourceService, goalRecordService);
 
-        public ResourceServiceTests()
+        // Act
+        var actual = service.Halftime(goal);
+
+        // Assert
+        Assert.Empty(actual);
+    }
+
+    [Fact]
+    public void Halftime_IsExistedHtFgNg_ReturnsOneItemOnList()
+    {
+        // Arrange
+        var goal = new Goal
         {
-            actionResourceService = Substitute.For<ActionResourceService>();
-            goalRecordService = Substitute.For<GoalRecordService>();
-        }
+            IsExistHtFgNg = true,
+            IsExistFgNg = false
+        };
 
-        [Fact]
-        public void Halftime_HtFgNgAndFgNgIsNotExisted_ReturnsEmptyResources()
+        var xmlResource = new XmlResource();
+        actionResourceService.HalftimeFirstGoalResources(Arg.Any<string>()).Returns(xmlResource);
+        var service = new ResourceServiceImp(actionResourceService, goalRecordService);
+
+        // Act
+        var actual = service.Halftime(goal);
+
+        // Assert
+        Assert.Single(actual);
+    }
+
+    [Fact]
+    public void Halftime_IsExistedFgNg_ReturnsOneItemOnList()
+    {
+        // Arrange
+        var goal = new Goal
         {
-            // Arrange
-            var goal = new Goal();
-            var service = new ResourceServiceImp(actionResourceService, goalRecordService);
+            IsExistHtFgNg = false,
+            IsExistFgNg = true
+        };
 
-            // Act
-            var actual = service.Halftime(goal);
+        var xmlResource = new XmlResource();
+        actionResourceService.HalftimeFirstGoalResources(Arg.Any<string>()).Returns(xmlResource);
+        actionResourceService.FullTimeFirstGoalResources(Arg.Any<string>(), Arg.Any<string>()).Returns(xmlResource);
+        var service = new ResourceServiceImp(actionResourceService, goalRecordService);
 
-            // Assert
-            Assert.Empty(actual);
-        }
+        // Act
+        var actual = service.Halftime(goal);
 
-        [Fact]
-        public void Halftime_IsExistedHtFgNg_ReturnsOneItemOnList()
+        // Assert
+        Assert.Single(actual);
+    }
+
+    [Fact]
+    public void Halftime_IsExistedHtFgNgAndIsExistedFgNg_ReturnsTwoItemsOnList()
+    {
+        // Arrange
+        var goal = new Goal
         {
-            // Arrange
-            var goal = new Goal
-            {
-                IsExistHtFgNg = true,
-                IsExistFgNg = false
-            };
+            IsExistHtFgNg = true,
+            IsExistFgNg = true
+        };
 
-            var xmlResource = new XmlResource();
-            actionResourceService.HalftimeFirstGoalResources(Arg.Any<string>()).Returns(xmlResource);
-            var service = new ResourceServiceImp(actionResourceService, goalRecordService);
+        var xmlResource = new XmlResource();
+        actionResourceService.FullTimeFirstGoalResources(Arg.Any<string>(), Arg.Any<string>()).Returns(xmlResource);
+        var service = new ResourceServiceImp(actionResourceService, goalRecordService);
 
-            // Act
-            var actual = service.Halftime(goal);
+        // Act
+        var actual = service.Halftime(goal);
 
-            // Assert
-            Assert.Equal(1, actual.Count);
-        }
+        // Assert
+        Assert.Equal(2, actual.Count);
+    }
 
-        [Fact]
-        public void Halftime_IsExistedFgNg_ReturnsOneItemOnList()
+    [Fact]
+    public void FullTime_IsNotExistedFgNg_ReturnsEmptyResources()
+    {
+        // Arrange
+        var goal = new Goal();
+        var service = new ResourceServiceImp(actionResourceService, goalRecordService);
+
+        // Act
+        var actual = service.FullTime(goal);
+
+        // Assert
+        Assert.Empty(actual);
+    }
+
+    [Fact]
+    public void FullTime_IsExistedFgNg_ReturnsOneItemOnList()
+    {
+        // Arrange
+        var goal = new Goal
         {
-            // Arrange
-            var goal = new Goal
-            {
-                IsExistHtFgNg = false,
-                IsExistFgNg = true
-            };
+            IsExistHtFgNg = false,
+            IsExistFgNg = true
+        };
 
-            var xmlResource = new XmlResource();
-            actionResourceService.HalftimeFirstGoalResources(Arg.Any<string>()).Returns(xmlResource);
-            actionResourceService.FullTimeFirstGoalResources(Arg.Any<string>(), Arg.Any<string>()).Returns(xmlResource);
-            var service = new ResourceServiceImp(actionResourceService, goalRecordService);
+        var xmlResource = new XmlResource();
+        actionResourceService.FullTimeFirstGoalResources(Arg.Any<string>(), Arg.Any<string>()).Returns(xmlResource);
+        var service = new ResourceServiceImp(actionResourceService, goalRecordService);
 
-            // Act
-            var actual = service.Halftime(goal);
+        // Act
+        var actual = service.FullTime(goal);
 
-            // Assert
-            Assert.Equal(1, actual.Count);
-        }
-
-        [Fact]
-        public void Halftime_IsExistedHtFgNgAndIsExistedFgNg_ReturnsTwoItemsOnList()
-        {
-            // Arrange
-            var goal = new Goal
-            {
-                IsExistHtFgNg = true,
-                IsExistFgNg = true
-            };
-
-            var xmlResource = new XmlResource();
-            actionResourceService.FullTimeFirstGoalResources(Arg.Any<string>(), Arg.Any<string>()).Returns(xmlResource);
-            var service = new ResourceServiceImp(actionResourceService, goalRecordService);
-
-            // Act
-            var actual = service.Halftime(goal);
-
-            // Assert
-            Assert.Equal(2, actual.Count);
-        }
-
-        [Fact]
-        public void FullTime_IsNotExistedFgNg_ReturnsEmptyResources()
-        {
-            // Arrange
-            var goal = new Goal();
-            var service = new ResourceServiceImp(actionResourceService, goalRecordService);
-
-            // Act
-            var actual = service.FullTime(goal);
-
-            // Assert
-            Assert.Empty(actual);
-        }
-
-        [Fact]
-        public void FullTime_IsExistedFgNg_ReturnsOneItemOnList()
-        {
-            // Arrange
-            var goal = new Goal
-            {
-                IsExistHtFgNg = false,
-                IsExistFgNg = true
-            };
-
-            var xmlResource = new XmlResource();
-            actionResourceService.FullTimeFirstGoalResources(Arg.Any<string>(), Arg.Any<string>()).Returns(xmlResource);
-            var service = new ResourceServiceImp(actionResourceService, goalRecordService);
-
-            // Act
-            var actual = service.FullTime(goal);
-
-            // Assert
-            Assert.Equal(1, actual.Count);
-        }
+        // Assert
+        Assert.Single(actual);
     }
 }

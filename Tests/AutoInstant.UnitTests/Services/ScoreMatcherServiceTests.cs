@@ -1,78 +1,73 @@
 ﻿using AutoInstant.Models;
 using AutoInstant.Services;
-using NSubstitute;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
-namespace AutoInstant.UnitTests.Services
+namespace AutoInstant.UnitTests.Services;
+
+public class ScoreMatcherServiceTests
 {
-    public class ScoreMatcherServiceTests
+    private readonly ScoreService scoreService;
+    private readonly ScoreMatcherService scoreMatcherService;
+
+    public ScoreMatcherServiceTests()
     {
-        private readonly ScoreService scoreService;
-        private readonly ScoreMatcherService scoreMatcherService;
+        scoreService = Substitute.For<ScoreService>();
+        scoreMatcherService = new ScoreMatcherServiceImp(scoreService);
+    }
 
-        public ScoreMatcherServiceTests()
+    [Fact]
+    public async Task IsScoreMatch_NoScoreMatched_ReturnsFalse()
+    {
+        // Arrange
+        var match = new Match
         {
-            scoreService = Substitute.For<ScoreService>();
-            scoreMatcherService = new ScoreMatcherServiceImp(scoreService);
-        }
-
-        [Fact]
-        public async Task IsScoreMatch_NoScoreMatched_ReturnsFalse()
+            HomeValue = 1,
+            AwayValue = 0,
+            TypeId = 1
+        };
+        var scores = new List<Score>
         {
-            // Arrange
-            var match = new Match
+            new Score
             {
-                HomeValue = 1,
-                AwayValue = 0,
+                MatchId = 1,
+                HomeValue = "1",
+                AwayValue = "2",
                 TypeId = 1
-            };
-            var scores = new List<Score>
-            {
-                new Score
-                {
-                    MatchId = 1,
-                    HomeValue = "1",
-                    AwayValue = "2",
-                    TypeId = 1
-                }
-            };
-            scoreService.GetScore(Arg.Any<int>()).Returns(scores);
+            }
+        };
+        scoreService.GetScore(Arg.Any<int>()).Returns(scores);
 
-            // Act
-            var isMatched = await scoreMatcherService.IsScoreMatch(match);
+        // Act
+        var isMatched = await scoreMatcherService.IsScoreMatch(match);
 
-            // Assert
-            Assert.False(isMatched);
-        }
+        // Assert
+        Assert.False(isMatched);
+    }
 
-        [Fact]
-        public async Task IsScoreMatch_HasScoreMatched_ReturnsTrue()
+    [Fact]
+    public async Task IsScoreMatch_HasScoreMatched_ReturnsTrue()
+    {
+        // Arrange
+        var match = new Match
         {
-            // Arrange
-            var match = new Match
+            HomeValue = 1,
+            AwayValue = 0,
+            TypeId = 1
+        };
+        var scores = new List<Score>
+        {
+            new Score
             {
-                HomeValue = 1,
-                AwayValue = 0,
+                HomeValue = "1",
+                AwayValue = "0",
                 TypeId = 1
-            };
-            var scores = new List<Score>
-            {
-                new Score
-                {
-                    HomeValue = "1",
-                    AwayValue = "0",
-                    TypeId = 1
-                }
-            };
-            scoreService.GetScore(Arg.Any<int>()).Returns(scores);
+            }
+        };
+        scoreService.GetScore(Arg.Any<int>()).Returns(scores);
 
-            // Act
-            var isMatched = await scoreMatcherService.IsScoreMatch(match);
+        // Act
+        var isMatched = await scoreMatcherService.IsScoreMatch(match);
 
-            // Assert
-            Assert.True(isMatched);
-        }
+        // Assert
+        Assert.True(isMatched);
     }
 }

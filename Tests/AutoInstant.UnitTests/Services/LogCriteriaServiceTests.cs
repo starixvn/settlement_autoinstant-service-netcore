@@ -2,52 +2,50 @@
 using AutoInstant.Criteria;
 using AutoInstant.Models;
 using AutoInstant.Services;
-using Xunit;
 
-namespace AutoInstant.UnitTests.Services
+namespace AutoInstant.UnitTests.Services;
+
+public class LogCriteriaServiceTests
 {
-    public class LogCriteriaServiceTests
+    private readonly LogCriteriaService service;
+
+    private readonly MatchChecking matchChecking;
+
+    public LogCriteriaServiceTests()
     {
-        private readonly LogCriteriaService service;
+        matchChecking = new MatchChecking();
+        service = new LogCriteriaServiceImp();
+    }
 
-        private readonly MatchChecking matchChecking;
-
-        public LogCriteriaServiceTests()
+    [Fact]
+    public void CreateCriteria_MatchIsFirstHalf_ReturnsLogHalftimeCriteria()
+    {
+        // Arrange
+        var match = new Match
         {
-            matchChecking = new MatchChecking();
-            service = new LogCriteriaServiceImp();
-        }
+            TypeId = SettleType.FirstHalf
+        };
 
-        [Fact]
-        public void CreateCriteria_MatchIsFirstHalf_ReturnsLogHalftimeCriteria()
+        // Act
+        var criteria = service.ShowCreateCriteria(match, matchChecking);
+
+        // Assert
+        Assert.IsType<ShowLogHalftimeCriteria>(criteria);
+    }
+
+    [Fact]
+    public void CreateCriteria_MatchIsSecondHalf_ReturnsLogFullTimeCriteria()
+    {
+        // Arrange
+        var match = new Match
         {
-            // Arrange
-            var match = new Match
-            {
-                TypeId = SettleType.FirstHalf
-            };
+            TypeId = SettleType.SecondHalf
+        };
 
-            // Act
-            var criteria = service.ShowCreateCriteria(match, matchChecking);
+        // Act
+        var criteria = service.ShowCreateCriteria(match, matchChecking);
 
-            // Assert
-            Assert.IsType<ShowLogHalftimeCriteria>(criteria);
-        }
-
-        [Fact]
-        public void CreateCriteria_MatchIsSecondHalf_ReturnsLogFullTimeCriteria()
-        {
-            // Arrange
-            var match = new Match
-            {
-                TypeId = SettleType.SecondHalf
-            };
-
-            // Act
-            var criteria = service.ShowCreateCriteria(match, matchChecking);
-
-            // Assert
-            Assert.IsType<ShowLogFullTimeCriteria>(criteria);
-        }
+        // Assert
+        Assert.IsType<ShowLogFullTimeCriteria>(criteria);
     }
 }

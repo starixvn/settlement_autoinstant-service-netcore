@@ -1,46 +1,43 @@
 ﻿using AutoInstant.Models;
-using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 
-namespace AutoInstant.Services
+namespace AutoInstant.Services;
+
+public interface ScoreRetryService
 {
-    public interface ScoreRetryService
+    Task<bool> IsScoreMatch(Match match);
+}
+
+public class ScoreRetryServiceImp : ScoreRetryService
+{
+    private readonly ScoreMatcherService scoreMatcherService;
+
+    private readonly AppSettingsKey appSettingsKey;
+
+    public ScoreRetryServiceImp(
+        ScoreMatcherService scoreMatcherService,
+        IOptions<AppSettingsKey> appSettingsKey)
     {
-        Task<bool> IsScoreMatch(Match match);
+        this.scoreMatcherService = scoreMatcherService;
+        this.appSettingsKey = appSettingsKey.Value;
     }
 
-    public class ScoreRetryServiceImp : ScoreRetryService
+    public async Task<bool> IsScoreMatch(Match match)
     {
-        private readonly ScoreMatcherService scoreMatcherService;
-
-        private readonly AppSettingsKey appSettingsKey;
-
-        public ScoreRetryServiceImp(
-            ScoreMatcherService scoreMatcherService,
-            IOptions<AppSettingsKey> appSettingsKey)
+        for (var i = 0; i < appSettingsKey.RetryCount; i++)
         {
-            this.scoreMatcherService = scoreMatcherService;
-            this.appSettingsKey = appSettingsKey.Value;
-        }
+            var score = await scoreMatcherService.IsScoreMatch(match);
 
-        public async Task<bool> IsScoreMatch(Match match)
-        {
-            for (var i = 0; i < appSettingsKey.RetryCount; i++)
+            if (score)
             {
-                var score = await scoreMatcherService.IsScoreMatch(match);
-
-                if (score)
-                {
-                    return true;
-                }
-
-                if (i < appSettingsKey.RetryCount - 1)
-                {
-                    await Task.Delay(appSettingsKey.RetryInterval);
-                }
+                return true;
             }
 
-            return false;
+            if (i < appSettingsKey.RetryCount - 1)
+            {
+                await Task.Delay(appSettingsKey.RetryInterval);
+            }
         }
+
+        return false;
     }
 }

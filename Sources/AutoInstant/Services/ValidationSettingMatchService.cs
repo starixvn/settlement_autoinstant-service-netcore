@@ -1,31 +1,29 @@
 ﻿using AutoInstant.Exceptions;
 using AutoInstant.Models;
-using System.Linq;
 
-namespace AutoInstant.Services
+namespace AutoInstant.Services;
+
+public interface ValidationSettingMatchService
 {
-    public interface ValidationSettingMatchService
-    {
-        void VerifySettingMatch(MatchChecking matchChecking);
-    }
+    void VerifySettingMatch(MatchChecking matchChecking);
+}
 
-    public class ValidationSettingMatchServiceImp : ValidationSettingMatchService
+public class ValidationSettingMatchServiceImp : ValidationSettingMatchService
+{
+    public void VerifySettingMatch(MatchChecking matchChecking)
     {
-        public void VerifySettingMatch(MatchChecking matchChecking)
+        if (matchChecking.IsSettingOff)
         {
-            if (matchChecking.IsSettingOff)
-            {
-                throw new SettingOffException();
-            }
+            throw new SettingOffException();
+        }
 
-            var remark = matchChecking.Remark;
+        var remark = matchChecking.Remark;
 
-            bool[] conditionsToCheck = { remark.IsMtdHold, remark.IsUndecided, remark.IsPending, remark.IsUnderSettle, remark.IsHoldKey };
+        bool[] conditionsToCheck = { remark.IsMtdHold, remark.IsUndecided, remark.IsPending, remark.IsUnderSettle, remark.IsHoldKey };
 
-            if (conditionsToCheck.Any(item => item))
-            {
-                throw new RemarkException();
-            }
+        if (conditionsToCheck.Any(item => item))
+        {
+            throw new RemarkException();
         }
     }
 }

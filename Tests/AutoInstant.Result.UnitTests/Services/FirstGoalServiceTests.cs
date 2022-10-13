@@ -1,27 +1,25 @@
 ﻿using AutoInstant.Result.Services;
-using Xunit;
 
-namespace AutoInstant.Result.UnitTests.Services
+namespace AutoInstant.Result.UnitTests.Services;
+
+public class FirstGoalServiceTests
 {
-    public class FirstGoalServiceTests
+    private readonly FirstGoalService service;
+
+    public FirstGoalServiceTests()
     {
-        private readonly FirstGoalService service;
+        service = new FirstGoalServiceImp();
+    }
 
-        public FirstGoalServiceTests()
-        {
-            service = new FirstGoalServiceImp();
-        }
+    [Theory]
+    [InlineData("", "N")]
+    [InlineData("ah", "A")]
+    public void FirstGoal_Always_ReturnsExpectedGoal(string goalRecord, string expectedGoal)
+    {
+        // Act
+        var actual = service.FirstGoal(goalRecord);
 
-        [Theory]
-        [InlineData("", "N")]
-        [InlineData("ah", "A")]
-        public void FirstGoal_Always_ReturnsExpectedGoal(string goalRecord, string expectedGoal)
-        {
-            // Act
-            var actual = service.FirstGoal(goalRecord);
-
-            // Assert
-            Assert.Equal(expectedGoal, actual);
-        }
+        // Assert
+        Assert.Equal(expectedGoal, actual);
     }
 }

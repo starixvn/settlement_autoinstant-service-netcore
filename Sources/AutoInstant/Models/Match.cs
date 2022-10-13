@@ -1,33 +1,32 @@
-﻿namespace AutoInstant.Models
+﻿namespace AutoInstant.Models;
+
+public class Match
 {
-    public class Match
+    public int MatchId { get; set; }
+
+    public int LeagueId { get; set; }
+
+    public int TypeId { get; set; }
+
+    public int HomeValue { get; set; }
+
+    public int AwayValue { get; set; }
+
+    public bool IsChecking { get; set; }
+
+    public int InstantKey { get; set; }
+
+    public int ChildMatchType { get; set; }
+
+    public override bool Equals(object obj)
     {
-        public int MatchId { get; set; }
+        return obj != null
+            && (obj is Match)
+            && (obj as Match).MatchId == MatchId;
+    }
 
-        public int LeagueId { get; set; }
-
-        public int TypeId { get; set; }
-
-        public int HomeValue { get; set; }
-
-        public int AwayValue { get; set; }
-
-        public bool IsChecking { get; set; }
-
-        public int InstantKey { get; set; }
-
-        public int ChildMatchType { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            return obj != null
-                && (obj is Match)
-                && (obj as Match).MatchId == MatchId;
-        }
-
-        public override int GetHashCode()
-        {
-            return MatchId;
-        }
+    public override int GetHashCode()
+    {
+        return MatchId;
     }
 }

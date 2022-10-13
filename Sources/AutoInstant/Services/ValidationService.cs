@@ -1,52 +1,51 @@
 ﻿using AutoInstant.Exceptions;
 using AutoInstant.Models;
 
-namespace AutoInstant.Services
-{
-    public interface ValidationService
-    {
-        void VerifyMatchBeforeExecution(Match match, MatchChecking matchChecking);
+namespace AutoInstant.Services;
 
-        void VerifyMatchAfterComparing(Match match, MatchChecking matchChecking);
+public interface ValidationService
+{
+    void VerifyMatchBeforeExecution(Match match, MatchChecking matchChecking);
+
+    void VerifyMatchAfterComparing(Match match, MatchChecking matchChecking);
+}
+
+public class ValidationServiceImp : ValidationService
+{
+    private readonly ValidationScoreChangeService validationScoreChangeService;
+
+    private readonly ValidationSettingMatchService validationSettingMatchService;
+
+    private readonly ValidationStatusMatchService validationStatusMatchService;
+
+    public ValidationServiceImp(
+        ValidationScoreChangeService validationScoreChangeService,
+        ValidationSettingMatchService validationSettingMatchService,
+        ValidationStatusMatchService validationStatusMatchService)
+    {
+        this.validationScoreChangeService = validationScoreChangeService;
+        this.validationSettingMatchService = validationSettingMatchService;
+        this.validationStatusMatchService = validationStatusMatchService;
     }
 
-    public class ValidationServiceImp : ValidationService
+    public void VerifyMatchBeforeExecution(Match match, MatchChecking matchChecking)
     {
-        private readonly ValidationScoreChangeService validationScoreChangeService;
+        VerifyMatch(match, matchChecking);
+    }
 
-        private readonly ValidationSettingMatchService validationSettingMatchService;
+    public void VerifyMatchAfterComparing(Match match, MatchChecking matchChecking)
+    {
+        VerifyMatch(match, matchChecking);
 
-        private readonly ValidationStatusMatchService validationStatusMatchService;
+        throw new ScoreMismatchedException();
+    }
 
-        public ValidationServiceImp(
-            ValidationScoreChangeService validationScoreChangeService,
-            ValidationSettingMatchService validationSettingMatchService,
-            ValidationStatusMatchService validationStatusMatchService)
-        {
-            this.validationScoreChangeService = validationScoreChangeService;
-            this.validationSettingMatchService = validationSettingMatchService;
-            this.validationStatusMatchService = validationStatusMatchService;
-        }
+    private void VerifyMatch(Match match, MatchChecking matchChecking)
+    {
+        validationSettingMatchService.VerifySettingMatch(matchChecking);
 
-        public void VerifyMatchBeforeExecution(Match match, MatchChecking matchChecking)
-        {
-            VerifyMatch(match, matchChecking);
-        }
+        validationStatusMatchService.VerifyStatusMatch(match, matchChecking);
 
-        public void VerifyMatchAfterComparing(Match match, MatchChecking matchChecking)
-        {
-            VerifyMatch(match, matchChecking);
-
-            throw new ScoreMismatchedException();
-        }
-
-        private void VerifyMatch(Match match, MatchChecking matchChecking)
-        {
-            validationSettingMatchService.VerifySettingMatch(matchChecking);
-
-            validationStatusMatchService.VerifyStatusMatch(match, matchChecking);
-
-            validationScoreChangeService.VerifyScoreChanged(match, matchChecking);
-        }
+        validationScoreChangeService.VerifyScoreChanged(match, matchChecking);
     }
 }

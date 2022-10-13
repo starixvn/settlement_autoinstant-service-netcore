@@ -1,63 +1,61 @@
-﻿using System.Collections.Generic;
-using AutoInstant.Result.Models;
+﻿using AutoInstant.Result.Models;
 
-namespace AutoInstant.Result.Services
+namespace AutoInstant.Result.Services;
+
+public interface ResourceService
 {
-    public interface ResourceService
-    {
-        List<XmlResource> Halftime(Goal goal);
+    List<XmlResource> Halftime(Goal goal);
 
-        List<XmlResource> FullTime(Goal goal);
+    List<XmlResource> FullTime(Goal goal);
+}
+
+public class ResourceServiceImp : ResourceService
+{
+    private readonly ActionResourceService actionResourceService;
+
+    private readonly GoalRecordService goalRecordService;
+
+    public ResourceServiceImp(
+        ActionResourceService actionResourceService,
+        GoalRecordService goalRecordService)
+    {
+        this.actionResourceService = actionResourceService;
+        this.goalRecordService = goalRecordService;
     }
 
-    public class ResourceServiceImp : ResourceService
+    public List<XmlResource> Halftime(Goal goal)
     {
-        private readonly ActionResourceService actionResourceService;
+        var resources = new List<XmlResource>();
+        var halftimeGoal = goalRecordService.HalftimeGoal(goal.GoalRecord);
 
-        private readonly GoalRecordService goalRecordService;
-
-        public ResourceServiceImp(
-            ActionResourceService actionResourceService,
-            GoalRecordService goalRecordService)
+        if (goal.IsExistHtFgNg)
         {
-            this.actionResourceService = actionResourceService;
-            this.goalRecordService = goalRecordService;
+            var resource = actionResourceService.HalftimeFirstGoalResources(halftimeGoal);
+            resources.Add(resource);
         }
 
-        public List<XmlResource> Halftime(Goal goal)
+        if (goal.IsExistFgNg)
         {
-            var resources = new List<XmlResource>();
-            var halftimeGoal = goalRecordService.HalftimeGoal(goal.GoalRecord);
-
-            if (goal.IsExistHtFgNg)
-            {
-                var resource = actionResourceService.HalftimeFirstGoalResources(halftimeGoal);
-                resources.Add(resource);
-            }
-
-            if (goal.IsExistFgNg)
-            {
-                var fullTimeGoal = goalRecordService.FullTimeGoal(goal.GoalRecord);
-                var resource = actionResourceService.FullTimeFirstGoalResources(halftimeGoal, fullTimeGoal);
-                resources.Add(resource);
-            }
-
-            return resources;
-        }
-
-        public List<XmlResource> FullTime(Goal goal)
-        {
-            var resources = new List<XmlResource>();
-            var halftimeGoal = goalRecordService.HalftimeGoal(goal.GoalRecord);
             var fullTimeGoal = goalRecordService.FullTimeGoal(goal.GoalRecord);
-
-            if (goal.IsExistFgNg)
-            {
-                var resource = actionResourceService.FullTimeFirstGoalResources(halftimeGoal, fullTimeGoal);
-                resources.Add(resource);
-            }
-
-            return resources;
+            var resource = actionResourceService.FullTimeFirstGoalResources(halftimeGoal, fullTimeGoal);
+            resources.Add(resource);
         }
+
+        return resources;
+    }
+
+    public List<XmlResource> FullTime(Goal goal)
+    {
+        var resources = new List<XmlResource>();
+        var halftimeGoal = goalRecordService.HalftimeGoal(goal.GoalRecord);
+        var fullTimeGoal = goalRecordService.FullTimeGoal(goal.GoalRecord);
+
+        if (goal.IsExistFgNg)
+        {
+            var resource = actionResourceService.FullTimeFirstGoalResources(halftimeGoal, fullTimeGoal);
+            resources.Add(resource);
+        }
+
+        return resources;
     }
 }

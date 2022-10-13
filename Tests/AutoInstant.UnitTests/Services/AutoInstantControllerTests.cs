@@ -1,43 +1,37 @@
-﻿using AutoInstant.Services;
-using NSubstitute;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoInstant.Models;
-using Xunit;
+using AutoInstant.Services;
 
-namespace AutoInstant.UnitTests.Services
+namespace AutoInstant.UnitTests.Services;
+
+public class AutoInstantControllerTests
 {
-    public class AutoInstantControllerTests
+    private readonly MatchSettlingPoolService matchSettlingPoolService;
+
+    private readonly MatchSettleController matchSettleController;
+
+    private readonly AutoInstantController controller;
+
+    public AutoInstantControllerTests()
     {
-        private readonly MatchSettlingPoolService matchSettlingPoolService;
+        matchSettlingPoolService = Substitute.For<MatchSettlingPoolService>();
+        matchSettleController = Substitute.For<MatchSettleController>();
+        controller = new AutoInstantControllerImp(matchSettlingPoolService, matchSettleController);
+    }
 
-        private readonly MatchSettleController matchSettleController;
+    [Fact]
+    public void ProcessAsync_HasMatches_InvokeProcessMethod()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var matches = fixture.CreateMany<Match>(2).ToList();
 
-        private readonly AutoInstantController controller;
+        matchSettlingPoolService.PeekNewMatch().Returns(matches);
 
-        public AutoInstantControllerTests()
-        {
-            matchSettlingPoolService = Substitute.For<MatchSettlingPoolService>();
-            matchSettleController = Substitute.For<MatchSettleController>();
-            controller = new AutoInstantControllerImp(matchSettlingPoolService, matchSettleController);
-        }
+        // Act
+        controller.ProcessAsync();
 
-        [Fact]
-        public void ProcessAsync_HasMatches_InvokeProcessMethod()
-        {
-            // Arrange
-            var fixture = new Fixture();
-            var matches = fixture.CreateMany<Match>(2).ToList();
-
-            matchSettlingPoolService.PeekNewMatch().Returns(matches);
-
-            // Act
-            controller.ProcessAsync();
-
-            // Assert
-            matchSettleController.Received().Process(Arg.Any<Match>());
-        }
+        // Assert
+        matchSettleController.Received().Process(Arg.Any<Match>());
     }
 }

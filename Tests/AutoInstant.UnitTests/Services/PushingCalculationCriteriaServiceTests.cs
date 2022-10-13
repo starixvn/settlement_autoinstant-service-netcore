@@ -2,49 +2,47 @@
 using AutoInstant.Criteria;
 using AutoInstant.Models;
 using AutoInstant.Services;
-using Xunit;
 
-namespace AutoInstant.UnitTests.Services
+namespace AutoInstant.UnitTests.Services;
+
+public class PushingCalculationCriteriaServiceTests
 {
-    public class PushingCalculationCriteriaServiceTests
+    private readonly PushingCalculationCriteriaService service;
+
+    public PushingCalculationCriteriaServiceTests()
     {
-        private readonly PushingCalculationCriteriaService service;
+        service = new PushingCalculationCriteriaServiceImp();
+    }
 
-        public PushingCalculationCriteriaServiceTests()
+    [Fact]
+    public void CreateCriteria_MatchIsFirstHalf_ReturnsPushingCalculationHalftimeCriteria()
+    {
+        // Arrange
+        var match = new Match
         {
-            service = new PushingCalculationCriteriaServiceImp();
-        }
+            TypeId = SettleType.FirstHalf
+        };
 
-        [Fact]
-        public void CreateCriteria_MatchIsFirstHalf_ReturnsPushingCalculationHalftimeCriteria()
+        // Act
+        var criteria = service.CreateCriteria(match, string.Empty);
+
+        // Assert
+        Assert.IsType<PushingCalculationHalftimeCriteria>(criteria);
+    }
+
+    [Fact]
+    public void CreateCriteria_MatchIsSecondHalf_ReturnsPushingCalculationFullTimeCriteria()
+    {
+        // Arrange
+        var match = new Match
         {
-            // Arrange
-            var match = new Match
-            {
-                TypeId = SettleType.FirstHalf
-            };
+            TypeId = SettleType.SecondHalf
+        };
 
-            // Act
-            var criteria = service.CreateCriteria(match);
+        // Act
+        var criteria = service.CreateCriteria(match, string.Empty);
 
-            // Assert
-            Assert.IsType<PushingCalculationHalftimeCriteria>(criteria);
-        }
-
-        [Fact]
-        public void CreateCriteria_MatchIsSecondHalf_ReturnsPushingCalculationFullTimeCriteria()
-        {
-            // Arrange
-            var match = new Match
-            {
-                TypeId = SettleType.SecondHalf
-            };
-
-            // Act
-            var criteria = service.CreateCriteria(match);
-
-            // Assert
-            Assert.IsType<PushingCalculationFullTimeCriteria>(criteria);
-        }
+        // Assert
+        Assert.IsType<PushingCalculationFullTimeCriteria>(criteria);
     }
 }
