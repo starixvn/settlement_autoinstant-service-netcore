@@ -10,10 +10,6 @@
 
   <ItemGroup>
     <None Remove="appsettings.SIT.json" />
-    <None Remove="App_Data\SpName.LOCAL.xml" />
-    <None Remove="App_Data\SpName.PROD.xml" />
-    <None Remove="App_Data\SpName.SIT.xml" />
-    <None Remove="App_Data\SpName.UAT.xml" />
     <None Remove="App_Data\SpName.xml" />
   </ItemGroup>
 
@@ -23,18 +19,6 @@
 
   <ItemGroup>
     <Content Include="appsettings.SIT.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\SpName.LOCAL.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\SpName.PROD.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\SpName.SIT.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\SpName.UAT.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\SpName.xml">
