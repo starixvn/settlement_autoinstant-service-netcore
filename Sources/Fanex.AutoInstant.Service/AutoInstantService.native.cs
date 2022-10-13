@@ -3,13 +3,12 @@ using Fanex.Caching;
 using Fanex.Data;
 using Fanex.Data.SqlServer;
 using Fanex.Logging;
-using Fanex.Logging.Sentry;
-
+using Fanex.Logging.Sentry.RavenClient;
 using ONEbook.UM;
 using ONEbook.UM.AspNetCore;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Transport;
-using Sentry;
+using SharpRaven;
 
 namespace Fanex.AutoInstant.Service;
 
@@ -96,7 +95,7 @@ public class AutoInstantService : IHostedService
         }
         catch (Exception exception)
         {
-            Logging.LogService.Error("Exception in main thread - Process:", exception);
+            Logging.LogService.Error("Fanex.AutoInstant.Service:", exception);
         }
     }
 
@@ -144,7 +143,7 @@ public class AutoInstantService : IHostedService
 
         var sentryEngineOptions = new SentryEngineOptions
         {
-            Dsn = new Dsn(configuration.GetSection("Sentrytoken").Value)
+            Dsn = new Dsn(configuration.GetSection("SentryToken").Value)
         };
 
         logEngine.Add(new SentryLogging(sentryEngineOptions));

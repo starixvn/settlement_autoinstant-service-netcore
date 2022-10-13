@@ -4,10 +4,7 @@ using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.Services
-    .Configure<AppSettingsKey>(builder.Configuration)
-    .AddSingleton(sp => sp.GetRequiredService<IOptions<AppSettingsKey>>().Value);
+builder.Services.Configure<AppSettingsKey>(builder.Configuration);
 
 builder.Services.InitializeServices(builder.Configuration);
 
