@@ -23,9 +23,10 @@ public class AutoInstantControllerImp : AutoInstantController
     {
         var newMatches = (await matchSettlingPoolService.PeekNewMatch()).Where(n => !n.IsChecking).ToList();
 
-        foreach (var match in newMatches)
+        newMatches.ForEach(m =>
         {
-            await matchSettleController.Process(match).ConfigureAwait(false);
-        }
+            Task.Run(() => matchSettleController.Process(m))
+                .ConfigureAwait(false);
+        });
     }
 }
