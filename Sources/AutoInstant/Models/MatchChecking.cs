@@ -1,6 +1,4 @@
-﻿using Kaden.Extensions;
-
-namespace AutoInstant.Models;
+﻿namespace AutoInstant.Models;
 
 public class MatchChecking
 {

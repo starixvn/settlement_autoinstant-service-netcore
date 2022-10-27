@@ -1,5 +1,6 @@
 ﻿global using Fanex.Caching;
 global using Fanex.Data.Repository;
+global using Fanex.Settlement.Converter.Helpers;
 global using Microsoft.Extensions.Options;
 global using System;
 global using System.Collections.Generic;

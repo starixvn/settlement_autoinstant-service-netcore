@@ -1,1 +1,2 @@
-﻿global using System.Xml.Serialization;
+﻿global using Fanex.Settlement.Converter.Services;
+global using System.Xml.Serialization;

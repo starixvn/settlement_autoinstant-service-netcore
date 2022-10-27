@@ -6,7 +6,6 @@ using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
 using Fanex.Settlement.ScaleOut;
 using Fanex.Settlement.ScaleOut.Services;
-using Kaden.XmlConverter;
 using ONEbook.UM.AspNetCore;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
