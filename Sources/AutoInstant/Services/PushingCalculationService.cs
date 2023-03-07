@@ -28,13 +28,15 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
     private readonly AutoInstantResultService autoInstantResultService;
 
+    private readonly LogDirectlyService logDirectlyService;
+
     public PushingCalculationServiceImp(
         IDynamicRepository repository,
         ResultsService resultsService,
         PushingCalculationCriteriaService pushingCalculationCriteriaService,
         ScaleOutSettleService scaleOutSettleService,
         AutoInstantResultService autoInstantResultService,
-        IOptions<AppSettingsKey> appSettingsKey)
+        IOptions<AppSettingsKey> appSettingsKey, LogDirectlyService logDirectlyService)
     {
         this.repository = repository;
         this.resultsService = resultsService;
@@ -42,6 +44,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
         this.appSettingsKey = appSettingsKey.Value;
         this.scaleOutSettleService = scaleOutSettleService;
         this.autoInstantResultService = autoInstantResultService;
+        this.logDirectlyService = logDirectlyService;
     }
 
     public async Task<Models.Result> Push(Match match, MatchChecking matchChecking)
@@ -51,6 +54,8 @@ public class PushingCalculationServiceImp : PushingCalculationService
         var result = await ValidateBeforeExecute(match);
         if (result.ErrorCode == 0)
         {
+            // TO DO
+            logDirectlyService.WriteLog(match, matchChecking);
             await autoInstantResultService.Update(match, false, MatchStatus.Completed);
             var betStatus = GetBetStatus(goal, matchChecking, match);
             await UpdateMatchInfo(match, resourceResult, betStatus);

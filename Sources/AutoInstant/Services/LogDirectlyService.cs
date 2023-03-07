@@ -1,11 +1,12 @@
-﻿using AutoInstant.Criteria;
+﻿using AutoInstant.Constants;
+using AutoInstant.Criteria;
 using AutoInstant.Models;
 
 namespace AutoInstant.Services;
 
 public interface LogDirectlyService
 {
-    Task WriteLog(Match match, MatchChecking matchChecking);
+    void WriteLog(Match match, MatchChecking matchChecking);
 }
 
 public class LogDirectlyServiceImp : LogDirectlyService
@@ -17,21 +18,32 @@ public class LogDirectlyServiceImp : LogDirectlyService
         this.repository = repository;
     }
 
-    public async Task WriteLog(Match match, MatchChecking matchChecking)
+    public void WriteLog(Match match, MatchChecking matchChecking)
     {
-        var criteria = new LogDirectlyCriteria
+        try
         {
-            Extend = match.MatchId,
-            Doing = ""
-        };
+            var criteria = new LogDirectlyCriteria
+            {
+                Extend = match.MatchId,
+                Doing = ""
+            };
 
-        await repository.ExecuteAsync(criteria);
+            repository.Execute(criteria);
+        }
+        catch (Exception e)
+        {
+            Fanex.Logging.LogService.Error("Fanex.AutoInstant.Service(Write Directly):", e);
+        }
+
     }
 
     private string GenerateLogData(Match match, MatchChecking matchChecking)
     {
-        //var scoreInfo = match.TypeId == Se
-        var message = $"NAP:Calculate(CAL) for matchid: {match.MatchId} score: ${match.HomeValue}-{match.AwayValue} HT: ${match.HomeValue}-{match.AwayValue} GoalRecord: {matchChecking.GoalRecord} Remark({matchChecking.BetStatus})";
+        var scoreInfo = match.TypeId == SettleType.FirstHalf
+            ? $"HT: {match.HomeValue}-{match.AwayValue}"
+            : $"score: {match.HomeValue}-{match.AwayValue}";
+
+        var message = $"NAP:Calculate(CAL) for matchid: {match.MatchId}  ${scoreInfo} GoalRecord: (Old: {matchChecking.GoalRecord}) Remark({matchChecking.BetStatus})";
 
         return message;
     }
