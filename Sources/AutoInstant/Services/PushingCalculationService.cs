@@ -54,7 +54,6 @@ public class PushingCalculationServiceImp : PushingCalculationService
         var result = await ValidateBeforeExecute(match);
         if (result.ErrorCode == 0)
         {
-            // TO DO
             logDirectlyService.WriteLog(match, matchChecking);
             await autoInstantResultService.Update(match, false, MatchStatus.Completed);
             var betStatus = GetBetStatus(goal, matchChecking, match);

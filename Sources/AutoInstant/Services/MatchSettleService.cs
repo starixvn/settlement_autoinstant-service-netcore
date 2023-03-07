@@ -41,6 +41,7 @@ public class MatchSettleServiceImp : MatchSettleService
         try
         {
             validationService.VerifyMatchBeforeExecution(match, matchChecking);
+            //
             var result = await pushingCalculationService.Push(match, matchChecking);
 
             if (!string.IsNullOrWhiteSpace(result.ErrorMessage))

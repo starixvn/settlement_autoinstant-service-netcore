@@ -5,6 +5,6 @@ public class LogDirectlyCriteria : NonQueryCommand
     public string Doing { get; set; }
     public int Extend { get; set; }
 
-    public override string GetSettingKey() => "Logfile_V2";
+    public override string GetSettingKey() => "NAP_UserLog_WriteLog";
     public override bool IsValid() => true;
 }

@@ -1,6 +1,7 @@
 ﻿using AutoInstant.Constants;
 using AutoInstant.Criteria;
 using AutoInstant.Models;
+using Fanex.Settlement.ScaleOut.Constants;
 
 namespace AutoInstant.Services;
 
@@ -25,7 +26,7 @@ public class LogDirectlyServiceImp : LogDirectlyService
             var criteria = new LogDirectlyCriteria
             {
                 Extend = match.MatchId,
-                Doing = ""
+                Doing = GenerateLogData(match, matchChecking)
             };
 
             repository.Execute(criteria);
@@ -43,7 +44,9 @@ public class LogDirectlyServiceImp : LogDirectlyService
             ? $"HT: {match.HomeValue}-{match.AwayValue}"
             : $"score: {match.HomeValue}-{match.AwayValue}";
 
-        var message = $"NAP:Calculate(CAL) for matchid: {match.MatchId}  ${scoreInfo} GoalRecord: (Old: {matchChecking.GoalRecord}) Remark({matchChecking.BetStatus})";
+        var actionName = match.TypeId == SettleType.FirstHalf ? ActionName.CalculateHalfTime : ActionName.CalculateFullTime;
+
+        var message = $"NAP:Calculate({actionName}) for matchid: {match.MatchId} {scoreInfo} GoalRecord: {matchChecking.GoalRecord} Remark({matchChecking.BetStatus})";
 
         return message;
     }
