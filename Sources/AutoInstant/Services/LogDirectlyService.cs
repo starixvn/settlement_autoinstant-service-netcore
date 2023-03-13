@@ -7,7 +7,7 @@ namespace AutoInstant.Services;
 
 public interface LogDirectlyService
 {
-    void WriteLog(Match match, MatchChecking matchChecking);
+    void WriteLog(PushingCalculationCriteria calculationCriteria);
 }
 
 public class LogDirectlyServiceImp : LogDirectlyService
@@ -19,14 +19,14 @@ public class LogDirectlyServiceImp : LogDirectlyService
         this.repository = repository;
     }
 
-    public void WriteLog(Match match, MatchChecking matchChecking)
+    public void WriteLog(PushingCalculationCriteria calculationCriteria)
     {
         try
         {
             var criteria = new LogDirectlyCriteria
             {
-                Extend = match.MatchId,
-                Doing = GenerateLogData(match, matchChecking)
+                Extend = calculationCriteria.MatchId,
+                Doing = GenerateLogData(calculationCriteria)
             };
 
             repository.Execute(criteria);
@@ -38,16 +38,6 @@ public class LogDirectlyServiceImp : LogDirectlyService
 
     }
 
-    private string GenerateLogData(Match match, MatchChecking matchChecking)
-    {
-        var scoreInfo = match.TypeId == SettleType.FirstHalf
-            ? $"HT: {match.HomeValue}-{match.AwayValue}"
-            : $"score: {match.HomeValue}-{match.AwayValue}";
-
-        var actionName = match.TypeId == SettleType.FirstHalf ? ActionName.CalculateHalfTime : ActionName.CalculateFullTime;
-
-        var message = $"NAP:Calculate({actionName}) for matchid: {match.MatchId} {scoreInfo} GoalRecord: {matchChecking.GoalRecord} Remark({matchChecking.BetStatus})";
-
-        return message;
-    }
+    private string GenerateLogData(PushingCalculationCriteria calculationCriteria)
+        => $"NAP: Instant Calculate ({calculationCriteria.Mode}) for matchid: {calculationCriteria.MatchId} Score: {calculationCriteria.HomeScore}-{calculationCriteria.AwayScore} Instant action: {calculationCriteria.Mode}";
 }

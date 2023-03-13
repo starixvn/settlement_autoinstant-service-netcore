@@ -54,20 +54,22 @@ public class PushingCalculationServiceImp : PushingCalculationService
         var result = await ValidateBeforeExecute(match);
         if (result.ErrorCode == 0)
         {
-            logDirectlyService.WriteLog(match, matchChecking);
             await autoInstantResultService.Update(match, false, MatchStatus.Completed);
             var betStatus = GetBetStatus(goal, matchChecking, match);
             await UpdateMatchInfo(match, resourceResult, betStatus);
-            Execute(match, resourceResult);
+
+            PushingCalculationCriteria criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
+
+            logDirectlyService.WriteLog(criteria);
+
+            Execute(criteria);
         }
 
         return result;
     }
 
-    private void Execute(Match match, string resourceResult)
+    private void Execute(PushingCalculationCriteria criteria)
     {
-        var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
-
         foreach (var server in appSettingsKey.SiteDbServer)
         {
             criteria.DbServer = server;
