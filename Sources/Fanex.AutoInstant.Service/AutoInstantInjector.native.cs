@@ -44,6 +44,7 @@ public static class AutoPayoutInjector
         service.AddSingleton<ValidationService, ValidationServiceImp>();
         service.AddSingleton<ValidationSettingMatchService, ValidationSettingMatchServiceImp>();
         service.AddSingleton<ValidationStatusMatchService, ValidationStatusMatchServiceImp>();
+        service.AddTransient<GeneralService, GeneralServiceImp>();
         service.AddSingleton<LogDirectlyService, LogDirectlyServiceImp>();
 
         service.AddSingleton(new UMClientConfiguration().Initialize(configuration));

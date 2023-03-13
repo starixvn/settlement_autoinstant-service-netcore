@@ -19,8 +19,8 @@ public class PushingCalculationServiceTests
     private readonly PushingCalculationCriteriaService pushingCalculationCriteriaService;
     private IOptions<AppSettingsKey> appSettingsKey;
     private readonly ScaleOutSettleService scaleOutSettleService;
-
     private readonly AutoInstantResultService autoInstantResultService;
+    private readonly LogDirectlyService logDirectlyService;
 
     public PushingCalculationServiceTests()
     {
@@ -29,6 +29,7 @@ public class PushingCalculationServiceTests
         resultsService = Substitute.For<ResultsService>();
         scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
         autoInstantResultService = Substitute.For<AutoInstantResultService>();
+        logDirectlyService = Substitute.For<LogDirectlyService>();
 
         appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = new() { "ABC" } });
 
@@ -57,7 +58,8 @@ public class PushingCalculationServiceTests
             pushingCalculationCriteriaService,
             scaleOutSettleService,
             autoInstantResultService,
-            appSettingsKey
+            appSettingsKey,
+            logDirectlyService
             );
 
         // Act
@@ -88,7 +90,8 @@ public class PushingCalculationServiceTests
             pushingCalculationCriteriaService,
             scaleOutSettleService,
             autoInstantResultService,
-            appSettingsKey
+            appSettingsKey,
+            logDirectlyService
             );
 
         // Act
@@ -125,7 +128,8 @@ public class PushingCalculationServiceTests
                pushingCalculationCriteriaService,
                scaleOutSettleService,
                autoInstantResultService,
-               appSettingsKey
+               appSettingsKey,
+               logDirectlyService
                );
 
 
