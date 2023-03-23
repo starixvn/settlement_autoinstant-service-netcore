@@ -28,13 +28,15 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
     private readonly AutoInstantResultService autoInstantResultService;
 
+    private readonly LogDirectlyService logDirectlyService;
+
     public PushingCalculationServiceImp(
         IDynamicRepository repository,
         ResultsService resultsService,
         PushingCalculationCriteriaService pushingCalculationCriteriaService,
         ScaleOutSettleService scaleOutSettleService,
         AutoInstantResultService autoInstantResultService,
-        IOptions<AppSettingsKey> appSettingsKey)
+        IOptions<AppSettingsKey> appSettingsKey, LogDirectlyService logDirectlyService)
     {
         this.repository = repository;
         this.resultsService = resultsService;
@@ -42,6 +44,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
         this.appSettingsKey = appSettingsKey.Value;
         this.scaleOutSettleService = scaleOutSettleService;
         this.autoInstantResultService = autoInstantResultService;
+        this.logDirectlyService = logDirectlyService;
     }
 
     public async Task<Models.Result> Push(Match match, MatchChecking matchChecking)
@@ -54,16 +57,19 @@ public class PushingCalculationServiceImp : PushingCalculationService
             await autoInstantResultService.Update(match, false, MatchStatus.Completed);
             var betStatus = GetBetStatus(goal, matchChecking, match);
             await UpdateMatchInfo(match, resourceResult, betStatus);
-            Execute(match, resourceResult);
+
+            PushingCalculationCriteria criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
+
+            logDirectlyService.WriteLog(criteria);
+
+            Execute(criteria);
         }
 
         return result;
     }
 
-    private void Execute(Match match, string resourceResult)
+    private void Execute(PushingCalculationCriteria criteria)
     {
-        var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
-
         foreach (var server in appSettingsKey.SiteDbServer)
         {
             criteria.DbServer = server;

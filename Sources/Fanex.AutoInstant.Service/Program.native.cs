@@ -19,11 +19,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapGet("/",
+app.MapGet("/",
         async context => { await context.Response.WriteAsync("Fanex.AutoInstant.Service"); });
-});
 
 #if DEBUG
 app.Run();
