@@ -23,7 +23,7 @@ public class ScoreRetryServiceImp : ScoreRetryService
 
     public async Task<bool> IsScoreMatch(Match match)
     {
-        for (var i = 0; i < appSettingsKey.RetryCount; i++)
+        for (var i = 0; i <= appSettingsKey.RetryCount; i++)
         {
             var score = await scoreMatcherService.IsScoreMatch(match);
 
@@ -32,7 +32,7 @@ public class ScoreRetryServiceImp : ScoreRetryService
                 return true;
             }
 
-            if (i < appSettingsKey.RetryCount - 1)
+            if (i < appSettingsKey.RetryCount)
             {
                 await Task.Delay(appSettingsKey.RetryInterval);
             }
