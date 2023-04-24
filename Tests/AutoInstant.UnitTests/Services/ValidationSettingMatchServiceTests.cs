@@ -21,7 +21,7 @@ public class ValidationSettingMatchServiceTests
     public void VerifySettingMatch_SettingOnAndUndecidedPendingOff_NotThrowException()
     {
         // Arrange
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             AutoSetting = Instant,
             SettlementStatus = 0
@@ -36,7 +36,7 @@ public class ValidationSettingMatchServiceTests
     public void VerifySettingMatch_MatchIsSettingOff_ThrowException()
     {
         // Arrange
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             AutoSetting = OffSettingStatus
         };
@@ -49,7 +49,7 @@ public class ValidationSettingMatchServiceTests
     public void VerifySettingMatch_MatchIsMtdHold_ThrowException()
     {
         // Arrange
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             AutoSetting = Instant,
             SettlementStatus = 16
@@ -63,7 +63,7 @@ public class ValidationSettingMatchServiceTests
     public void VerifySettingMatch_MatchIsUndecided_ThrowException()
     {
         // Arrange
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             AutoSetting = Instant,
             SettlementStatus = 64
@@ -77,7 +77,7 @@ public class ValidationSettingMatchServiceTests
     public void VerifySettingMatch_MatchIsPending_ThrowException()
     {
         // Arrange
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             AutoSetting = Instant,
             SettlementStatus = 1
@@ -91,7 +91,7 @@ public class ValidationSettingMatchServiceTests
     public void VerifySettingMatch_MatchIsHoldKey_ThrowException()
     {
         // Arrange
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             AutoSetting = Instant,
             SettlementStatus = 2

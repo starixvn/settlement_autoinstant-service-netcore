@@ -16,7 +16,7 @@ public class ValidationServiceTests
         var service = new ValidationServiceImp(validationScoreChangeService, validationSettingMatchService, validationStatusMatchService);
 
         // Assert
-        var exception = Record.Exception(() => service.VerifyMatchBeforeExecution(new Match(), new MatchChecking()));
+        var exception = Record.Exception(() => service.VerifyMatchBeforeExecution(new Match(), new MatchInfo()));
         Assert.Null(exception);
     }
 
@@ -30,14 +30,14 @@ public class ValidationServiceTests
         var service = new ValidationServiceImp(validationScoreChangeService, validationSettingMatchService, validationStatusMatchService);
 
         // Act
-        service.VerifyMatchBeforeExecution(new Match(), new MatchChecking());
+        service.VerifyMatchBeforeExecution(new Match(), new MatchInfo());
 
         // Assert
         Received.InOrder(() =>
         {
-            validationSettingMatchService.Received().VerifySettingMatch(Arg.Any<MatchChecking>());
-            validationStatusMatchService.Received().VerifyStatusMatch(Arg.Any<Match>(), Arg.Any<MatchChecking>());
-            validationScoreChangeService.Received().VerifyScoreChanged(Arg.Any<Match>(), Arg.Any<MatchChecking>());
+            validationSettingMatchService.Received().VerifySettingMatch(Arg.Any<MatchInfo>());
+            validationStatusMatchService.Received().VerifyStatusMatch(Arg.Any<Match>(), Arg.Any<MatchInfo>());
+            validationScoreChangeService.Received().VerifyScoreChanged(Arg.Any<Match>(), Arg.Any<MatchInfo>());
         });
     }
 
@@ -51,6 +51,6 @@ public class ValidationServiceTests
         var service = new ValidationServiceImp(validationScoreChangeService, validationSettingMatchService, validationStatusMatchService);
 
         // Assert
-        Assert.Throws<ScoreMismatchedException>(() => service.VerifyMatchAfterComparing(new Match(), new MatchChecking()));
+        Assert.Throws<ScoreMismatchedException>(() => service.VerifyMatchAfterComparing(new Match(), new MatchInfo()));
     }
 }

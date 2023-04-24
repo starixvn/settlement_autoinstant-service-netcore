@@ -25,7 +25,7 @@ public class ValidationScoreChangeServiceTests
             InstantKey = 1
         };
 
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             PreviousHomeScore = "1",
             PreviousAwayScore = "1",
@@ -49,7 +49,7 @@ public class ValidationScoreChangeServiceTests
             InstantKey = 1
         };
 
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             PreviousHomeScore = "2",
             PreviousAwayScore = "1",
@@ -72,7 +72,7 @@ public class ValidationScoreChangeServiceTests
             InstantKey = 2
         };
 
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             PreviousHomeScore = "2",
             PreviousAwayScore = "1",

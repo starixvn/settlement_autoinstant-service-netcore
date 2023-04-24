@@ -5,9 +5,9 @@ namespace AutoInstant.Services;
 
 public interface ValidationService
 {
-    void VerifyMatchBeforeExecution(Match match, MatchChecking matchChecking);
+    void VerifyMatchBeforeExecution(Match match, MatchInfo matchChecking);
 
-    void VerifyMatchAfterComparing(Match match, MatchChecking matchChecking);
+    void VerifyMatchAfterComparing(Match match, MatchInfo matchChecking);
 }
 
 public class ValidationServiceImp : ValidationService
@@ -28,19 +28,19 @@ public class ValidationServiceImp : ValidationService
         this.validationStatusMatchService = validationStatusMatchService;
     }
 
-    public void VerifyMatchBeforeExecution(Match match, MatchChecking matchChecking)
+    public void VerifyMatchBeforeExecution(Match match, MatchInfo matchChecking)
     {
         VerifyMatch(match, matchChecking);
     }
 
-    public void VerifyMatchAfterComparing(Match match, MatchChecking matchChecking)
+    public void VerifyMatchAfterComparing(Match match, MatchInfo matchChecking)
     {
         VerifyMatch(match, matchChecking);
 
         throw new ScoreMismatchedException();
     }
 
-    private void VerifyMatch(Match match, MatchChecking matchChecking)
+    private void VerifyMatch(Match match, MatchInfo matchChecking)
     {
         validationSettingMatchService.VerifySettingMatch(matchChecking);
 

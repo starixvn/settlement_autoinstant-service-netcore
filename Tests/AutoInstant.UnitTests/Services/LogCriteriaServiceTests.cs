@@ -9,11 +9,11 @@ public class LogCriteriaServiceTests
 {
     private readonly LogCriteriaService service;
 
-    private readonly MatchChecking matchChecking;
+    private readonly MatchInfo matchChecking;
 
     public LogCriteriaServiceTests()
     {
-        matchChecking = new MatchChecking();
+        matchChecking = new MatchInfo();
         service = new LogCriteriaServiceImp();
     }
 

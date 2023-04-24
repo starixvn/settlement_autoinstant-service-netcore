@@ -9,9 +9,9 @@ public interface PushingCalculationCriteriaService
 {
     PushingCalculationCriteria CreateCriteria(Match match, string resourceResult);
 
-    string BetStatusHtFl(MatchChecking matchChecking, Goal goal, string betStatus);
+    string BetStatusHtFl(MatchInfo matchChecking, Goal goal, string betStatus);
 
-    string BetStatusFl(MatchChecking matchChecking, Goal goal, string betStatus);
+    string BetStatusFl(MatchInfo matchChecking, Goal goal, string betStatus);
 }
 
 public class PushingCalculationCriteriaServiceImp : PushingCalculationCriteriaService
@@ -37,7 +37,7 @@ public class PushingCalculationCriteriaServiceImp : PushingCalculationCriteriaSe
             : new PushingCalculationFullTimeCriteria(match, resourceResult);
     }
 
-    public string BetStatusHtFl(MatchChecking matchChecking, Goal goal, string betStatus)
+    public string BetStatusHtFl(MatchInfo matchChecking, Goal goal, string betStatus)
     {
         var goalRecord = matchChecking.GoalRecord ?? string.Empty;
         var goalOnly = goalRecord.Split(";").First();
@@ -50,7 +50,7 @@ public class PushingCalculationCriteriaServiceImp : PushingCalculationCriteriaSe
         return string.Empty;
     }
 
-    public string BetStatusFl(MatchChecking matchChecking, Goal goal, string betStatus)
+    public string BetStatusFl(MatchInfo matchChecking, Goal goal, string betStatus)
     {
         var goalRecord = matchChecking.GoalRecord ?? string.Empty;
         var goalOnly = goalRecord.Replace(";", string.Empty);

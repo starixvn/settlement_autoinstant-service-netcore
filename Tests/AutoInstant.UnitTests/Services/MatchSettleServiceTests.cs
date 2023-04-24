@@ -13,12 +13,12 @@ public class MatchSettleServiceTests
     private readonly MatchSettleService matchSettleService;
     private readonly NotificationService notificationService;
     private readonly Match match;
-    private readonly MatchChecking matchChecking;
+    private readonly MatchInfo matchChecking;
 
     public MatchSettleServiceTests()
     {
         match = new Match();
-        matchChecking = new MatchChecking();
+        matchChecking = new MatchInfo();
         validationService = Substitute.For<ValidationService>();
         pushingCalculationService = Substitute.For<PushingCalculationService>();
         logService = Substitute.For<LogService>();
@@ -35,13 +35,13 @@ public class MatchSettleServiceTests
         {
             Description = "exception"
         };
-        validationService.When(x => x.VerifyMatchBeforeExecution(Arg.Any<Match>(), Arg.Any<MatchChecking>())).Do(x => { throw exception; });
+        validationService.When(x => x.VerifyMatchBeforeExecution(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(x => { throw exception; });
 
         // Act
         matchSettleService.ScoreMatched(match, matchChecking);
 
         // Assert
-        logService.Received().ActionLog(Arg.Is<Match>(m => m == match), Arg.Any<MatchChecking>(), exception);
+        logService.Received().ActionLog(Arg.Is<Match>(m => m == match), Arg.Any<MatchInfo>(), exception);
         autoInstantResultService.Received().Insert(match, matchChecking);
         notificationService.Received().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
@@ -51,14 +51,14 @@ public class MatchSettleServiceTests
     {
         // Arrange
         var result = new Models.Result();
-        pushingCalculationService.Push(Arg.Any<Match>(), Arg.Any<MatchChecking>()).Returns(result);
+        pushingCalculationService.Push(Arg.Any<Match>(), Arg.Any<MatchInfo>()).Returns(result);
 
         // Act
         matchSettleService.ScoreMatched(match, matchChecking);
 
         // Assert
-        pushingCalculationService.Received().Push(Arg.Is<Match>(m => m == match), Arg.Is<MatchChecking>(mc => mc == matchChecking));
-        logService.DidNotReceive().ActionLog(Arg.Any<Match>(), Arg.Any<MatchChecking>(), Arg.Any<string>());
+        pushingCalculationService.Received().Push(Arg.Is<Match>(m => m == match), Arg.Is<MatchInfo>(mc => mc == matchChecking));
+        logService.DidNotReceive().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Any<string>());
         notificationService.DidNotReceive().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
 
@@ -70,14 +70,14 @@ public class MatchSettleServiceTests
         {
             ErrorMessage = "error"
         };
-        pushingCalculationService.Push(Arg.Any<Match>(), Arg.Any<MatchChecking>()).Returns(result);
+        pushingCalculationService.Push(Arg.Any<Match>(), Arg.Any<MatchInfo>()).Returns(result);
 
         // Act
         matchSettleService.ScoreMatched(match, matchChecking);
 
         // Assert
-        pushingCalculationService.Received().Push(Arg.Is<Match>(m => m == match), Arg.Is<MatchChecking>(mc => mc == matchChecking));
-        logService.Received().ActionLog(Arg.Any<Match>(), Arg.Any<MatchChecking>(), Arg.Is<string>(x => x == "error"));
+        pushingCalculationService.Received().Push(Arg.Is<Match>(m => m == match), Arg.Is<MatchInfo>(mc => mc == matchChecking));
+        logService.Received().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Is<string>(x => x == "error"));
         notificationService.DidNotReceive().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
 
@@ -89,14 +89,14 @@ public class MatchSettleServiceTests
         {
             Description = "exception"
         };
-        validationService.When(x => x.VerifyMatchBeforeExecution(Arg.Any<Match>(), Arg.Any<MatchChecking>())).Do(x => { throw exception; });
+        validationService.When(x => x.VerifyMatchBeforeExecution(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(x => { throw exception; });
 
         // Act
         matchSettleService.ScoreMatched(match, matchChecking);
 
         // Assert
-        logService.Received().ActionLog(Arg.Any<Match>(), Arg.Any<MatchChecking>(), exception);
-        autoInstantResultService.Received().Insert(Arg.Any<Match>(), Arg.Any<MatchChecking>());
+        logService.Received().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), exception);
+        autoInstantResultService.Received().Insert(Arg.Any<Match>(), Arg.Any<MatchInfo>());
         notificationService.Received().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
 
@@ -109,13 +109,13 @@ public class MatchSettleServiceTests
         {
             Description = "exception"
         };
-        validationService.When(x => x.VerifyMatchAfterComparing(Arg.Any<Match>(), Arg.Any<MatchChecking>())).Do(x => { throw exception; });
+        validationService.When(x => x.VerifyMatchAfterComparing(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(x => { throw exception; });
 
         // Act
         matchSettleService.ScoreMismatched(match, matchChecking);
 
         // Assert
-        logService.Received().ActionLog(Arg.Is<Match>(m => m == match), Arg.Any<MatchChecking>(), exception);
+        logService.Received().ActionLog(Arg.Is<Match>(m => m == match), Arg.Any<MatchInfo>(), exception);
         autoInstantResultService.Received().Insert(match, matchChecking);
         notificationService.Received().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
@@ -127,7 +127,7 @@ public class MatchSettleServiceTests
         matchSettleService.ScoreMismatched(match, matchChecking);
 
         // Assert
-        logService.DidNotReceive().ActionLog(Arg.Any<Match>(), Arg.Any<MatchChecking>(), Arg.Any<string>());
+        logService.DidNotReceive().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Any<string>());
         autoInstantResultService.DidNotReceive().Insert(match, matchChecking);
         notificationService.DidNotReceive().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
