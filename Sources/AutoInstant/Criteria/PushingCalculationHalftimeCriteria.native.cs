@@ -5,9 +5,10 @@ namespace AutoInstant.Criteria;
 
 public class PushingCalculationHalftimeCriteria : PushingCalculationCriteria
 {
-    public PushingCalculationHalftimeCriteria(Match match, string resourceResult) : base(match)
-    {
-        Mode = ModeType.FirstHalf;
-        ResourceResult = resourceResult;
-    }
+	public PushingCalculationHalftimeCriteria(Match match, string resourceResult) : base(match)
+	{
+		Action = $"CAL-{ModeType.FirstHalf}";
+		//Mode = null;
+		ResourceResult = resourceResult;
+	}
 }

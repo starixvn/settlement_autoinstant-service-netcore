@@ -66,7 +66,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
 			var betStatus = GetBetStatus(goal, matchChecking, match);
 			await UpdateMatchInfo(match, resourceResult, betStatus);
 
-			PushingCalculationCriteria criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
+			var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
 
 			logDirectlyService.WriteLog(criteria);
 
@@ -138,12 +138,12 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
 	private async Task<Models.Result> CheckCalculationMatch(Match match, string goalRecord, string resourceResult)
 	{
-		var beforeHomeScore = int.Parse(match.InstantHomeScoreBefore);
-		var beforeAwayScore = int.Parse(match.InstantAwayScoreBefore);
+		var beforeHomeScore = int.Parse(match.InstantHomeScoreBefore ?? "0");
+		var beforeAwayScore = int.Parse(match.InstantAwayScoreBefore ?? "0");
 
 		var totalGoal = match.HomeValue + match.AwayValue;
 		var totalGoalCheck = beforeHomeScore + beforeAwayScore;
-		var goalRecordCheck = match.InstantGoalRecordBefore;
+		var goalRecordCheck = match.InstantGoalRecordBefore ?? string.Empty;
 
 		if (totalGoalCheck > 0 &&
 			(totalGoal < totalGoalCheck || !goalRecordCheck.StartsWith(goalRecord.FirstOrDefault())))

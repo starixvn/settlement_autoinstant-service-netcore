@@ -2,31 +2,31 @@
 
 public interface AutoInstantController
 {
-    Task ProcessAsync();
+	Task ProcessAsync();
 }
 
 public class AutoInstantControllerImp : AutoInstantController
 {
-    private readonly MatchSettlingPoolService matchSettlingPoolService;
+	private readonly MatchSettlingPoolService matchSettlingPoolService;
 
-    private readonly MatchSettleController matchSettleController;
+	private readonly MatchSettleController matchSettleController;
 
-    public AutoInstantControllerImp(
-        MatchSettlingPoolService matchSettlingPoolService,
-        MatchSettleController matchSettleService)
-    {
-        this.matchSettlingPoolService = matchSettlingPoolService;
-        this.matchSettleController = matchSettleService;
-    }
+	public AutoInstantControllerImp(
+		MatchSettlingPoolService matchSettlingPoolService,
+		MatchSettleController matchSettleService)
+	{
+		this.matchSettlingPoolService = matchSettlingPoolService;
+		this.matchSettleController = matchSettleService;
+	}
 
-    public async Task ProcessAsync()
-    {
-        var newMatches = (await matchSettlingPoolService.PeekNewMatch()).Where(n => !n.IsChecking).ToList();
+	public async Task ProcessAsync()
+	{
+		var newMatches = (await matchSettlingPoolService.PeekNewMatch()).Where(n => !n.IsChecking).ToList();
 
-        newMatches.ForEach(m =>
-        {
-            Task.Run(() => matchSettleController.Process(m))
-                .ConfigureAwait(false);
-        });
-    }
+		newMatches.ForEach(m =>
+		{
+			Task.Run(() => matchSettleController.Process(m))
+				.ConfigureAwait(false);
+		});
+	}
 }

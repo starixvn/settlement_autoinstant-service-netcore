@@ -11,18 +11,17 @@ public class PushingCalculationCriteria : NonQueryCommand
 		ErrMsg = string.Empty;
 		IP = string.Empty;
 		IsAutoInst = true;
-		Action = "CAL";
 		MatchId = match.MatchId;
 		HomeScore = match.HomeValue.ToString();
 		AwayScore = match.AwayValue.ToString();
-		InstantKey = match.InstantKey;
+		//InstantKey = match.InstantKey;
 	}
 
 	public int AdminId { get; set; }
 
 	public int MatchId { get; set; }
 
-	public int InstantKey { get; set; }
+	//public int InstantKey { get; set; }
 
 	public string HomeScore { get; set; }
 
@@ -30,7 +29,7 @@ public class PushingCalculationCriteria : NonQueryCommand
 
 	public string Action { get; set; }
 
-	public string Mode { get; set; }
+	//public string Mode { get; set; }
 
 	public string IP { get; set; }
 
@@ -38,7 +37,7 @@ public class PushingCalculationCriteria : NonQueryCommand
 
 	public bool IsAutoInst { get; set; }
 
-	public string BroadcastSessionId { get; } = Guid.NewGuid().ToString();
+	//public string BroadcastSessionId { get; } = Guid.NewGuid().ToString();
 
 	public int ErrCode { get; set; }
 

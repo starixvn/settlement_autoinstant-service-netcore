@@ -5,17 +5,21 @@ namespace AutoInstant.Result.Services;
 
 public interface ActionResourceService
 {
-	XmlResource HalftimeFirstGoalResources(string halftimeGoal);
-
+	List<XmlResource> FullTimeExistCornerRaceResource(string halftimeGoal, string fullTimeGoal);
+	XmlResource FullTimeFirstCornerResource(string halftimeGoal, string fullTimeGoal);
 	XmlResource FullTimeFirstGoalResources(string halftimeGoal, string fullTimeGoal);
+	XmlResource HafltimeFirstCornerResource(string halftimeGoal);
+	List<XmlResource> HalftimeExistCornerRaceResource(string halftimeGoal);
+	XmlResource HalftimeFirstGoalResources(string halftimeGoal);
+	XmlResource TwoHFirstCornerResource(string fullTimeGoal);
 }
+
 
 public class ActionResourceServiceImp : ActionResourceService
 {
 	private const byte ManuallySettled = 5;
 	private const byte Completed = 4;
-	private const string HalftimeFirstGoal = "127F";
-	private const string FullTimeFirstGoal = "14F";
+	private const string HomeValue = "H";
 
 	private readonly FirstGoalService goalResultService;
 
@@ -30,14 +34,14 @@ public class ActionResourceServiceImp : ActionResourceService
 
 		return new XmlResource
 		{
-			ResourceId = HalftimeFirstGoal,
+			ResourceId = ResourceKey.HalftimeFirstGoal,
 			ResultStatusId = ManuallySettled,
 			SettlementStatusId = Completed,
 			HomeValue = firstGoal
 		};
 	}
 
-	private XmlResource HafltimeFirstCornerResource(string halftimeGoal)
+	public XmlResource HafltimeFirstCornerResource(string halftimeGoal)
 	{
 		var firstGoal = goalResultService.FirstGoal(halftimeGoal);
 
@@ -50,7 +54,7 @@ public class ActionResourceServiceImp : ActionResourceService
 		};
 	}
 
-	private XmlResource FullTimeFirstCornerResource(string halftimeGoal, string fullTimeGoal)
+	public XmlResource FullTimeFirstCornerResource(string halftimeGoal, string fullTimeGoal)
 	{
 		var goal = $"{halftimeGoal}{fullTimeGoal}";
 		var firstGoal = goalResultService.FirstGoal(goal);
@@ -64,7 +68,7 @@ public class ActionResourceServiceImp : ActionResourceService
 		};
 	}
 
-	private XmlResource TwoHFirstCornerResource(string fullTimeGoal)
+	public XmlResource TwoHFirstCornerResource(string fullTimeGoal)
 	{
 		var firstGoal = goalResultService.FirstGoal(fullTimeGoal);
 
@@ -77,7 +81,7 @@ public class ActionResourceServiceImp : ActionResourceService
 		};
 	}
 
-	private List<XmlResource> FullTimeExistCornerRaceResource(string halftimeGoal, string fullTimeGoal)
+	public List<XmlResource> FullTimeExistCornerRaceResource(string halftimeGoal, string fullTimeGoal)
 	{
 		var goal = $"{halftimeGoal}{fullTimeGoal}";
 		var result = ConvertGoalRecordToRace(goal);
@@ -92,7 +96,7 @@ public class ActionResourceServiceImp : ActionResourceService
 	}
 
 
-	private List<XmlResource> HalftimeExistCornerRaceResource(string halftimeGoal)
+	public List<XmlResource> HalftimeExistCornerRaceResource(string halftimeGoal)
 	{
 		var result = ConvertGoalRecordToRace(halftimeGoal);
 
@@ -112,7 +116,7 @@ public class ActionResourceServiceImp : ActionResourceService
 
 		return new XmlResource
 		{
-			ResourceId = FullTimeFirstGoal,
+			ResourceId = ResourceKey.FullTimeFirstGoal,
 			ResultStatusId = ManuallySettled,
 			SettlementStatusId = Completed,
 			HomeValue = firstGoal
@@ -127,7 +131,7 @@ public class ActionResourceServiceImp : ActionResourceService
 
 		foreach (var item in goalRecord)
 		{
-			if (item.Equals("H"))
+			if (item.Equals(HomeValue))
 			{
 				homeRaceTo = homeRaceTo + 1;
 				if (homeRaceTo > awayRaceTo)
