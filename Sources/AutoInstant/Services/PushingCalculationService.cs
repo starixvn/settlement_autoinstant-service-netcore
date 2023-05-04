@@ -201,13 +201,13 @@ public class PushingCalculationServiceImp : PushingCalculationService
         foreach (var server in appSettingsKey.SiteDbServer)
         {
             criteria.DbServer = server;
-            var matchChecking = await repository.GetAsync<Models.Result>(criteria);
+            await repository.ExecuteAsync(criteria);
             if (criteria.ErrCode > 0)
             {
-                matchChecking.ErrorCode = criteria.ErrCode;
-                matchChecking.ErrorMessage = criteria.ErrMsg;
+                matchCheckingResult.ErrorCode = criteria.ErrCode;
+                matchCheckingResult.ErrorMessage = criteria.ErrMsg;
 
-                return matchChecking;
+                return matchCheckingResult;
             }
         }
 
