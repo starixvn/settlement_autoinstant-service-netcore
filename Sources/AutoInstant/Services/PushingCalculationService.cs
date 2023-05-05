@@ -62,44 +62,16 @@ public class PushingCalculationServiceImp : PushingCalculationService
         var result = await ValidateBeforeExecute(match);
         if (result.ErrorCode == 0)
         {
-            try
-            {
-                await autoInstantResultService.Update(match, false, MatchStatus.Completed);
-
-            }
-            catch (Exception ex)
-            {
-                await Console.Out.WriteLineAsync(ex.Message);
-                throw;
-            }
+            await autoInstantResultService.Update(match, false, MatchStatus.Completed);
             var betStatus = GetBetStatus(goal, matchChecking, match);
-
-            try
-            {
-                await UpdateMatchInfo(match, resourceResult, betStatus);
-            }
-            catch (Exception ex)
-            {
-                await Console.Out.WriteLineAsync(ex.Message);
-                throw;
-
-            }
+            await UpdateMatchInfo(match, resourceResult, betStatus);
 
             var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
+            criteria.GoalRecord = matchChecking.GoalRecord;
 
             logDirectlyService.WriteLog(criteria);
 
-            try
-            {
-                Execute(criteria);
-
-            }
-            catch (Exception ex)
-            {
-                await Console.Out.WriteLineAsync(ex.Message);
-
-                throw;
-            }
+            Execute(criteria);
 
         }
 
