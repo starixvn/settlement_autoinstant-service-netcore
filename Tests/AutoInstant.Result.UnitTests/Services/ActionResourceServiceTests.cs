@@ -56,4 +56,85 @@ public class ActionResourceServiceTests
 
         AssertExtension.AreEqual(expectedResources, actualResources);
     }
+
+    [Fact]
+    public void HafltimeFirstCornerResource_Always_ReturnsExpectedResources()
+    {
+        // Arrange
+        var goalRecord = Arg.Any<string>();
+        firstGoalService.FirstGoal(goalRecord).Returns("A");
+        var service = new ActionResourceServiceImp(firstGoalService);
+
+        // Act
+        var actualResources = service.HafltimeFirstCornerResource(goalRecord);
+
+        // Assert
+        var expectedResources = CreateResource("489", "A");
+
+        AssertExtension.AreEqual(expectedResources, actualResources);
+    }
+
+    [Fact]
+    public void FullTimeFirstCornerResource_Always_ReturnsExpectedResources()
+    {
+        // Arrange
+        var goalRecord = Arg.Any<string>();
+        firstGoalService.FirstGoal(goalRecord).Returns("A");
+        var service = new ActionResourceServiceImp(firstGoalService);
+
+        // Act
+        var actualResources = service.FullTimeFirstCornerResource(goalRecord, goalRecord);
+
+        // Assert
+        var expectedResources = CreateResource("488", "A");
+
+        AssertExtension.AreEqual(expectedResources, actualResources);
+    }
+
+    [Fact]
+    public void TwoHFirstCornerResource_Always_ReturnsExpectedResources()
+    {
+        // Arrange
+        var goalRecord = Arg.Any<string>();
+        firstGoalService.FirstGoal(goalRecord).Returns("A");
+        var service = new ActionResourceServiceImp(firstGoalService);
+
+        // Act
+        var actualResources = service.TwoHFirstCornerResource(goalRecord);
+
+        // Assert
+        var expectedResources = CreateResource("490", "A");
+
+        AssertExtension.AreEqual(expectedResources, actualResources);
+    }
+
+    [Fact]
+    public void FullTimeExistCornerRaceResource_Always_ReturnsExpectedResources()
+    {
+        // Arrange
+        var service = new ActionResourceServiceImp(firstGoalService);
+
+        // Act
+        var actualResources = service.FullTimeExistCornerRaceResource("A", "A");
+
+        // Assert
+        var expectedResources = new List<XmlResource> { CreateResource("48601", "A"), CreateResource("48602", "A") };
+
+        Assert.Equal(expectedResources.Count, actualResources.Count);
+    }
+
+    [Fact]
+    public void HalftimeExistCornerRaceResource_Always_ReturnsExpectedResources()
+    {
+        // Arrange
+        var service = new ActionResourceServiceImp(firstGoalService);
+
+        // Act
+        var actualResources = service.HalftimeExistCornerRaceResource("AA");
+
+        // Assert
+        var expectedResources = new List<XmlResource> { CreateResource("48701", "A"), CreateResource("48702", "A") };
+
+        Assert.Equal(expectedResources.Count, actualResources.Count);
+    }
 }

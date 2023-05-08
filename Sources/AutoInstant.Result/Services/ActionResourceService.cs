@@ -20,6 +20,7 @@ public class ActionResourceServiceImp : ActionResourceService
     private const byte ManuallySettled = 5;
     private const byte Completed = 4;
     private const char HomeValue = 'H';
+    private const int Ten = 10;
 
     private readonly FirstGoalService goalResultService;
 
@@ -152,6 +153,6 @@ public class ActionResourceServiceImp : ActionResourceService
         return result;
     }
 
-    private static string PadLeft(int num) => num < 10 ? $"0{num}" : $"{num}";
+    private static string PadLeft(int num) => num < Ten ? $"0{num}" : $"{num}";
 
 }
