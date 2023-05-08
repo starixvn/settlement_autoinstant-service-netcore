@@ -36,7 +36,8 @@ public class PushingCalculationServiceImp : PushingCalculationService
         PushingCalculationCriteriaService pushingCalculationCriteriaService,
         ScaleOutSettleService scaleOutSettleService,
         AutoInstantResultService autoInstantResultService,
-        IOptions<AppSettingsKey> appSettingsKey, LogDirectlyService logDirectlyService)
+        IOptions<AppSettingsKey> appSettingsKey,
+        LogDirectlyService logDirectlyService)
     {
         this.repository = repository;
         this.resultsService = resultsService;

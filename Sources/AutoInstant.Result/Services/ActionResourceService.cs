@@ -19,7 +19,7 @@ public class ActionResourceServiceImp : ActionResourceService
 {
     private const byte ManuallySettled = 5;
     private const byte Completed = 4;
-    private const string HomeValue = "H";
+    private const char HomeValue = 'H';
 
     private readonly FirstGoalService goalResultService;
 
@@ -89,7 +89,7 @@ public class ActionResourceServiceImp : ActionResourceService
         return result.Select(v => new XmlResource
         {
             HomeValue = $"{v.value}",
-            ResourceId = $"{ResourceKey.CornerRace}{ConvertIntToString(v.raceTo)}",
+            ResourceId = $"{ResourceKey.CornerRace}{PadLeft(v.raceTo)}",
             ResultStatusId = ManuallySettled,
             SettlementStatusId = Completed,
         }).ToList();
@@ -103,7 +103,7 @@ public class ActionResourceServiceImp : ActionResourceService
         return result.Select(v => new XmlResource
         {
             HomeValue = $"{v.value}",
-            ResourceId = $"{ResourceKey.HalftimeCornerRace}{ConvertIntToString(v.raceTo)}",
+            ResourceId = $"{ResourceKey.HalftimeCornerRace}{PadLeft(v.raceTo)}",
             ResultStatusId = ManuallySettled,
             SettlementStatusId = Completed,
         }).ToList();
@@ -152,6 +152,6 @@ public class ActionResourceServiceImp : ActionResourceService
         return result;
     }
 
-    private static string ConvertIntToString(int num) => num < 10 ? $"0{num}" : $"{num}";
+    private static string PadLeft(int num) => num < 10 ? $"0{num}" : $"{num}";
 
 }
