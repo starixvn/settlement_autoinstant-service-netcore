@@ -52,15 +52,9 @@ public class PushingCalculationServiceImp : PushingCalculationService
     {
         var goal = await GetGoal(matchChecking.GoalRecord, match.MatchId);
         var resourceResult = match.TypeId == SettleType.FirstHalf ? resultsService.HalftimeResults(goal) : resultsService.FullTimeResults(goal);
-        //
-        var matchCheckingResult = await CheckCalculationMatch(match, goal.GoalRecord, resourceResult);
-
-        if (matchCheckingResult.ErrorCode > 0)
-        {
-            return matchCheckingResult;
-        }
 
         var result = await ValidateBeforeExecute(match);
+
         if (result.ErrorCode == 0)
         {
             await autoInstantResultService.Update(match, false, MatchStatus.Completed);
