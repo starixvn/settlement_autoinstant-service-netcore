@@ -67,7 +67,6 @@ public class PushingCalculationServiceImp : PushingCalculationService
             logDirectlyService.WriteLog(criteria);
 
             Execute(criteria);
-
         }
 
         return result;
@@ -133,53 +132,6 @@ public class PushingCalculationServiceImp : PushingCalculationService
         };
     }
 
-    private async Task<Models.Result> CheckCalculationMatch(Match match, string goalRecord, string resourceResult)
-    {
-        var beforeHomeScore = int.Parse(match.InstantHomeScoreBefore ?? "0");
-        var beforeAwayScore = int.Parse(match.InstantAwayScoreBefore ?? "0");
-
-        var totalGoal = match.HomeValue + match.AwayValue;
-        var totalGoalCheck = beforeHomeScore + beforeAwayScore;
-        var goalRecordCheck = match.InstantGoalRecordBefore ?? string.Empty;
-
-        if (totalGoalCheck > 0 &&
-            (totalGoal < totalGoalCheck || !goalRecordCheck.StartsWith(goalRecord.FirstOrDefault())))
-        {
-            var matchCheckingCriteria = new MatchCheckingCriteria
-            {
-                MatchId = match.MatchId,
-                Action = $"CAL-{Mode(match.TypeId)}",
-                AwayScore = $"{match.AwayValue}",
-                HomeScore = $"{match.HomeValue}",
-                ResourceResult = resourceResult,
-            };
-            var matchCheckingResult = await CalculateCheckingInfo(matchCheckingCriteria);
-
-            return matchCheckingResult;
-        }
-
-        return new Models.Result();
-    }
-
-    private async Task<Models.Result> CalculateCheckingInfo(MatchCheckingCriteria criteria)
-    {
-        var matchCheckingResult = new Models.Result();
-
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            await repository.ExecuteAsync(criteria);
-            if (criteria.ErrCode > 0)
-            {
-                matchCheckingResult.ErrorCode = criteria.ErrCode;
-                matchCheckingResult.ErrorMessage = criteria.ErrMsg;
-
-                return matchCheckingResult;
-            }
-        }
-
-        return matchCheckingResult;
-    }
     private async Task<Models.Result> ValidateBeforeExecute(Match match)
     {
         var request = new EventTicketRequest
