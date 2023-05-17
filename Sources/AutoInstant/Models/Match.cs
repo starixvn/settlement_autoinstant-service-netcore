@@ -11,11 +11,6 @@ public class Match
     public int HomeValue { get; set; }
 
     public int AwayValue { get; set; }
-    public string InstantHomeScoreBefore { get; set; }
-
-    public string InstantAwayScoreBefore { get; set; }
-
-    public string InstantGoalRecordBefore { get; set; }
 
     public bool IsChecking { get; set; }
 
