@@ -19,10 +19,8 @@ public class ValidationScoreChangeServiceImp : ValidationScoreChangeService
                 var score = $"{matchChecking.PreviousHomeScore}-{matchChecking.PreviousAwayScore}";
                 throw new ManualCalculatedException(score, true);
             }
-            else
-            {
-                throw new ScoreChangedException();
-            }
+
+            throw new ScoreChangedException();
         }
     }
 

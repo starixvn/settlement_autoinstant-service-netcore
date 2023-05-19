@@ -8,7 +8,7 @@ public interface ActionResourceService
     List<XmlResource> FullTimeExistCornerRaceResource(string halftimeGoal, string fullTimeGoal);
     XmlResource FullTimeFirstCornerResource(string halftimeGoal, string fullTimeGoal);
     XmlResource FullTimeFirstGoalResources(string halftimeGoal, string fullTimeGoal);
-    XmlResource HafltimeFirstCornerResource(string halftimeGoal);
+    XmlResource HalftimeFirstCornerResource(string halftimeGoal);
     List<XmlResource> HalftimeExistCornerRaceResource(string halftimeGoal);
     XmlResource HalftimeFirstGoalResources(string halftimeGoal);
     XmlResource TwoHFirstCornerResource(string fullTimeGoal);
@@ -42,7 +42,7 @@ public class ActionResourceServiceImp : ActionResourceService
         };
     }
 
-    public XmlResource HafltimeFirstCornerResource(string halftimeGoal)
+    public XmlResource HalftimeFirstCornerResource(string halftimeGoal)
     {
         var firstGoal = goalResultService.FirstGoal(halftimeGoal);
 

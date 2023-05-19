@@ -1,6 +1,5 @@
 ﻿using AutoInstant.Models;
 
-
 namespace AutoInstant.Services;
 
 public interface MatchByLeagueService
@@ -31,16 +30,11 @@ public class MatchByLeagueServiceImp : MatchByLeagueService
 
         cache.TryGet(KEY_LEAGUEID, out int leagueId);
 
-        switch (appSettingsKey.EnvironmentName)
+        return appSettingsKey.EnvironmentName switch
         {
-            case "PRO":
-                return leagueId > 0
-                    ? (from m in matches where m.LeagueId != leagueId select m).ToList()
-                    : matches;
-            case "UAT":
-                return (from m in matches where m.LeagueId == leagueId select m).ToList();
-            default:
-                return matches;
-        }
+            "PRO" => leagueId > 0 ? (from m in matches where m.LeagueId != leagueId select m).ToList() : matches,
+            "UAT" => (from m in matches where m.LeagueId == leagueId select m).ToList(),
+            _ => matches
+        };
     }
 }

@@ -50,7 +50,7 @@ public class ResourceServiceImp : ResourceService
 
         if (goal.IsExistHTFirstCorner)
         {
-            var resource = actionResourceService.HafltimeFirstCornerResource(halftimeGoal);
+            var resource = actionResourceService.HalftimeFirstCornerResource(halftimeGoal);
             resources.Add(resource);
         }
 

@@ -66,7 +66,7 @@ public class ActionResourceServiceTests
         var service = new ActionResourceServiceImp(firstGoalService);
 
         // Act
-        var actualResources = service.HafltimeFirstCornerResource(goalRecord);
+        var actualResources = service.HalftimeFirstCornerResource(goalRecord);
 
         // Assert
         var expectedResources = CreateResource("489", "A");

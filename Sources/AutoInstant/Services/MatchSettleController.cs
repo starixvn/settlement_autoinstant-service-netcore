@@ -43,7 +43,7 @@ public class MatchSettleControllerImp : MatchSettleController
             }
             else
             {
-                matchSettleService.ScoreMismatched(match, matchCheckingInfo);
+                await matchSettleService.ScoreMismatched(match, matchCheckingInfo);
             }
         }
         finally

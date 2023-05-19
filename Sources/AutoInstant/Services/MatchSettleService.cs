@@ -7,7 +7,7 @@ public interface MatchSettleService
 {
     Task ScoreMatched(Match match, MatchInfo matchInfo);
 
-    void ScoreMismatched(Match match, MatchInfo matchInfo);
+    Task ScoreMismatched(Match match, MatchInfo matchInfo);
 }
 
 public class MatchSettleServiceImp : MatchSettleService
@@ -55,14 +55,9 @@ public class MatchSettleServiceImp : MatchSettleService
             await autoInstantResultService.Insert(match, matchInfo);
             await notificationService.AddNotification(match, exception.IsSendToLetsTalk, exception.Description);
         }
-        catch (Exception exception)
-        {
-            await Console.Out.WriteLineAsync(exception.Message);
-            throw;
-        }
     }
 
-    public void ScoreMismatched(Match match, MatchInfo matchInfo)
+    public async Task ScoreMismatched(Match match, MatchInfo matchInfo)
     {
         try
         {
@@ -70,9 +65,9 @@ public class MatchSettleServiceImp : MatchSettleService
         }
         catch (AutoInstantException exception)
         {
-            logService.ActionLog(match, matchInfo, exception);
-            autoInstantResultService.Insert(match, matchInfo);
-            notificationService.AddNotification(match, exception.IsSendToLetsTalk, exception.Description);
+            await logService.ActionLog(match, matchInfo, exception);
+            await autoInstantResultService.Insert(match, matchInfo);
+            await notificationService.AddNotification(match, exception.IsSendToLetsTalk, exception.Description);
         }
     }
 }

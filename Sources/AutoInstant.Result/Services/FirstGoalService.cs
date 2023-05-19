@@ -11,6 +11,6 @@ public class FirstGoalServiceImp : FirstGoalService
 
     public string FirstGoal(string goalRecord)
     {
-        return string.IsNullOrWhiteSpace(goalRecord) ? NoGoal : goalRecord.Substring(0, 1).ToUpperInvariant();
+        return string.IsNullOrWhiteSpace(goalRecord) ? NoGoal : goalRecord[..1].ToUpperInvariant();
     }
 }
