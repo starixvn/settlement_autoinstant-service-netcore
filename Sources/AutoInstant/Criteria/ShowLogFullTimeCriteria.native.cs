@@ -5,7 +5,7 @@ namespace AutoInstant.Criteria;
 
 public class ShowLogFullTimeCriteria : LogCriteria
 {
-    public ShowLogFullTimeCriteria(Match match, MatchChecking matchChecking) : base(match)
+    public ShowLogFullTimeCriteria(Match match, MatchInfo matchChecking) : base(match)
     {
         ActionId = SettleAction.ShowReferenceActionsForSecondHalf;
         FinalHomeScore = match.HomeValue;

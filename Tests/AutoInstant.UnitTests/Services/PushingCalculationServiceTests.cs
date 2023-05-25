@@ -47,7 +47,7 @@ public class PushingCalculationServiceTests
         {
             TypeId = SettleType.FirstHalf,
         };
-        var matchChecking = new MatchChecking();
+        var matchChecking = new MatchInfo();
 
         pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), "HalftimeResults")
             .Returns(new PushingCalculationCriteria(new Match()) { ResourceResult = "HalftimeResults" });
@@ -80,7 +80,7 @@ public class PushingCalculationServiceTests
         {
             TypeId = SettleType.SecondHalf
         };
-        var matchChecking = new MatchChecking();
+        var matchChecking = new MatchInfo();
         pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), Arg.Any<string>())
             .Returns(new PushingCalculationCriteria(new Match()) { ResourceResult = "FullTimeResults" });
 
@@ -112,7 +112,7 @@ public class PushingCalculationServiceTests
         {
             TypeId = SettleType.SecondHalf
         };
-        var matchChecking = new MatchChecking();
+        var matchChecking = new MatchInfo();
         var fakeCriteria = new PushingCalculationHalftimeCriteria(match, "")
         {
             ErrCode = 1,

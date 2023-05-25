@@ -14,140 +14,140 @@ namespace Fanex.AutoInstant.Service;
 
 public class AutoInstantService : IHostedService
 {
-    private readonly AutoInstantController autoInstantController;
+	private readonly AutoInstantController autoInstantController;
 
-    private readonly IMaintenanceService maintenanceService;
+	private readonly IMaintenanceService maintenanceService;
 
-    private readonly IConfiguration configuration;
+	private readonly IConfiguration configuration;
 
-    private bool running;
+	private bool running;
 
-    private int counter;
+	private int counter;
 
-    public AutoInstantService(
-        AutoInstantController autoInstantController,
-        IConfiguration configuration,
-        IMaintenanceService maintenanceService)
-    {
-        this.autoInstantController = autoInstantController;
-        this.configuration = configuration;
-        this.maintenanceService = maintenanceService;
-        InitializeExtraComponent();
-        InitializeSetting();
-    }
+	public AutoInstantService(
+		AutoInstantController autoInstantController,
+		IConfiguration configuration,
+		IMaintenanceService maintenanceService)
+	{
+		this.autoInstantController = autoInstantController;
+		this.configuration = configuration;
+		this.maintenanceService = maintenanceService;
+		InitializeExtraComponent();
+		InitializeSetting();
+	}
 
-    private void InitializeSetting()
-    {
-        StartUmSetting();
-        StartDataBaseSetting();
-        StartLogSetting();
-    }
+	private void InitializeSetting()
+	{
+		StartUmSetting();
+		StartDataBaseSetting();
+		StartLogSetting();
+	}
 
-    private static void InitializeExtraComponent()
-    {
-        TaskScheduler.UnobservedTaskException += TaskSchedulerUnobservedTaskException;
-    }
+	private static void InitializeExtraComponent()
+	{
+		TaskScheduler.UnobservedTaskException += TaskSchedulerUnobservedTaskException;
+	}
 
-    private static void TaskSchedulerUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-    {
-        e.SetObserved();
-        e.Exception.Handle(x =>
-        {
-            Logging.LogService.Error(x.Message, x);
-            return true;
-        });
-    }
+	private static void TaskSchedulerUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+	{
+		e.SetObserved();
+		e.Exception.Handle(x =>
+		{
+			Logging.LogService.Error(x.Message, x);
+			return true;
+		});
+	}
 
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        running = true;
-        var autoRefundThread = new Thread(ThreadProcess);
-        Console.WriteLine($"Auto Instant Starting at {DateTime.Now}");
-        autoRefundThread.Start();
-        return Task.CompletedTask;
-    }
+	public Task StartAsync(CancellationToken cancellationToken)
+	{
+		running = true;
+		var autoRefundThread = new Thread(ThreadProcess);
+		Console.WriteLine($"Auto Instant Starting at {DateTime.Now}");
+		autoRefundThread.Start();
+		return Task.CompletedTask;
+	}
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        running = false;
-        Console.WriteLine($"Auto Instant Stopping at {DateTime.Now}");
-        return Task.CompletedTask;
-    }
+	public Task StopAsync(CancellationToken cancellationToken)
+	{
+		running = false;
+		Console.WriteLine($"Auto Instant Stopping at {DateTime.Now}");
+		return Task.CompletedTask;
+	}
 
-    private void ThreadProcess()
-    {
-        while (running)
-        {
-            if (!maintenanceService.IsMaintenance)
-            {
-                MainProcess();
-                Thread.Sleep(int.Parse(configuration.GetSection("ServiceInterval").Value));
-            }
-        }
-    }
+	private void ThreadProcess()
+	{
+		while (running)
+		{
+			if (!maintenanceService.IsMaintenance)
+			{
+				MainProcess();
+				Thread.Sleep(int.Parse(configuration.GetSection("ServiceInterval").Value));
+			}
+		}
+	}
 
-    private void MainProcess()
-    {
-        try
-        {
-            autoInstantController.ProcessAsync();
-            HandleGarbageCollector();
-        }
-        catch (Exception exception)
-        {
-            Logging.LogService.Error("Fanex.AutoInstant.Service:", exception);
-        }
-    }
+	private void MainProcess()
+	{
+		try
+		{
+			autoInstantController.ProcessAsync();
+			HandleGarbageCollector();
+		}
+		catch (Exception exception)
+		{
+			Logging.LogService.Error("Fanex.AutoInstant.Service:", exception);
+		}
+	}
 
-    private void HandleGarbageCollector()
-    {
-        if (counter >= int.Parse(configuration.GetSection("GarbageCollectorInterval").Value))
-        {
-            counter = 0;
-            GC.WaitForPendingFinalizers();
-        }
+	private void HandleGarbageCollector()
+	{
+		if (counter >= int.Parse(configuration.GetSection("GarbageCollectorInterval").Value))
+		{
+			counter = 0;
+			GC.WaitForPendingFinalizers();
+		}
 
-        counter += int.Parse(configuration.GetSection("ServiceInterval").Value);
-    }
+		counter += int.Parse(configuration.GetSection("ServiceInterval").Value);
+	}
 
-    private void StartUmSetting()
-    {
-        var umConfig = new UMClientConfiguration().Initialize(configuration);
+	private void StartUmSetting()
+	{
+		var umConfig = new UMClientConfiguration().Initialize(configuration);
 
-        UMClientManager
-            .UseConfig(umConfig)
-            .UseCacheService(new UMCacheService(new CacheService()))
-            .UseRestClient(new UMRestClient(umConfig));
-    }
+		UMClientManager
+			.UseConfig(umConfig)
+			.UseCacheService(new UMCacheService(new CacheService()))
+			.UseRestClient(new UMRestClient(umConfig));
+	}
 
-    private void StartDataBaseSetting()
-    {
-        var connections = configuration.GetSection("ConnectionStrings")
-            .GetChildren()
-            .AsEnumerable()
-            .ToDictionary(
-                x => x.GetValue<string>("Name"),
-                y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName"))
-            );
-        DbSettingProviderManager
-            .StartNewSession()
-            .Use(connections)
-            .WithSqlServer()
-            .UseDefaultDbSettingProvider(resourcePath: configuration.GetSection("StoredProcedurePath").Value)
-            .Run();
-    }
+	private void StartDataBaseSetting()
+	{
+		var connections = configuration.GetSection("ConnectionStrings")
+			.GetChildren()
+			.AsEnumerable()
+			.ToDictionary(
+				x => x.GetValue<string>("Name"),
+				y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName"))
+			);
+		DbSettingProviderManager
+			.StartNewSession()
+			.Use(connections)
+			.WithSqlServer()
+			.UseDefaultDbSettingProvider(resourcePath: configuration.GetSection("StoredProcedurePath").Value)
+			.Run();
+	}
 
-    private void StartLogSetting()
-    {
-        var logEngine = new List<ILogEngine>();
+	private void StartLogSetting()
+	{
+		var logEngine = new List<ILogEngine>();
 
-        var sentryEngineOptions = new SentryEngineOptions
-        {
-            Dsn = new Dsn(configuration.GetSection("SentryToken").Value)
-        };
+		var sentryEngineOptions = new SentryEngineOptions
+		{
+			Dsn = new Dsn(configuration.GetSection("SentryToken").Value)
+		};
 
-        logEngine.Add(new SentryLogging(sentryEngineOptions));
+		logEngine.Add(new SentryLogging(sentryEngineOptions));
 
-        LogManager.SetDefaultLogCategory(configuration.GetSection("SiteCategory").Value).Use(logEngine);
-    }
+		LogManager.SetDefaultLogCategory(configuration.GetSection("SiteCategory").Value).Use(logEngine);
+	}
 }

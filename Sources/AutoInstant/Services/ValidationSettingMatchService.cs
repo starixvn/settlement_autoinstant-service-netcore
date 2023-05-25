@@ -5,12 +5,12 @@ namespace AutoInstant.Services;
 
 public interface ValidationSettingMatchService
 {
-    void VerifySettingMatch(MatchChecking matchChecking);
+    void VerifySettingMatch(MatchInfo matchChecking);
 }
 
 public class ValidationSettingMatchServiceImp : ValidationSettingMatchService
 {
-    public void VerifySettingMatch(MatchChecking matchChecking)
+    public void VerifySettingMatch(MatchInfo matchChecking)
     {
         if (matchChecking.IsSettingOff)
         {

@@ -21,8 +21,8 @@ public class Match
     public override bool Equals(object obj)
     {
         return obj != null
-            && (obj is Match)
-            && (obj as Match).MatchId == MatchId;
+               && (obj is Match)
+               && (obj as Match).MatchId == MatchId;
     }
 
     public override int GetHashCode()

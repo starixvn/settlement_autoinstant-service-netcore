@@ -11,11 +11,11 @@ public class LogServiceTests
 {
     private readonly IDynamicRepository repository;
     private readonly LogService logService;
-    private readonly MatchChecking matchChecking;
+    private readonly MatchInfo matchChecking;
 
     public LogServiceTests()
     {
-        matchChecking = new MatchChecking();
+        matchChecking = new MatchInfo();
         repository = Substitute.For<IDynamicRepository>();
         var logCriteriaService = new LogCriteriaServiceImp();
         logService = new LogServiceImp(repository, logCriteriaService);

@@ -6,12 +6,12 @@ namespace AutoInstant.Services;
 
 public interface ValidationStatusMatchService
 {
-    void VerifyStatusMatch(Match match, MatchChecking matchChecking);
+    void VerifyStatusMatch(Match match, MatchInfo matchChecking);
 }
 
 public class ValidationStatusMatchServiceImp : ValidationStatusMatchService
 {
-    public void VerifyStatusMatch(Match match, MatchChecking matchChecking)
+    public void VerifyStatusMatch(Match match, MatchInfo matchChecking)
     {
         if (matchChecking.IsInstCalculated && !IsWrongScore(match, matchChecking))
         {
@@ -30,17 +30,17 @@ public class ValidationStatusMatchServiceImp : ValidationStatusMatchService
         }
     }
 
-    private static bool IsHalfTimeNotDone(MatchChecking matchChecking)
+    private static bool IsHalfTimeNotDone(MatchInfo matchChecking)
     {
         return matchChecking.TypeId == SettleType.SecondHalf && !matchChecking.IsCalculatedHT;
     }
 
-    private static bool IsCalculated(MatchChecking matchChecking)
+    private static bool IsCalculated(MatchInfo matchChecking)
     {
         return matchChecking.IsCalculatedFT;
     }
 
-    private static bool IsWrongScore(Match match, MatchChecking matchChecking)
+    private static bool IsWrongScore(Match match, MatchInfo matchChecking)
     {
         return match.HomeValue < Convert.ToInt32(matchChecking.PreviousHomeScore)
             || Convert.ToInt32(match.AwayValue) < Convert.ToInt32(matchChecking.PreviousAwayScore);

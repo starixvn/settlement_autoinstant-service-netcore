@@ -9,7 +9,7 @@ public interface AutoInstantResultService
 {
     Task Update(Match match, bool isInstCalculated, int statusId);
 
-    Task Insert(Match match, MatchChecking matchChecking);
+    Task Insert(Match match, MatchInfo matchChecking);
 }
 
 public class AutoInstantResultServiceImp : AutoInstantResultService
@@ -39,7 +39,7 @@ public class AutoInstantResultServiceImp : AutoInstantResultService
         await repository.ExecuteAsync(updateResultCriteria);
     }
 
-    public async Task Insert(Match match, MatchChecking matchChecking)
+    public async Task Insert(Match match, MatchInfo matchChecking)
     {
         var isInstCalculated = IsManualInstCalculated(match, matchChecking);
         if (!IsCalculated(match, matchChecking))
@@ -48,23 +48,23 @@ public class AutoInstantResultServiceImp : AutoInstantResultService
         }
     }
 
-    private static bool IsCalculated(Match match, MatchChecking matchChecking)
+    private static bool IsCalculated(Match match, MatchInfo matchChecking)
     {
         return IsFullTimeCalculated(match, matchChecking);
     }
 
-    private static bool IsManualInstCalculated(Match match, MatchChecking matchChecking)
+    private static bool IsManualInstCalculated(Match match, MatchInfo matchChecking)
     {
         return matchChecking.IsInstCalculated && IsRightScore(match, matchChecking);
     }
 
-    private static bool IsRightScore(Match match, MatchChecking matchChecking)
+    private static bool IsRightScore(Match match, MatchInfo matchChecking)
     {
         return match.HomeValue == Convert.ToInt32(matchChecking.PreviousHomeScore)
             && Convert.ToInt32(match.AwayValue) == Convert.ToInt32(matchChecking.PreviousAwayScore);
     }
 
-    private static bool IsFullTimeCalculated(Match match, MatchChecking matchChecking)
+    private static bool IsFullTimeCalculated(Match match, MatchInfo matchChecking)
     {
         return match.TypeId == SettleType.SecondHalf && matchChecking.IsCalculatedFT;
     }

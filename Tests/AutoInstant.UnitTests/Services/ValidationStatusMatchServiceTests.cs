@@ -19,7 +19,7 @@ public class ValidationStatusMatchServiceTests
     {
         // Arrange
 
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             IsInstCalculated = false,
             IsCalculatedFT = false,
@@ -41,7 +41,7 @@ public class ValidationStatusMatchServiceTests
             AwayValue = 2
         };
 
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             IsInstCalculated = true,
             PreviousHomeScore = "1",
@@ -56,7 +56,7 @@ public class ValidationStatusMatchServiceTests
     public void VerifyStatusMatch_MatchIsCalculatedFT_ThrowException()
     {
         // Arrange
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             IsCalculatedFT = true,
         };
@@ -69,7 +69,7 @@ public class ValidationStatusMatchServiceTests
     public void VerifyStatusMatch_IsHalfTimeNotDone_ThrowException()
     {
         // Arrange
-        var matchChecking = new MatchChecking
+        var matchChecking = new MatchInfo
         {
             IsCalculatedHT = false,
             TypeId = SettleType.SecondHalf

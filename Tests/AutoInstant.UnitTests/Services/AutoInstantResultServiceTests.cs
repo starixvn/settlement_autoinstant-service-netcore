@@ -25,7 +25,7 @@ public class AutoInstantResultServiceTests
         autoInstantResultService = new AutoInstantResultServiceImp(repository);
 
         // Act
-        await autoInstantResultService.Insert(new Match { TypeId = SettleType.SecondHalf }, new MatchChecking { IsCalculatedFT = false });
+        await autoInstantResultService.Insert(new Match { TypeId = SettleType.SecondHalf }, new MatchInfo { IsCalculatedFT = false });
 
         // Assert
         await repository.Received(1).ExecuteAsync(Arg.Any<NonQueryCommand>());
@@ -35,7 +35,7 @@ public class AutoInstantResultServiceTests
     public async Task Insert_MatchIsFullTimeCalculated_NotInvokeExecuteRepository()
     {
         // Act
-        await autoInstantResultService.Insert(new Match { TypeId = SettleType.SecondHalf }, new MatchChecking { IsCalculatedFT = true });
+        await autoInstantResultService.Insert(new Match { TypeId = SettleType.SecondHalf }, new MatchInfo { IsCalculatedFT = true });
 
         // Assert
         await repository.Received(0).ExecuteAsync(Arg.Any<NonQueryCommand>());
@@ -49,7 +49,7 @@ public class AutoInstantResultServiceTests
         autoInstantResultService = new AutoInstantResultServiceImp(repository);
 
         // Act
-        await autoInstantResultService.Insert(new Match { HomeValue = 1, AwayValue = 2 }, new MatchChecking { IsInstCalculated = true, PreviousHomeScore = "1", PreviousAwayScore = "0" });
+        await autoInstantResultService.Insert(new Match { HomeValue = 1, AwayValue = 2 }, new MatchInfo { IsInstCalculated = true, PreviousHomeScore = "1", PreviousAwayScore = "0" });
 
         // Assert
         await repository.Received(1).ExecuteAsync(Arg.Is<AddAutoResultCriteria>(criteria => !criteria.IsInstCalculated));
@@ -63,7 +63,7 @@ public class AutoInstantResultServiceTests
         autoInstantResultService = new AutoInstantResultServiceImp(repository);
 
         // Act
-        await autoInstantResultService.Insert(new Match { HomeValue = 1, AwayValue = 2 }, new MatchChecking { IsInstCalculated = true, PreviousHomeScore = "1", PreviousAwayScore = "2" });
+        await autoInstantResultService.Insert(new Match { HomeValue = 1, AwayValue = 2 }, new MatchInfo { IsInstCalculated = true, PreviousHomeScore = "1", PreviousAwayScore = "2" });
 
         // Assert
         await repository.Received(1).ExecuteAsync(Arg.Is<AddAutoResultCriteria>(criteria => criteria.IsInstCalculated));

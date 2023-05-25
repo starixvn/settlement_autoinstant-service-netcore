@@ -42,9 +42,7 @@ public class ResultsServiceImp : ResultsService
             var xmlResults = new XmlResults { Resources = resources };
             return xmlConvertService.Serialize(xmlResults);
         }
-        else
-        {
-            return string.Empty;
-        }
+
+        return string.Empty;
     }
 }

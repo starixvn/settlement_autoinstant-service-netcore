@@ -1,0 +1,27 @@
+﻿using Fanex.Data;
+
+namespace AutoInstant.Criteria;
+
+public class MatchCheckingCriteria : NonQueryCommand
+{
+    public int MatchId { get; set; }
+
+    public string HomeScore { get; set; }
+
+    public string AwayScore { get; set; }
+
+    public string Action { get; set; }
+
+    public string ResourceResult { get; set; }
+
+    public int ErrCode { get; set; }
+
+    public string ErrMsg { get; set; }
+
+    [SpParam(Ignored = true)]
+    public string DbServer { get; set; }
+
+    public override string GetSettingKey() => $"NAP_Settlement_InstantCalculation_Checking_{DbServer}";
+
+    public override bool IsValid() => MatchId > 0;
+}

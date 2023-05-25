@@ -9,20 +9,16 @@ public class PushingCalculationCriteria : NonQueryCommand
     {
         AdminId = 0;
         ErrMsg = string.Empty;
-        IP = string.Empty;
+        Ip = string.Empty;
         IsAutoInst = true;
-        Action = "CAL";
         MatchId = match.MatchId;
         HomeScore = match.HomeValue.ToString();
         AwayScore = match.AwayValue.ToString();
-        InstantKey = match.InstantKey;
     }
 
     public int AdminId { get; set; }
 
     public int MatchId { get; set; }
-
-    public int InstantKey { get; set; }
 
     public string HomeScore { get; set; }
 
@@ -30,15 +26,13 @@ public class PushingCalculationCriteria : NonQueryCommand
 
     public string Action { get; set; }
 
-    public string Mode { get; set; }
-
-    public string IP { get; set; }
+    public string Ip { get; set; }
 
     public string ResourceResult { get; set; }
 
     public bool IsAutoInst { get; set; }
 
-    public string BroadcastSessionId { get; } = Guid.NewGuid().ToString();
+    public string GoalRecord { get; set; }
 
     public int ErrCode { get; set; }
 
@@ -47,7 +41,7 @@ public class PushingCalculationCriteria : NonQueryCommand
     [SpParam(Ignored = true)]
     public string DbServer { get; set; }
 
-    public override string GetSettingKey() => $"NAP_Admin_Settlement_1_InstantCalculation_Push_{DbServer}";
+    public override string GetSettingKey() => $"NAP_Admin_Settlement_InstantCalculation_Push_{DbServer}";
 
     public override bool IsValid() => MatchId > 0;
 }

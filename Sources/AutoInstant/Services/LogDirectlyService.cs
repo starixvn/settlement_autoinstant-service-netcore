@@ -35,6 +35,6 @@ public class LogDirectlyServiceImp : LogDirectlyService
     }
 
     private static string GenerateLogData(PushingCalculationCriteria calculationCriteria)
-        => $"NAP: Instant Calculate ({calculationCriteria.Mode}) for matchId: {calculationCriteria.MatchId} "
-           + $"Score: {calculationCriteria.HomeScore}-{calculationCriteria.AwayScore} Instant action: {calculationCriteria.Mode}";
+        => $"NAP: Instant Calculate ({calculationCriteria.Action}) for matchId: {calculationCriteria.MatchId} "
+           + $"Score: {calculationCriteria.HomeScore}-{calculationCriteria.AwayScore} Instant action: {calculationCriteria.Action}";
 }

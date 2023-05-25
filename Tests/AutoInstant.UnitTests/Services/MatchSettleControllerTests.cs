@@ -9,7 +9,7 @@ public class MatchSettleControllerTests
     private readonly ScoreRetryService scoreRetryService;
     private readonly MatchSettlingPoolService matchSettlingPoolService;
     private readonly MatchSettleController matchSettleController;
-    private readonly MatchChecking matchChecking = new MatchChecking();
+    private readonly MatchInfo matchChecking = new MatchInfo();
 
     public MatchSettleControllerTests()
     {

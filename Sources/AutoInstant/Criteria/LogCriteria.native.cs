@@ -19,7 +19,7 @@ public class LogCriteria : NonQueryCommand
 
     public string GoalRecord { get; set; }
 
-    public string IP { get; } = string.Empty;
+    public string Ip { get; } = string.Empty;
 
     public override bool IsValid() => MatchId > 0 && ActionId > 0;
 

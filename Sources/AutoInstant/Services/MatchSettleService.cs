@@ -5,9 +5,9 @@ namespace AutoInstant.Services;
 
 public interface MatchSettleService
 {
-    Task ScoreMatched(Match match, MatchChecking matchChecking);
+    Task ScoreMatched(Match match, MatchInfo matchInfo);
 
-    void ScoreMismatched(Match match, MatchChecking matchChecking);
+    Task ScoreMismatched(Match match, MatchInfo matchInfo);
 }
 
 public class MatchSettleServiceImp : MatchSettleService
@@ -36,38 +36,38 @@ public class MatchSettleServiceImp : MatchSettleService
         this.notificationService = notificationService;
     }
 
-    public async Task ScoreMatched(Match match, MatchChecking matchChecking)
+    public async Task ScoreMatched(Match match, MatchInfo matchInfo)
     {
         try
         {
-            validationService.VerifyMatchBeforeExecution(match, matchChecking);
-            var result = await pushingCalculationService.Push(match, matchChecking);
+            validationService.VerifyMatchBeforeExecution(match, matchInfo);
+            var result = await pushingCalculationService.Push(match, matchInfo);
 
             if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
             {
-                await logService.ActionLog(match, matchChecking, result.ErrorMessage);
-                await autoInstantResultService.Insert(match, matchChecking);
+                await logService.ActionLog(match, matchInfo, result.ErrorMessage);
+                await autoInstantResultService.Insert(match, matchInfo);
             }
         }
         catch (AutoInstantException exception)
         {
-            await logService.ActionLog(match, matchChecking, exception);
-            await autoInstantResultService.Insert(match, matchChecking);
+            await logService.ActionLog(match, matchInfo, exception);
+            await autoInstantResultService.Insert(match, matchInfo);
             await notificationService.AddNotification(match, exception.IsSendToLetsTalk, exception.Description);
         }
     }
 
-    public void ScoreMismatched(Match match, MatchChecking matchChecking)
+    public async Task ScoreMismatched(Match match, MatchInfo matchInfo)
     {
         try
         {
-            validationService.VerifyMatchAfterComparing(match, matchChecking);
+            validationService.VerifyMatchAfterComparing(match, matchInfo);
         }
         catch (AutoInstantException exception)
         {
-            logService.ActionLog(match, matchChecking, exception);
-            autoInstantResultService.Insert(match, matchChecking);
-            notificationService.AddNotification(match, exception.IsSendToLetsTalk, exception.Description);
+            await logService.ActionLog(match, matchInfo, exception);
+            await autoInstantResultService.Insert(match, matchInfo);
+            await notificationService.AddNotification(match, exception.IsSendToLetsTalk, exception.Description);
         }
     }
 }

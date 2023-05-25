@@ -11,7 +11,7 @@ namespace AutoInstant.Services;
 
 public interface PushingCalculationService
 {
-    Task<Models.Result> Push(Match match, MatchChecking matchChecking);
+    Task<Models.Result> Push(Match match, MatchInfo matchChecking);
 }
 
 public class PushingCalculationServiceImp : PushingCalculationService
@@ -36,7 +36,8 @@ public class PushingCalculationServiceImp : PushingCalculationService
         PushingCalculationCriteriaService pushingCalculationCriteriaService,
         ScaleOutSettleService scaleOutSettleService,
         AutoInstantResultService autoInstantResultService,
-        IOptions<AppSettingsKey> appSettingsKey, LogDirectlyService logDirectlyService)
+        IOptions<AppSettingsKey> appSettingsKey,
+        LogDirectlyService logDirectlyService)
     {
         this.repository = repository;
         this.resultsService = resultsService;
@@ -47,18 +48,21 @@ public class PushingCalculationServiceImp : PushingCalculationService
         this.logDirectlyService = logDirectlyService;
     }
 
-    public async Task<Models.Result> Push(Match match, MatchChecking matchChecking)
+    public async Task<Models.Result> Push(Match match, MatchInfo matchChecking)
     {
         var goal = await GetGoal(matchChecking.GoalRecord, match.MatchId);
         var resourceResult = match.TypeId == SettleType.FirstHalf ? resultsService.HalftimeResults(goal) : resultsService.FullTimeResults(goal);
+
         var result = await ValidateBeforeExecute(match);
+
         if (result.ErrorCode == 0)
         {
             await autoInstantResultService.Update(match, false, MatchStatus.Completed);
             var betStatus = GetBetStatus(goal, matchChecking, match);
             await UpdateMatchInfo(match, resourceResult, betStatus);
 
-            PushingCalculationCriteria criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
+            var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
+            criteria.GoalRecord = matchChecking.GoalRecord;
 
             logDirectlyService.WriteLog(criteria);
 
@@ -77,7 +81,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
         }
     }
 
-    private string GetBetStatus(Goal goal, MatchChecking matchChecking, Match match)
+    private string GetBetStatus(Goal goal, MatchInfo matchChecking, Match match)
     {
         var betStatus = matchChecking.BetStatus ?? String.Empty;
         betStatus += match.TypeId == SettleType.FirstHalf ? pushingCalculationCriteriaService.BetStatusHtFl(matchChecking, goal, betStatus) : string.Empty;
@@ -94,7 +98,12 @@ public class PushingCalculationServiceImp : PushingCalculationService
             IsExistFgNg = ticketInfo.IsExistFgNg,
             IsExistHtFgNg = ticketInfo.IsExistHtFgNg,
             IsExistFG = ticketInfo.IsExistFG,
-            IsExistHTFG = ticketInfo.IsExistHTFG
+            IsExistHTFG = ticketInfo.IsExistHTFG,
+            IsExistCorner = ticketInfo.IsExistCorner,
+            IsExistHTCorner = ticketInfo.IsExistHTCorner,
+            IsExistFirstCorner = ticketInfo.IsExistFirstCorner,
+            IsExistHTFirstCorner = ticketInfo.IsExistHTFirstCorner,
+            IsExist2HFirstCorner = ticketInfo.IsExist2HFirstCorner,
         };
     }
 
@@ -114,7 +123,12 @@ public class PushingCalculationServiceImp : PushingCalculationService
             IsExistFgNg = listTicketInfo.Exists(item => item.IsExistFgNg),
             IsExistHtFgNg = listTicketInfo.Exists(item => item.IsExistHtFgNg),
             IsExistFG = listTicketInfo.Exists(item => item.IsExistFG),
-            IsExistHTFG = listTicketInfo.Exists(item => item.IsExistHTFG)
+            IsExistHTFG = listTicketInfo.Exists(item => item.IsExistHTFG),
+            IsExistCorner = listTicketInfo.Exists(item => item.IsExistCorner),
+            IsExist2HFirstCorner = listTicketInfo.Exists(item => item.IsExist2HFirstCorner),
+            IsExistFirstCorner = listTicketInfo.Exists(item => item.IsExistFirstCorner),
+            IsExistHTCorner = listTicketInfo.Exists(item => item.IsExistHTCorner),
+            IsExistHTFirstCorner = listTicketInfo.Exists(item => item.IsExistHTFirstCorner),
         };
     }
 
@@ -123,10 +137,10 @@ public class PushingCalculationServiceImp : PushingCalculationService
         var request = new EventTicketRequest
         {
             MatchId = match.MatchId,
-            Action = "CAL",
-            SpName = "NAP_Admin_Settlement_1_InstantCalculation_Push",
+            Action = $"CAL-{Mode(match.TypeId)}",
+            SpName = "NAP_Admin_Settlement_InstantCalculation_Push",
             IsAuto = true,
-            Mode = Mode(match.TypeId),
+            Mode = null,
             InstantKey = match.InstantKey
         };
         var resultMessage = await scaleOutSettleService.ValidateEventAndTicket(request);
@@ -145,11 +159,11 @@ public class PushingCalculationServiceImp : PushingCalculationService
         var requestUpdateInfo = new UpdateMatchInfoRequest
         {
             MatchId = match.MatchId,
-            Action = "CAL",
+            Action = $"CAL-{Mode(match.TypeId)}",
             AdminId = 0,
             ResourceResult = resourceResult,
             IsAuto = true,
-            Mode = Mode(match.TypeId),
+            Mode = null,
             BetStatus = betStatus
         };
 

@@ -41,6 +41,32 @@ public class ResourceServiceImp : ResourceService
             resources.Add(resource);
         }
 
+        if (goal.IsExistFirstCorner)
+        {
+            var fullTimeGoal = goalRecordService.FullTimeGoal(goal.GoalRecord);
+            var resource = actionResourceService.FullTimeFirstCornerResource(halftimeGoal, fullTimeGoal);
+            resources.Add(resource);
+        }
+
+        if (goal.IsExistHTFirstCorner)
+        {
+            var resource = actionResourceService.HalftimeFirstCornerResource(halftimeGoal);
+            resources.Add(resource);
+        }
+
+        if (goal.IsExistHTCorner)
+        {
+            var resource = actionResourceService.HalftimeExistCornerRaceResource(halftimeGoal);
+            resources.AddRange(resource);
+        }
+
+        if (goal.IsExistCorner)
+        {
+            var fullTimeGoal = goalRecordService.FullTimeGoal(goal.GoalRecord);
+            var resource = actionResourceService.FullTimeExistCornerRaceResource(halftimeGoal, fullTimeGoal);
+            resources.AddRange(resource);
+        }
+
         return resources;
     }
 
@@ -53,6 +79,24 @@ public class ResourceServiceImp : ResourceService
         if (goal.IsExistFgNg)
         {
             var resource = actionResourceService.FullTimeFirstGoalResources(halftimeGoal, fullTimeGoal);
+            resources.Add(resource);
+        }
+
+        if (goal.IsExistCorner)
+        {
+            var resource = actionResourceService.FullTimeExistCornerRaceResource(halftimeGoal, fullTimeGoal);
+            resources.AddRange(resource);
+        }
+
+        if (goal.IsExistFirstCorner)
+        {
+            var resource = actionResourceService.FullTimeFirstCornerResource(halftimeGoal, fullTimeGoal);
+            resources.Add(resource);
+        }
+
+        if (goal.IsExist2HFirstCorner && !string.IsNullOrEmpty(fullTimeGoal))
+        {
+            var resource = actionResourceService.TwoHFirstCornerResource(fullTimeGoal);
             resources.Add(resource);
         }
 

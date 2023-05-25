@@ -7,7 +7,7 @@ public class PushingCalculationFullTimeCriteria : PushingCalculationCriteria
 {
     public PushingCalculationFullTimeCriteria(Match match, string resourceResult) : base(match)
     {
-        Mode = ModeType.SecondHalf;
+        Action = $"CAL-{ModeType.SecondHalf}";
         ResourceResult = resourceResult;
     }
 }

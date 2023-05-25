@@ -5,9 +5,9 @@ namespace AutoInstant.Services;
 
 public interface LogService
 {
-    Task ActionLog(Match match, MatchChecking matchChecking, string message);
+    Task ActionLog(Match match, MatchInfo matchChecking, string message);
 
-    Task ActionLog(Match match, MatchChecking matchChecking, AutoInstantException exception);
+    Task ActionLog(Match match, MatchInfo matchChecking, AutoInstantException exception);
 }
 
 public class LogServiceImp : LogService
@@ -24,14 +24,14 @@ public class LogServiceImp : LogService
         this.logCriteriaService = logCriteriaService;
     }
 
-    public async Task ActionLog(Match match, MatchChecking matchChecking, string message)
+    public async Task ActionLog(Match match, MatchInfo matchChecking, string message)
     {
         var criteria = logCriteriaService.HideCreateCriteria(match, matchChecking);
         criteria.Remark = message;
         await repository.ExecuteAsync(criteria);
     }
 
-    public async Task ActionLog(Match match, MatchChecking matchChecking, AutoInstantException exception)
+    public async Task ActionLog(Match match, MatchInfo matchChecking, AutoInstantException exception)
     {
         var criteria = exception.IsShowOnReferenceActions
             ? logCriteriaService.ShowCreateCriteria(match, matchChecking)

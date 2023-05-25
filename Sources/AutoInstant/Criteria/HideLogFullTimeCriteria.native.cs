@@ -5,7 +5,7 @@ namespace AutoInstant.Criteria;
 
 public class HideLogFullTimeCriteria : LogCriteria
 {
-    public HideLogFullTimeCriteria(Match match, MatchChecking matchChecking) : base(match)
+    public HideLogFullTimeCriteria(Match match, MatchInfo matchChecking) : base(match)
     {
         ActionId = SettleAction.HideReferenceActionsForSecondHalf;
         FinalHomeScore = match.HomeValue;

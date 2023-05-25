@@ -1,6 +1,6 @@
 ﻿namespace AutoInstant.Models;
 
-public class MatchChecking
+public class MatchInfo
 {
     private const byte Instant = 2;
 
@@ -37,11 +37,5 @@ public class MatchChecking
 
     public string BetStatus { get; set; }
 
-    public bool IsSettingOff
-    {
-        get
-        {
-            return (AutoSetting & Instant) == 0;
-        }
-    }
+    public bool IsSettingOff => (AutoSetting & Instant) == 0;
 }
