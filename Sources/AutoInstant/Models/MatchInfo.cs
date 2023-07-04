@@ -6,11 +6,11 @@ public class MatchInfo
 
     private const int ToBase = 2;
 
-    public byte AutoSetting { get; set; }
+    public byte AutoSetting { get; init; }
 
     public byte SettlementStatus { get; set; }
 
-    public RemarkSettingModel Remark => new RemarkSettingModel
+    public RemarkSettingModel Remark => new()
     {
         SettlementStatus = Convert.ToString(SettlementStatus, ToBase).Reverse(),
     };

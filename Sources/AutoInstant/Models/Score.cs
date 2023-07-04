@@ -2,13 +2,13 @@
 
 public class Score
 {
-    public int MatchId { get; set; }
+    public int MatchId { get; init; }
 
-    public int SourceId { get; set; }
+    public int SourceId { get; init; }
 
-    public int TypeId { get; set; }
+    public int TypeId { get; init; }
 
-    public string HomeValue { get; set; }
+    public string HomeValue { get; init; }
 
-    public string AwayValue { get; set; }
+    public string AwayValue { get; init; }
 }

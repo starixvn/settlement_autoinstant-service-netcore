@@ -1,2 +1,2 @@
 ﻿namespace AutoInstant.Result.Models;
-public record GoalRecordCorner(char value, int raceTo);
+public record GoalRecordCorner(char Value, int RaceTo);

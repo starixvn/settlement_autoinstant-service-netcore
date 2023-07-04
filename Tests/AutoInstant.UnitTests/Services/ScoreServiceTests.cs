@@ -21,7 +21,7 @@ public class ScoreServiceTests
         const int matchId = 1;
         var fakeScores = new List<Score>
         {
-            new Score { SourceId = 2, TypeId = SettleType.FirstHalf  }
+            new () { SourceId = 2, TypeId = SettleType.FirstHalf  }
         };
         repository.Fetch<Score>(Arg.Any<ICriteria>()).Returns(fakeScores);
 
@@ -42,7 +42,7 @@ public class ScoreServiceTests
         const int matchId = 1;
         var fakeScores = new List<Score>
         {
-            new Score { SourceId = Source.SoccerWay, TypeId = typeId  }
+            new () { SourceId = Source.SoccerWay, TypeId = typeId  }
         };
         repository.Fetch<Score>(Arg.Any<ICriteria>()).Returns(fakeScores);
 

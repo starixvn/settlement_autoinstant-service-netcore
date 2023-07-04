@@ -26,7 +26,7 @@ public class ScoreMatcherServiceTests
         };
         var scores = new List<Score>
         {
-            new Score
+            new ()
             {
                 MatchId = 1,
                 HomeValue = "1",
@@ -55,7 +55,7 @@ public class ScoreMatcherServiceTests
         };
         var scores = new List<Score>
         {
-            new Score
+            new ()
             {
                 HomeValue = "1",
                 AwayValue = "0",

@@ -4,12 +4,12 @@ namespace AutoInstant.Criteria;
 
 public class LogCriteria : NonQueryCommand
 {
-    public LogCriteria(Match match)
+    protected LogCriteria(Match match)
     {
         MatchId = match.MatchId;
     }
 
-    public int UserId { get; }
+    public int UserId { get; set; }
 
     public int MatchId { get; set; }
 

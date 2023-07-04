@@ -2,14 +2,14 @@
 
 public class Goal
 {
-    public bool IsExistHtFgNg { get; set; }
-    public bool IsExistFgNg { get; set; }
-    public bool IsExistHTFG { get; set; }
-    public bool IsExistFG { get; set; }
-    public bool IsExistCorner { get; set; }
-    public bool IsExistHTCorner { get; set; }
-    public bool IsExistFirstCorner { get; set; }
-    public bool IsExistHTFirstCorner { get; set; }
-    public bool IsExist2HFirstCorner { get; set; }
-    public string GoalRecord { get; set; }
+    public bool IsExistHtFgNg { get; init; }
+    public bool IsExistFgNg { get; init; }
+    public bool IsExistHTFG { get; init; }
+    public bool IsExistFG { get; init; }
+    public bool IsExistCorner { get; init; }
+    public bool IsExistHTCorner { get; init; }
+    public bool IsExistFirstCorner { get; init; }
+    public bool IsExistHTFirstCorner { get; init; }
+    public bool IsExist2HFirstCorner { get; init; }
+    public string GoalRecord { get; init; }
 }
