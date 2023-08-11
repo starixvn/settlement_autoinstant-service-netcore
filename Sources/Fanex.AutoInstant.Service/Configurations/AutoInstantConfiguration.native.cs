@@ -3,19 +3,26 @@ using AutoInstant.Services;
 using AutoMapper;
 using Fanex.Caching;
 using Fanex.Caching.Redis;
+using Fanex.Data;
 using Fanex.Data.Repository;
+using Fanex.Data.SqlServer;
+using Fanex.Logging;
+using Fanex.Logging.Sentry.RavenClient;
 using Fanex.Settlement.ScaleOut;
 using Fanex.Settlement.ScaleOut.Services;
+using ONEbook.UM;
 using ONEbook.UM.AspNetCore;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
 using ONEbook.UM.Transport;
+using SharpRaven;
+using LogService = AutoInstant.Services.LogService;
 
-namespace Fanex.AutoInstant.Service;
+namespace Fanex.AutoInstant.Service.Configurations;
 
-public static class AutoPayoutInjector
+public static class AutoInstantConfiguration
 {
-    public static void InitializeServices(this IServiceCollection service, IConfiguration configuration)
+    public static void AutoInstantsConfigServices(this IServiceCollection service, IConfiguration configuration)
     {
         service.AddTransient<IMaintenanceService, MaintenanceServiceImp>();
         service.AddSingleton<IDynamicRepository, DynamicRepository>();
@@ -62,6 +69,9 @@ public static class AutoPayoutInjector
         service.AddSingleton(mapper);
 
         ConfigureRedis(service, configuration);
+        StartDataBaseSetting(configuration);
+        StartLogSetting(configuration);
+        StartUmSetting(configuration);
     }
 
     private static void ConfigureRedis(IServiceCollection service, IConfiguration configuration)
@@ -76,5 +86,46 @@ public static class AutoPayoutInjector
             ApplicationName = configuration.GetSection("Redis.ApplicationName").Value,
         }));
         service.AddSingleton<ICacheService>(new CacheService());
+    }
+
+    private static void StartDataBaseSetting(IConfiguration configuration)
+    {
+        var connections = configuration.GetSection("ConnectionStrings")
+            .GetChildren()
+            .AsEnumerable()
+            .ToDictionary(
+                x => x.GetValue<string>("Name"),
+                y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName"))
+            );
+        DbSettingProviderManager
+            .StartNewSession()
+            .Use(connections)
+            .WithSqlServer()
+            .UseDefaultDbSettingProvider(resourcePath: configuration.GetSection("StoredProcedurePath").Value)
+            .Run();
+    }
+
+    private static void StartLogSetting(IConfiguration configuration)
+    {
+        var logEngine = new List<ILogEngine>();
+
+        var sentryEngineOptions = new SentryEngineOptions
+        {
+            Dsn = new Dsn(configuration.GetSection("SentryToken").Value)
+        };
+
+        logEngine.Add(new SentryLogging(sentryEngineOptions));
+
+        LogManager.SetDefaultLogCategory(configuration.GetSection("SiteCategory").Value).Use(logEngine);
+    }
+
+    private static void StartUmSetting(IConfiguration configuration)
+    {
+        var umConfig = new UMClientConfiguration().Initialize(configuration);
+
+        UMClientManager
+            .UseConfig(umConfig)
+            .UseCacheService(new UMCacheService(new CacheService()))
+            .UseRestClient(new UMRestClient(umConfig));
     }
 }

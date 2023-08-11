@@ -3,6 +3,7 @@ WORKDIR /src
 
 COPY ./Sources/AutoInstant.Result ./AutoInstant.Result
 COPY ./Sources/AutoInstant ./AutoInstant
+COPY ./Sources/AutoInstant.Basketball ./AutoInstant.Basketball
 COPY ./Sources/Fanex.AutoInstant.Service/Fanex.AutoInstant.Service.csproj ./Fanex.AutoInstant.Service/Fanex.AutoInstant.Service.csproj
 
 WORKDIR /src/Fanex.AutoInstant.Service

@@ -4,7 +4,7 @@ namespace AutoInstant.Criteria;
 
 public class AddAutoResultCriteria : NonQueryCommand
 {
-    public int MatchId { get; init; }
+    public int MatchId { get; set; }
 
     public int SourceId { get; set; } = Source.SoccerWay;
 
@@ -20,7 +20,7 @@ public class AddAutoResultCriteria : NonQueryCommand
 
     public int ChildMatchType { get; set; }
 
-    public bool IsInstCalculated { get; init; }
+    public bool IsInstCalculated { get; set; }
 
     public override bool IsValid() => MatchId > 0;
 

@@ -6,7 +6,7 @@ public class MatchInfo
 
     private const int ToBase = 2;
 
-    public byte AutoSetting { get; init; }
+    public byte AutoSetting { get; set; }
 
     public byte SettlementStatus { get; set; }
 

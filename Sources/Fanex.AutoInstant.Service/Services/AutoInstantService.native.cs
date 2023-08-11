@@ -1,16 +1,9 @@
 ﻿using AutoInstant.Services;
-using Fanex.Caching;
-using Fanex.Data;
-using Fanex.Data.SqlServer;
-using Fanex.Logging;
-using Fanex.Logging.Sentry.RavenClient;
-using ONEbook.UM;
-using ONEbook.UM.AspNetCore;
-using ONEbook.UM.Configurations;
-using ONEbook.UM.Transport;
-using SharpRaven;
+using Fanex.Logging.Extensions;
+using Fanex.Logging.Extensions.Database;
+using LogService = Fanex.Logging.LogService;
 
-namespace Fanex.AutoInstant.Service;
+namespace Fanex.AutoInstant.Service.Services;
 
 public class AutoInstantService : IHostedService
 {
@@ -33,14 +26,6 @@ public class AutoInstantService : IHostedService
         this.configuration = configuration;
         this.maintenanceService = maintenanceService;
         InitializeExtraComponent();
-        InitializeSetting();
-    }
-
-    private void InitializeSetting()
-    {
-        StartUmSetting();
-        StartDataBaseSetting();
-        StartLogSetting();
     }
 
     private static void InitializeExtraComponent()
@@ -51,9 +36,14 @@ public class AutoInstantService : IHostedService
     private static void TaskSchedulerUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
         e.SetObserved();
-        e.Exception.Handle(x =>
+        e.Exception.Handle(exception =>
         {
-            Logging.LogService.Error(x.Message, x);
+            var logMessage = new LogMessage(exception.Message)
+                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+                .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+                .ToString();
+            LogService.Error(logMessage);
             return true;
         });
     }
@@ -97,7 +87,7 @@ public class AutoInstantService : IHostedService
         }
         catch (Exception exception)
         {
-            Logging.LogService.Error("Fanex.AutoInstant.Service:", exception);
+            LogService.Error("Fanex.AutoInstant.Service:", exception);
         }
     }
 
@@ -113,46 +103,5 @@ public class AutoInstantService : IHostedService
         var interval = configuration.GetSection("ServiceInterval").Value ?? "0";
 
         counter += int.Parse(interval);
-    }
-
-    private void StartUmSetting()
-    {
-        var umConfig = new UMClientConfiguration().Initialize(configuration);
-
-        UMClientManager
-            .UseConfig(umConfig)
-            .UseCacheService(new UMCacheService(new CacheService()))
-            .UseRestClient(new UMRestClient(umConfig));
-    }
-
-    private void StartDataBaseSetting()
-    {
-        var connections = configuration.GetSection("ConnectionStrings")
-            .GetChildren()
-            .AsEnumerable()
-            .ToDictionary(
-                x => x.GetValue<string>("Name"),
-                y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName"))
-            );
-        DbSettingProviderManager
-            .StartNewSession()
-            .Use(connections)
-            .WithSqlServer()
-            .UseDefaultDbSettingProvider(resourcePath: configuration.GetSection("StoredProcedurePath").Value)
-            .Run();
-    }
-
-    private void StartLogSetting()
-    {
-        var logEngine = new List<ILogEngine>();
-
-        var sentryEngineOptions = new SentryEngineOptions
-        {
-            Dsn = new Dsn(configuration.GetSection("SentryToken").Value)
-        };
-
-        logEngine.Add(new SentryLogging(sentryEngineOptions));
-
-        LogManager.SetDefaultLogCategory(configuration.GetSection("SiteCategory").Value).Use(logEngine);
     }
 }

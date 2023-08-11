@@ -6,13 +6,13 @@ public class AddNotificationCriteria : NonQueryCommand
 
     public string MessageType { get; } = "Warning";
 
-    public int MatchId { get; init; }
+    public int MatchId { get; set; }
 
     public string ActionName { get; set; }
 
     public string MessageContent { get; set; }
 
-    public int UserId { get; init; }
+    public int UserId { get; set; }
 
     public int ErrCode { get; set; }
 

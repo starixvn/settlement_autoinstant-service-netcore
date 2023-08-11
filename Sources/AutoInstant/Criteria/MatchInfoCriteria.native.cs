@@ -2,7 +2,7 @@
 
 public class MatchInfoCriteria : CriteriaBase
 {
-    public int MatchId { get; init; }
+    public int MatchId { get; set; }
 
     public int InstantKey { get; set; }
 
