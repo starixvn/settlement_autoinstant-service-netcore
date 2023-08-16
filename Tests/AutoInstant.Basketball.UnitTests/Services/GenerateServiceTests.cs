@@ -6,13 +6,11 @@ namespace AutoInstant.Basketball.UnitTests.Services;
 
 public class GenerateServiceTests
 {
-    private readonly XmlConvertService xmlConvertService;
-
     private readonly GenerateService service;
 
     public GenerateServiceTests()
     {
-        xmlConvertService = new XmlConvertServiceImp();
+        var xmlConvertService = new XmlConvertServiceImp();
         service = new GenerateServiceImp(xmlConvertService);
     }
 
