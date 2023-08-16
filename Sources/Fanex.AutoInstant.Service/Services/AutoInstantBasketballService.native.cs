@@ -69,13 +69,14 @@ public class AutoInstantBasketballService : IHostedService
     {
         while (running)
         {
-            if (maintenanceService.IsMaintenance) continue;
+            if (!maintenanceService.IsMaintenance)
+            {
+                MainProcess();
 
-            MainProcess();
+                var interval = configuration.GetSection("BasketballServiceInterval").Value ?? "0";
 
-            var interval = configuration.GetSection("BasketballServiceInterval").Value ?? "0";
-
-            Thread.Sleep(int.Parse(interval));
+                Thread.Sleep(int.Parse(interval));
+            }
         }
     }
 
@@ -88,7 +89,7 @@ public class AutoInstantBasketballService : IHostedService
         }
         catch (Exception exception)
         {
-            LogService.Error("Fanex.AutoInstantBasketball.Service:", exception);
+            LogService.Error("Error from AutoInstant Service(Basketball):", exception);
         }
     }
 

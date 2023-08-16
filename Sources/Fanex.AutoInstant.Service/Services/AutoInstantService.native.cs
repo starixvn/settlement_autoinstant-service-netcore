@@ -68,13 +68,14 @@ public class AutoInstantService : IHostedService
     {
         while (running)
         {
-            if (maintenanceService.IsMaintenance) continue;
+            if (maintenanceService.IsMaintenance)
+            {
+                MainProcess();
 
-            MainProcess();
+                var interval = configuration.GetSection("ServiceInterval").Value ?? "0";
 
-            var interval = configuration.GetSection("ServiceInterval").Value ?? "0";
-
-            Thread.Sleep(int.Parse(interval));
+                Thread.Sleep(int.Parse(interval));
+            }
         }
     }
 
@@ -87,7 +88,7 @@ public class AutoInstantService : IHostedService
         }
         catch (Exception exception)
         {
-            LogService.Error("Fanex.AutoInstant.Service:", exception);
+            LogService.Error("Error from AutoInstant Service(Soccer):", exception);
         }
     }
 

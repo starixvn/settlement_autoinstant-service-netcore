@@ -29,12 +29,11 @@ public class SettleMatchServiceImp : SettleMatchService
     {
         try
         {
-            await scoreValidateService.IsScoreDecreased(match);
+            await scoreValidateService.ScoreValidation(match);
 
-            await matchSettleService.Settle(match.MatchId, match.ResultDetails.Where(r => !r.Invalid).ToList());
+            await matchSettleService.Settle(match);
 
-            await matchSettleService.HandleScoreValidateFailed(match.MatchId,
-                match.ResultDetails.Where(r => r.Invalid).ToList());
+            await matchSettleService.HandleScoreFailed(match);
         }
         finally
         {

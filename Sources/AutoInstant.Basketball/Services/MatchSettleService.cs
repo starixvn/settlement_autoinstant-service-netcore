@@ -8,9 +8,9 @@ namespace AutoInstant.Basketball.Services;
 
 public interface MatchSettleService
 {
-    Task Settle(int matchId, IReadOnlyList<ResultDetail> resultDetails);
+    Task Settle(Match match);
 
-    Task HandleScoreValidateFailed(int matchId, IReadOnlyList<ResultDetail> resultDetails);
+    Task HandleScoreFailed(Match match);
 }
 
 public class MatchSettleServiceImp : MatchSettleService
@@ -34,31 +34,42 @@ public class MatchSettleServiceImp : MatchSettleService
         this.generateService = generateService;
     }
 
-    public async Task Settle(int matchId, IReadOnlyList<ResultDetail> resultDetails)
+    public async Task Settle(Match match)
     {
-        if (!resultDetails.Any())
+        var scoresValid = match.ResultDetails.Where(r => !r.Invalid).ToList();
+
+        if (scoresValid.Count > 0)
         {
-            return;
+            var resource = generateService.CreateResources(scoresValid);
+            var determinedType = generateService.GetDeterminedType(scoresValid);
+
+            await UpdateResourceStatus(match.MatchId, resource, Status.Waitting);
+
+            var criteria = new SettleProfileCriteria
+            {
+                MatchId = match.MatchId,
+                SelectedResources = resource,
+                DeterminedType = determinedType
+            };
+
+            logService.WriteDirectlyLog(criteria);
+
+            Execute(criteria);
         }
-        var resource = generateService.CreateResources(resultDetails);
-        await UpdateResourceStatus(matchId, resource, Status.Waitting);
-
-        var criteria = new SettleProfileCriteria { MatchId = matchId, SelectedResources = resource, DeterminedType = generateService.GetDeterminedType(resultDetails) };
-        logService.WriteDirectlyLog(criteria);
-
-        Execute(criteria);
     }
 
-    public async Task HandleScoreValidateFailed(int matchId, IReadOnlyList<ResultDetail> resultDetails)
+    public async Task HandleScoreFailed(Match match)
     {
-        if (!resultDetails.Any())
-        {
-            return;
-        }
-        var resource = generateService.CreateResources(resultDetails);
-        await UpdateResourceStatus(matchId, resource, Status.Failure);
+        var scoresInvalid = match.ResultDetails.Where(r => r.Invalid).ToList();
 
-        await logService.WriteLog(matchId, ErrorMessage.ScoreDecreased);
+        if (scoresInvalid.Count > 0)
+        {
+            var resource = generateService.CreateResources(scoresInvalid);
+
+            await UpdateResourceStatus(match.MatchId, resource, Status.Failure);
+
+            await logService.WriteLog(match.MatchId, ErrorMessage.ScoreDecreased);
+        }
     }
 
     private void Execute(SettleProfileCriteria criteria)

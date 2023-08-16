@@ -32,21 +32,20 @@ public class MatchSettleServiceTests
     }
 
     [Fact]
-    public void Settle_EmptyResultDetails_ShouldStopProgress()
-    {
-        service.Settle(123, new List<ResultDetail>());
-
-        generateService.DidNotReceive().CreateResources(Arg.Any<List<ResultDetail>>());
-    }
-
-    [Fact]
     public void Settle_ExistResultDetails_UpdateAndSettleResult()
     {
-        generateService.CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i.First().ResourceId == "Q1"))
-            .Returns("<Resources />");
-        service.Settle(123, new List<ResultDetail> { new() { ResourceId = "Q1" } });
+        var resultDetails = new List<ResultDetail> { new() { ResourceId = "Q1", Invalid = false } };
+        var match = new Match
+        {
+            MatchId = 123,
+            ResultDetails = resultDetails
+        };
 
-        generateService.Received().CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i.First().ResourceId == "Q1"));
+        generateService.CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i[0].ResourceId == "Q1"))
+            .Returns("<Resources />");
+        service.Settle(match);
+
+        generateService.Received().CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i[0].ResourceId == "Q1"));
         repository.Received()
             .ExecuteAsync(Arg.Is<UpdateMatchCriteria>(c => c.MatchId == 123 && c.SelectedResources == "<Resources />" && c.StatusId == Status.Waitting));
         logService.Received().WriteDirectlyLog(Arg.Any<SettleProfileCriteria>());
@@ -54,21 +53,20 @@ public class MatchSettleServiceTests
     }
 
     [Fact]
-    public void HandleScoreValidateFailed_EmptyResultDetails_ShouldStopProgress()
+    public void HandleScoreFailed_ExistResultDetails_UpdateAndLogResult()
     {
-        service.HandleScoreValidateFailed(123, new List<ResultDetail>());
+        var resultDetails = new List<ResultDetail> { new() { ResourceId = "Q1", Invalid = true } };
+        var match = new Match
+        {
+            MatchId = 123,
+            ResultDetails = resultDetails
+        };
 
-        generateService.DidNotReceive().CreateResources(Arg.Any<List<ResultDetail>>());
-    }
-
-    [Fact]
-    public void HandleScoreValidateFailed_ExistResultDetails_UpdateAndLogResult()
-    {
-        generateService.CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i.First().ResourceId == "Q1"))
+        generateService.CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i[0].ResourceId == "Q1"))
             .Returns("<Resources />");
-        service.HandleScoreValidateFailed(123, new List<ResultDetail> { new() { ResourceId = "Q1" } });
+        service.HandleScoreFailed(match);
 
-        generateService.Received().CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i.First().ResourceId == "Q1"));
+        generateService.Received().CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i[0].ResourceId == "Q1"));
         repository.Received()
             .ExecuteAsync(Arg.Is<UpdateMatchCriteria>(c => c.MatchId == 123 && c.SelectedResources == "<Resources />" && c.StatusId == Status.Failure));
         logService.Received().WriteLog(123, Arg.Any<string>());

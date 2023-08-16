@@ -46,7 +46,7 @@ public class ScoreValidateServiceTests
              new() { ResourceId = "Q3", HomeValue = 1, AwayValue = 4 }
          });
 
-        service.IsScoreDecreased(new Match { ResultDetails = resultDetails });
+        service.ScoreValidation(new Match { ResultDetails = resultDetails });
 
         Assert.True(resultDetails[0].Invalid);
         Assert.False(resultDetails[1].Invalid);

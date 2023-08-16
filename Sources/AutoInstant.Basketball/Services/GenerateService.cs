@@ -23,12 +23,9 @@ public class GenerateServiceImp : GenerateService
     {
         List<string> resourceIds = new() { "01", "NOT_DEFINE", "00", "Q1", "Q2", "Q3", "Q4", "OT" };
         var bitArray = new bool[8];
-        foreach (var resultDetail in resultDetails)
+        foreach (var resultDetail in resultDetails.Where(resultDetail => resourceIds.IndexOf(resultDetail.ResourceId) > -1))
         {
-            if (resourceIds.IndexOf(resultDetail.ResourceId) > -1)
-            {
-                bitArray[resourceIds.IndexOf(resultDetail.ResourceId)] = true;
-            }
+            bitArray[resourceIds.IndexOf(resultDetail.ResourceId)] = true;
         }
 
         var binaryString = string.Join("", bitArray.Reverse().Select(b => b ? "1" : "0"));

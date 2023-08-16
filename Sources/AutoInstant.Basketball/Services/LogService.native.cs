@@ -5,7 +5,7 @@ namespace AutoInstant.Basketball.Services;
 
 public interface LogService
 {
-    void WriteDirectlyLog(SettleProfileCriteria criteria);
+    void WriteDirectlyLog(SettleProfileCriteria settleProfileCriteria);
 
     Task WriteLog(int matchId, string message);
 }
@@ -19,14 +19,14 @@ public class LogServiceImp : LogService
         this.repository = repository;
     }
 
-    public void WriteDirectlyLog(SettleProfileCriteria settleCriteria)
+    public void WriteDirectlyLog(SettleProfileCriteria settleProfileCriteria)
     {
         try
         {
             var criteria = new LogDirectlyCriteria
             {
-                Extend = settleCriteria.MatchId,
-                Doing = GenerateLogData(settleCriteria)
+                Extend = settleProfileCriteria.MatchId,
+                Doing = GenerateLogData(settleProfileCriteria)
             };
 
             repository.Execute(criteria);

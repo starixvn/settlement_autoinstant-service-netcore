@@ -22,30 +22,20 @@ public class SettleMatchServiceTests
     }
 
     [Fact]
-    public void Process_Always_ValidateAndHandleResultInvalidValid()
+    public void Process_Always_InvokeRightOrderMethod()
     {
-        var resultDetails = new List<ResultDetail>
+        var match = new Match();
+        service.Process(match);
+
+        Received.InOrder(() =>
         {
-            new()
-            {
-                ResourceId = "Q1",
-            },
-            new()
-            {
-                ResourceId = "Q2",
-            }
-        };
+            scoreValidateService.ScoreValidation(match);
 
-        scoreValidateService.IsScoreDecreased(Arg.Do<Match>(m => m.ResultDetails.First().Invalid = true));
+            matchSettleService.Settle(Arg.Any<Match>());
 
-        service.Process(new Match { MatchId = 123, ResultDetails = resultDetails });
+            matchSettleService.HandleScoreFailed(Arg.Any<Match>());
 
-        matchSettleService.Received().Settle(123,
-            Arg.Is<List<ResultDetail>>(r => r.Count == 1 && r.First().ResourceId == "Q2"));
-
-        matchSettleService.Received().HandleScoreValidateFailed(123,
-            Arg.Is<List<ResultDetail>>(r => r.Count == 1 && r.First().ResourceId == "Q1"));
-
-        matchSettlingPoolService.Received().Remove(Arg.Is<Match>(m => m.MatchId == 123));
+            matchSettlingPoolService.Remove(Arg.Any<Match>());
+        });
     }
 }

@@ -6,7 +6,7 @@ namespace AutoInstant.Basketball.Services;
 
 public interface ScoreValidateService
 {
-    Task IsScoreDecreased(Match match);
+    Task ScoreValidation(Match match);
 }
 
 public class ScoreValidateServiceImp : ScoreValidateService
@@ -18,23 +18,26 @@ public class ScoreValidateServiceImp : ScoreValidateService
         this.repository = repository;
     }
 
-    public async Task IsScoreDecreased(Match match)
+    public async Task ScoreValidation(Match match)
     {
-        var getLatestScoreSettled = new GetLatestScoreCriteria
+        var criteria = new GetLatestScoreCriteria
         {
             MatchId = match.MatchId,
             ResourceIds = string.Join(',', match.ResultDetails.Select(r => r.ResourceId).ToList())
         };
 
-        var latestScores = (await repository.FetchAsync<Score>(getLatestScoreSettled)).ToList();
+        var latestScores = (await repository.FetchAsync<Score>(criteria)).ToList();
 
         foreach (var resultDetail in match.ResultDetails)
         {
-            var score = latestScores.FirstOrDefault(s => s.ResourceId == resultDetail.ResourceId);
+            var score = latestScores.Find(s => s.ResourceId == resultDetail.ResourceId);
 
-            resultDetail.Invalid = score != null &&
-                                   (resultDetail.HomeValue < score.HomeValue ||
-                                    resultDetail.AwayValue < score.AwayValue);
+            resultDetail.Invalid = IsInvalidScore(score, resultDetail);
         }
+    }
+
+    private static bool IsInvalidScore(Score score, ResultDetail resultDetail)
+    {
+        return score != null && (resultDetail.HomeValue < score.HomeValue || resultDetail.AwayValue < score.AwayValue);
     }
 }
