@@ -68,7 +68,7 @@ public class AutoInstantService : IHostedService
     {
         while (running)
         {
-            if (maintenanceService.IsMaintenance)
+            if (!maintenanceService.IsMaintenance)
             {
                 MainProcess();
 

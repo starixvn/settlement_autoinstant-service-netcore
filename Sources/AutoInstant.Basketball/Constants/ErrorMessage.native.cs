@@ -2,5 +2,5 @@
 
 public static class ErrorMessage
 {
-    public const string ScoreDecreased = "Process: any of home, away, total LiveScore value decreased.";
+    public const string ScoreDecreased = "Failed Auto Instant: decreased score.";
 }
