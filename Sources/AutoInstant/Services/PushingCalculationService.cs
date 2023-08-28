@@ -83,7 +83,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
     private string GetBetStatus(Goal goal, MatchInfo matchChecking, Match match)
     {
-        var betStatus = matchChecking.BetStatus ?? String.Empty;
+        var betStatus = matchChecking.BetStatus ?? string.Empty;
         betStatus += match.TypeId == SettleType.FirstHalf ? pushingCalculationCriteriaService.BetStatusHtFl(matchChecking, goal, betStatus) : string.Empty;
         betStatus += pushingCalculationCriteriaService.BetStatusFl(matchChecking, goal, betStatus);
         return betStatus;
