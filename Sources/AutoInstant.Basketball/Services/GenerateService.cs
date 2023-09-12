@@ -21,6 +21,7 @@ public class GenerateServiceImp : GenerateService
 
     public int GetDeterminedType(IEnumerable<ResultDetail> resultDetails)
     {
+        const int binary = 2;
         List<string> resourceIds = new() { "01", "NOT_DEFINE", "00", "Q1", "Q2", "Q3", "Q4", "OT" };
         var bitArray = new bool[8];
         foreach (var resultDetail in resultDetails.Where(resultDetail => resourceIds.IndexOf(resultDetail.ResourceId) > -1))
@@ -30,7 +31,7 @@ public class GenerateServiceImp : GenerateService
 
         var binaryString = string.Join("", bitArray.Reverse().Select(b => b ? "1" : "0"));
 
-        return Convert.ToInt32(binaryString, 2);
+        return Convert.ToInt32(binaryString, binary);
     }
 
     public string CreateResources(IEnumerable<ResultDetail> resultDetails)
