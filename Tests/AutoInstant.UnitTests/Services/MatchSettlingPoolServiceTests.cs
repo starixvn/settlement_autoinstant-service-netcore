@@ -11,7 +11,7 @@ public class MatchSettlingPoolServiceTests
     }
 
     [Fact]
-    public void PeekNewMatch_InvokeDynamicRepositoryMethod()
+    public async void PeekNewMatch_InvokeDynamicRepositoryMethod()
     {
         // Arrange
         var emptyMatchList = new List<Match>();
@@ -20,14 +20,14 @@ public class MatchSettlingPoolServiceTests
         var matchListingService = new MatchSettlingPoolServiceImp(matchByLeagueService);
 
         // Act
-        matchListingService.PeekNewMatch();
+        await matchListingService.PeekNewMatch();
 
         // Assert
-        matchByLeagueService.Received().GetMatches();
+        await matchByLeagueService.Received().GetMatches();
     }
 
     [Fact]
-    public void PeekNewMatch_Twice_OnlyAddNewMatchToPool()
+    public async void PeekNewMatch_Twice_OnlyAddNewMatchToPool()
     {
         // Arrange
         var matchByLeagueService = Substitute.For<MatchByLeagueService>();
@@ -35,18 +35,18 @@ public class MatchSettlingPoolServiceTests
 
         // Act1
         matchByLeagueService.GetMatches().Returns(CreateMatches(1, 2));
-        matchListingService.PeekNewMatch();
+        await matchListingService.PeekNewMatch();
 
         // Act2
         matchByLeagueService.GetMatches().Returns(CreateMatches(2, 3));
-        matchListingService.PeekNewMatch();
+        await matchListingService.PeekNewMatch();
 
         // Assert
         Assert.Equal(3, matchListingService.PoolOfMatches.Count);
     }
 
     [Fact]
-    public void Remove_ExistedMatchId_ExistingMatchIsRemove()
+    public async void Remove_ExistedMatchId_ExistingMatchIsRemove()
     {
         // Arrange
         var matchByLeagueService = Substitute.For<MatchByLeagueService>();
@@ -55,15 +55,15 @@ public class MatchSettlingPoolServiceTests
         matchByLeagueService.GetMatches().Returns(matches);
 
         // Act1
-        matchListingService.PeekNewMatch();
+        await matchListingService.PeekNewMatch();
         matchListingService.Remove(matches[0]);
 
         // Assert
-        Assert.Equal(1, matchListingService.PoolOfMatches.Count);
+        Assert.Single(matchListingService.PoolOfMatches);
     }
 
     [Fact]
-    public void Remove_NotExistedMatchId_NoChange()
+    public async void Remove_NotExistedMatchId_NoChange()
     {
         // Arrange
         var matchByLeagueService = Substitute.For<MatchByLeagueService>();
@@ -72,7 +72,7 @@ public class MatchSettlingPoolServiceTests
         matchByLeagueService.GetMatches().Returns(matches);
 
         // Act1
-        matchListingService.PeekNewMatch();
+        await matchListingService.PeekNewMatch();
         matchListingService.Remove(new Match { MatchId = 3 });
 
         // Assert

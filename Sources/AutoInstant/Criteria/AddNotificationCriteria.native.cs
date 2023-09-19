@@ -12,7 +12,7 @@ public class AddNotificationCriteria : NonQueryCommand
 
     public string MessageContent { get; set; }
 
-    public int UserId { get; }
+    public int UserId { get; set; }
 
     public int ErrCode { get; set; }
 

@@ -1,14 +1,22 @@
+using AutoInstant.Basketball.Models;
 using AutoInstant.Models;
-using Fanex.AutoInstant.Service;
+using Fanex.AutoInstant.Service.Configurations;
+using Fanex.AutoInstant.Service.Services;
 using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<AppSettingsKey>(builder.Configuration);
 
-builder.Services.InitializeServices(builder.Configuration);
+builder.Services.Configure<AppSettingsBasketballKey>(builder.Configuration);
+
+builder.Services.AutoInstantsConfigServices(builder.Configuration);
+
+builder.Services.AutoInstantsBasketballConfigServices();
 
 builder.Services.AddHostedService<AutoInstantService>();
+
+builder.Services.AddHostedService<AutoInstantBasketballService>();
 
 var app = builder.Build();
 

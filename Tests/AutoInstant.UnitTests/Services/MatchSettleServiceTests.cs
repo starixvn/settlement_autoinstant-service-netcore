@@ -35,7 +35,7 @@ public class MatchSettleServiceTests
         {
             Description = "exception"
         };
-        validationService.When(x => x.VerifyMatchBeforeExecution(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(x => { throw exception; });
+        validationService.When(x => x.VerifyMatchBeforeExecution(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(_ => throw exception);
 
         // Act
         matchSettleService.ScoreMatched(match, matchChecking);
@@ -89,7 +89,7 @@ public class MatchSettleServiceTests
         {
             Description = "exception"
         };
-        validationService.When(x => x.VerifyMatchBeforeExecution(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(x => { throw exception; });
+        validationService.When(x => x.VerifyMatchBeforeExecution(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(_ => throw exception);
 
         // Act
         matchSettleService.ScoreMatched(match, matchChecking);
@@ -100,7 +100,6 @@ public class MatchSettleServiceTests
         notificationService.Received().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
 
-
     [Fact]
     public void ScoreMismatched_VerifyMatchFail_InvokeActionLogAndInsertInstantResult()
     {
@@ -109,7 +108,7 @@ public class MatchSettleServiceTests
         {
             Description = "exception"
         };
-        validationService.When(x => x.VerifyMatchAfterComparing(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(x => { throw exception; });
+        validationService.When(x => x.VerifyMatchAfterComparing(Arg.Any<Match>(), Arg.Any<MatchInfo>())).Do(_ => throw exception);
 
         // Act
         matchSettleService.ScoreMismatched(match, matchChecking);

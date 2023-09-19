@@ -17,7 +17,6 @@ public class PushingCalculationServiceTests
     private readonly IDynamicRepository repository;
     private readonly ResultsService resultsService;
     private readonly PushingCalculationCriteriaService pushingCalculationCriteriaService;
-    private IOptions<AppSettingsKey> appSettingsKey;
     private readonly ScaleOutSettleService scaleOutSettleService;
     private readonly AutoInstantResultService autoInstantResultService;
     private readonly LogDirectlyService logDirectlyService;
@@ -30,8 +29,6 @@ public class PushingCalculationServiceTests
         scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
         autoInstantResultService = Substitute.For<AutoInstantResultService>();
         logDirectlyService = Substitute.For<LogDirectlyService>();
-
-        appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = new() { "ABC" } });
 
         resultsService.HalftimeResults(Arg.Any<Goal>()).Returns("HalftimeResults");
         resultsService.FullTimeResults(Arg.Any<Goal>()).Returns("FullTimeResults");
@@ -51,6 +48,8 @@ public class PushingCalculationServiceTests
 
         pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), "HalftimeResults")
             .Returns(new PushingCalculationCriteria(new Match()) { ResourceResult = "HalftimeResults" });
+
+        var appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = new() { "ABC" } });
 
         var pushingCalculationService = new PushingCalculationServiceImp(
             repository,
@@ -83,6 +82,7 @@ public class PushingCalculationServiceTests
         var matchChecking = new MatchInfo();
         pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), Arg.Any<string>())
             .Returns(new PushingCalculationCriteria(new Match()) { ResourceResult = "FullTimeResults" });
+        var appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = new() { "ABC" } });
 
         var pushingCalculationService = new PushingCalculationServiceImp(
             repository,
@@ -121,6 +121,7 @@ public class PushingCalculationServiceTests
         scaleOutSettleService.ValidateEventAndTicket(Arg.Any<EventTicketRequest>()).Returns(new ResultMessage { ErrorMessage = "Fail" });
 
         pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), Arg.Any<string>()).Returns(fakeCriteria);
+        var appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = new() { "ABC" } });
 
         var pushingCalculationService = new PushingCalculationServiceImp(
                repository,
@@ -131,7 +132,6 @@ public class PushingCalculationServiceTests
                appSettingsKey,
                logDirectlyService
                );
-
 
         // Act
         var result = await pushingCalculationService.Push(match, matchChecking);

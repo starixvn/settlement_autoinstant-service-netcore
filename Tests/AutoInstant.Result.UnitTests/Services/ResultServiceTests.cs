@@ -9,19 +9,22 @@ public class ResultServiceTests
 
     private readonly ResourceService resourceService;
 
-    private readonly List<XmlResource> fakeResourceHalftime = new List<XmlResource>
+    private readonly List<XmlResource> fakeResourceHalftime = new()
     {
-          new XmlResource {
+          new XmlResource
+          {
               ResourceId ="127F", HomeValue = "A", SettlementStatusId=4, ResultStatusId =5
           },
-          new XmlResource {
+          new XmlResource
+          {
               ResourceId ="14F", HomeValue = "A", SettlementStatusId=4, ResultStatusId =5
           }
     };
 
-    private readonly List<XmlResource> fakeResourceFullTime = new List<XmlResource>
+    private readonly List<XmlResource> fakeResourceFullTime = new()
     {
-          new XmlResource {
+          new XmlResource
+          {
               ResourceId ="14F", HomeValue = "A", SettlementStatusId=4, ResultStatusId =5
           }
     };

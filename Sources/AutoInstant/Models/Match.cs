@@ -18,12 +18,9 @@ public class Match
 
     public int ChildMatchType { get; set; }
 
-    public override bool Equals(object obj)
-    {
-        return obj != null
-               && (obj is Match)
-               && (obj as Match).MatchId == MatchId;
-    }
+    public override bool Equals(object obj) =>
+        obj is Match match
+        && match.MatchId == MatchId;
 
     public override int GetHashCode()
     {

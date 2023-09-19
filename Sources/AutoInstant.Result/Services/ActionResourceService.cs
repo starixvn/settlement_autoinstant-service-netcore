@@ -6,14 +6,19 @@ namespace AutoInstant.Result.Services;
 public interface ActionResourceService
 {
     List<XmlResource> FullTimeExistCornerRaceResource(string halftimeGoal, string fullTimeGoal);
+
     XmlResource FullTimeFirstCornerResource(string halftimeGoal, string fullTimeGoal);
+
     XmlResource FullTimeFirstGoalResources(string halftimeGoal, string fullTimeGoal);
+
     XmlResource HalftimeFirstCornerResource(string halftimeGoal);
+
     List<XmlResource> HalftimeExistCornerRaceResource(string halftimeGoal);
+
     XmlResource HalftimeFirstGoalResources(string halftimeGoal);
+
     XmlResource TwoHFirstCornerResource(string fullTimeGoal);
 }
-
 
 public class ActionResourceServiceImp : ActionResourceService
 {
@@ -89,13 +94,12 @@ public class ActionResourceServiceImp : ActionResourceService
 
         return result.Select(v => new XmlResource
         {
-            HomeValue = $"{v.value}",
-            ResourceId = $"{ResourceKey.CornerRace}{PadLeft(v.raceTo)}",
+            HomeValue = $"{v.Value}",
+            ResourceId = $"{ResourceKey.CornerRace}{PadLeft(v.RaceTo)}",
             ResultStatusId = ManuallySettled,
             SettlementStatusId = Completed,
         }).ToList();
     }
-
 
     public List<XmlResource> HalftimeExistCornerRaceResource(string halftimeGoal)
     {
@@ -103,8 +107,8 @@ public class ActionResourceServiceImp : ActionResourceService
 
         return result.Select(v => new XmlResource
         {
-            HomeValue = $"{v.value}",
-            ResourceId = $"{ResourceKey.HalftimeCornerRace}{PadLeft(v.raceTo)}",
+            HomeValue = $"{v.Value}",
+            ResourceId = $"{ResourceKey.HalftimeCornerRace}{PadLeft(v.RaceTo)}",
             ResultStatusId = ManuallySettled,
             SettlementStatusId = Completed,
         }).ToList();
@@ -154,5 +158,4 @@ public class ActionResourceServiceImp : ActionResourceService
     }
 
     private static string PadLeft(int num) => num < Ten ? $"0{num}" : $"{num}";
-
 }

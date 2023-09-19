@@ -10,7 +10,7 @@ public class MatchInfo
 
     public byte SettlementStatus { get; set; }
 
-    public RemarkSettingModel Remark => new RemarkSettingModel
+    public RemarkSettingModel Remark => new()
     {
         SettlementStatus = Convert.ToString(SettlementStatus, ToBase).Reverse(),
     };

@@ -16,14 +16,14 @@ public class LogCriteriaServiceImp : LogCriteriaService
     public LogCriteria ShowCreateCriteria(Match match, MatchInfo matchChecking)
     {
         return match.TypeId == SettleType.FirstHalf
-            ? (LogCriteria)(new ShowLogHalftimeCriteria(match, matchChecking))
-            : (LogCriteria)(new ShowLogFullTimeCriteria(match, matchChecking));
+            ? new ShowLogHalftimeCriteria(match, matchChecking)
+            : new ShowLogFullTimeCriteria(match, matchChecking);
     }
 
     public LogCriteria HideCreateCriteria(Match match, MatchInfo matchChecking)
     {
         return match.TypeId == SettleType.FirstHalf
-            ? (LogCriteria)(new HideLogHalftimeCriteria(match, matchChecking))
-            : (LogCriteria)(new HideLogFullTimeCriteria(match, matchChecking));
+            ? new HideLogHalftimeCriteria(match, matchChecking)
+            : new HideLogFullTimeCriteria(match, matchChecking);
     }
 }

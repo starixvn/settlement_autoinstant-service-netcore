@@ -72,10 +72,11 @@ public class MatchByLeagueServiceTest
     public async Task GetMatches_ExistedIncludeLeagueIds_ReturnsRightMatches()
     {
         // Arrange
-        const string KEY_LEAGUEID = "Settlement-AutoPayout-AutoInstant-LeagueId";
-        const int CACHE_EXPIRED_IN_DAYS = 1095;
-        var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(CACHE_EXPIRED_IN_DAYS));
-        cache.Set(KEY_LEAGUEID, 58087, cachePolicy);
+        const string keyLeagueId = "Settlement-AutoPayout-AutoInstant-LeagueId";
+        const int cacheExpiredInDays = 1095;
+        var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(cacheExpiredInDays));
+
+        await cache.SetAsync(keyLeagueId, 58087, cachePolicy);
 
         matchQueryService.GetWaitingMatches().Returns(CreateMatches);
 

@@ -9,7 +9,7 @@ public interface MatchByLeagueService
 
 public class MatchByLeagueServiceImp : MatchByLeagueService
 {
-    private const string KEY_LEAGUEID = "Settlement-AutoPayout-AutoInstant-LeagueId";
+    private const string KeyLeagueId = "Settlement-AutoPayout-AutoInstant-LeagueId";
 
     private readonly ICache cache;
 
@@ -28,7 +28,7 @@ public class MatchByLeagueServiceImp : MatchByLeagueService
     {
         var matches = await matchQueryService.GetWaitingMatches();
 
-        cache.TryGet(KEY_LEAGUEID, out int leagueId);
+        cache.TryGet(KeyLeagueId, out int leagueId);
 
         return appSettingsKey.EnvironmentName switch
         {

@@ -58,7 +58,7 @@ public class ActionResourceServiceTests
     }
 
     [Fact]
-    public void HafltimeFirstCornerResource_Always_ReturnsExpectedResources()
+    public void HalfTimeFirstCornerResource_Always_ReturnsExpectedResources()
     {
         // Arrange
         var goalRecord = Arg.Any<string>();
