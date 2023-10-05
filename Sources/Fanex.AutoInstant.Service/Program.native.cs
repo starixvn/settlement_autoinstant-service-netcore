@@ -2,9 +2,12 @@ using AutoInstant.Basketball.Models;
 using AutoInstant.Models;
 using Fanex.AutoInstant.Service.Configurations;
 using Fanex.AutoInstant.Service.Services;
+using Fanex.Data.SqlServer;
 using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddFanexSql(builder.Configuration);
 
 builder.Services.Configure<AppSettingsKey>(builder.Configuration);
 

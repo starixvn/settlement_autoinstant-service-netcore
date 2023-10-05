@@ -3,9 +3,7 @@ using AutoInstant.Services;
 using AutoMapper;
 using Fanex.Caching;
 using Fanex.Caching.Redis;
-using Fanex.Data;
 using Fanex.Data.Repository;
-using Fanex.Data.SqlServer;
 using Fanex.Logging;
 using Fanex.Logging.Sentry.RavenClient;
 using Fanex.Settlement.ScaleOut;
@@ -69,7 +67,6 @@ public static class AutoInstantConfiguration
         service.AddSingleton(mapper);
 
         ConfigureRedis(service, configuration);
-        StartDataBaseSetting(configuration);
         StartLogSetting(configuration);
         StartUmSetting(configuration);
     }
@@ -86,23 +83,6 @@ public static class AutoInstantConfiguration
             ApplicationName = configuration.GetSection("Redis.ApplicationName").Value,
         }));
         service.AddSingleton<ICacheService>(new CacheService());
-    }
-
-    private static void StartDataBaseSetting(IConfiguration configuration)
-    {
-        var connections = configuration.GetSection("ConnectionStrings")
-            .GetChildren()
-            .AsEnumerable()
-            .ToDictionary(
-                x => x.GetValue<string>("Name"),
-                y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName"))
-            );
-        DbSettingProviderManager
-            .StartNewSession()
-            .Use(connections)
-            .WithSqlServer()
-            .UseDefaultDbSettingProvider(resourcePath: configuration.GetSection("StoredProcedurePath").Value)
-            .Run();
     }
 
     private static void StartLogSetting(IConfiguration configuration)

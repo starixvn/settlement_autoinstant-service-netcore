@@ -19,7 +19,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoInstant.UnitTests", "Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoInstant.Basketball", "Sources\AutoInstant.Basketball\AutoInstant.Basketball.csproj", "{D9998E2F-D4EE-409F-A60F-73E9D1E778B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoInstant.Basketball.UnitTests", "Tests\AutoInstant.Basketball.UnitTests\AutoInstant.Basketball.UnitTests.csproj", "{AB77DBBC-F739-437D-B3BA-F103E809320D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoInstant.Basketball.UnitTests", "Tests\AutoInstant.Basketball.UnitTests\AutoInstant.Basketball.UnitTests.csproj", "{AB77DBBC-F739-437D-B3BA-F103E809320D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05809617-9766-441A-8468-F3B4704F2756}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.gitlab-ci.yml = .gitlab-ci.yml
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

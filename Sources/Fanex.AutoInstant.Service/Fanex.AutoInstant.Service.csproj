@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\..\.sonarlint\autoinstant-service-netcore\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="appsettings.SIT.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -27,14 +23,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fanex.Caching.Redis.AspNetCore" Version="2.2.3" />
-    <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.2" />
-    <PackageReference Include="Fanex.Logging" Version="2.0.1" />
+    <PackageReference Include="Fanex.Caching.Redis.AspNetCore" Version="2.2.4" />
+    <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.3" />
+    <PackageReference Include="Fanex.Logging" Version="2.0.1.1" />
     <PackageReference Include="Fanex.Logging.Extensions.Database" Version="1.0.8" />
-    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1" />
+    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-    <PackageReference Include="ONEbook.UM" Version="3.1.4" />
-    <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.0" />
+    <PackageReference Include="ONEbook.UM" Version="3.1.6" />
+    <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.1.1" />
     <PackageReference Include="ONEbook.UM.Transport" Version="3.1.2" />
   </ItemGroup>
 
@@ -62,5 +58,8 @@
     <None Update="appsettings.UAT.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\Users\kaden.trinh\AppData\Roaming\SonarLint for Visual Studio\Bindings\Fanex.AutoInstant.Service\csharp\SonarLint.xml" />
   </ItemGroup>
 </Project>
