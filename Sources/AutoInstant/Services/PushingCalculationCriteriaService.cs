@@ -40,7 +40,7 @@ public class PushingCalculationCriteriaServiceImp : PushingCalculationCriteriaSe
     public string BetStatusHtFl(MatchInfo matchChecking, Goal goal, string betStatus)
     {
         var goalRecord = matchChecking.GoalRecord ?? string.Empty;
-        var goalOnly = goalRecord.Split(";").First();
+        var goalOnly = goalRecord.Split(";")[0];
         var isNotExistBetStatusHtFl = !betStatus.Contains(HalfTimeFl);
 
         if (goalOnly.Length > 0 && goal.IsExistHTFG && isNotExistBetStatusHtFl)

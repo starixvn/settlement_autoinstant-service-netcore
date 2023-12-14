@@ -30,7 +30,6 @@ public class AutoInstantControllerTests
 
         // Act
         controller.ProcessAsync();
-        Thread.Sleep(1000);
 
         // Assert
         matchSettleController.Received().Process(Arg.Any<Match>());
