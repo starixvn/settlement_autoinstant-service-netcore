@@ -17,6 +17,7 @@ public class AutoInstantException : Exception
     {
     }
 
+    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected AutoInstantException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

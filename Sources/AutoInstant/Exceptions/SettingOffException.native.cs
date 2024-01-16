@@ -19,6 +19,7 @@ public class SettingOffException : AutoInstantException
     {
     }
 
+    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected SettingOffException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

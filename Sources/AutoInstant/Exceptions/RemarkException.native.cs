@@ -19,6 +19,7 @@ public class RemarkException : AutoInstantException
     {
     }
 
+    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected RemarkException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

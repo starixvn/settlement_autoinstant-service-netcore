@@ -19,6 +19,7 @@ public class FTCalculatedException : AutoInstantException
     {
     }
 
+    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected FTCalculatedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

@@ -19,6 +19,7 @@ public class ScoreChangedException : AutoInstantException
     {
     }
 
+    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected ScoreChangedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

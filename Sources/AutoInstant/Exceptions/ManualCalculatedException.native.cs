@@ -18,6 +18,7 @@ public class ManualCalculatedException : AutoInstantException
     {
     }
 
+    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected ManualCalculatedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

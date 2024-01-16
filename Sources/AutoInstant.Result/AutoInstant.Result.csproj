@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
 	  <Nullable>disable</Nullable>
 	  <ImplicitUsings>enable</ImplicitUsings>
     <CodeAnalysisRuleSet>..\..\.sonarlint\autoinstant-service-netcorecsharp.ruleset</CodeAnalysisRuleSet>
@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="Fanex.Data.Repository" Version="4.2.3" />
+    <PackageReference Include="Fanex.Data.Repository" Version="4.2.5.3" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
   </ItemGroup>
 
