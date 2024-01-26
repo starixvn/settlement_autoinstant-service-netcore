@@ -5,7 +5,7 @@ namespace AutoInstant.Services;
 
 public interface LogService
 {
-    Task ActionLog(Match match, MatchInfo matchChecking, string message);
+    Task ActionLog(Match match, MatchInfo matchChecking, Models.Result resultValidate);
 
     Task ActionLog(Match match, MatchInfo matchChecking, AutoInstantException exception);
 }
@@ -16,6 +16,8 @@ public class LogServiceImp : LogService
 
     private readonly LogCriteriaService logCriteriaService;
 
+    private const int ErrorNeedToShow = 1001003;
+
     public LogServiceImp(
         IDynamicRepository repository,
         LogCriteriaService logCriteriaService)
@@ -24,10 +26,10 @@ public class LogServiceImp : LogService
         this.logCriteriaService = logCriteriaService;
     }
 
-    public async Task ActionLog(Match match, MatchInfo matchChecking, string message)
+    public async Task ActionLog(Match match, MatchInfo matchChecking, Models.Result resultValidate)
     {
-        var criteria = logCriteriaService.HideCreateCriteria(match, matchChecking);
-        criteria.Remark = message;
+        var criteria = resultValidate.ErrorCode == ErrorNeedToShow ? logCriteriaService.ShowCreateCriteria(match, matchChecking) : logCriteriaService.HideCreateCriteria(match, matchChecking);
+        criteria.Remark = resultValidate.ErrorMessage;
         await repository.ExecuteAsync(criteria);
     }
 
