@@ -31,11 +31,29 @@ public class LogServiceTests
         };
 
         // Act
-        await logService.ActionLog(match, matchChecking, "HaftTime");
+        await logService.ActionLog(match, matchChecking, new Models.Result() { ErrorMessage = "HaftTime" });
 
         // Assert
         await repository.Received().ExecuteAsync(Arg.Is<LogCriteria>(criteria =>
             criteria.ActionId == 197 && criteria.Remark == "HaftTime"
+        ));
+    }
+
+    [Fact]
+    public async Task ActionLog_MatchIsHalfTimeAndAlwaysShowReferenceActions_InvokeCriteriaWithActionId195()
+    {
+        // Arrange
+        var match = new Match
+        {
+            TypeId = SettleType.FirstHalf
+        };
+
+        // Act
+        await logService.ActionLog(match, matchChecking, new Models.Result() { ErrorMessage = "HaftTime", ErrorCode = 1001003 });
+
+        // Assert
+        await repository.Received().ExecuteAsync(Arg.Is<LogCriteria>(criteria =>
+            criteria.ActionId == 195 && criteria.Remark == "HaftTime"
         ));
     }
 
@@ -49,7 +67,7 @@ public class LogServiceTests
         };
 
         // Act
-        await logService.ActionLog(match, matchChecking, "SecondHalf");
+        await logService.ActionLog(match, matchChecking, new Models.Result() { ErrorMessage = "SecondHalf" });
 
         // Assert
         await repository.Received().ExecuteAsync(Arg.Is<LogCriteria>(criteria =>

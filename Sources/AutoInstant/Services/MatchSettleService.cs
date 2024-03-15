@@ -45,7 +45,7 @@ public class MatchSettleServiceImp : MatchSettleService
 
             if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
             {
-                await logService.ActionLog(match, matchInfo, result.ErrorMessage);
+                await logService.ActionLog(match, matchInfo, result);
                 await autoInstantResultService.Insert(match, matchInfo);
             }
         }

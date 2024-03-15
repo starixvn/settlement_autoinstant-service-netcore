@@ -58,7 +58,7 @@ public class MatchSettleServiceTests
 
         // Assert
         pushingCalculationService.Received().Push(Arg.Is<Match>(m => m == match), Arg.Is<MatchInfo>(mc => mc == matchChecking));
-        logService.DidNotReceive().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Any<string>());
+        logService.DidNotReceive().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Any<Models.Result>());
         notificationService.DidNotReceive().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
 
@@ -77,7 +77,7 @@ public class MatchSettleServiceTests
 
         // Assert
         pushingCalculationService.Received().Push(Arg.Is<Match>(m => m == match), Arg.Is<MatchInfo>(mc => mc == matchChecking));
-        logService.Received().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Is<string>(x => x == "error"));
+        logService.Received().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Is<Models.Result>(x => x.ErrorMessage == "error"));
         notificationService.DidNotReceive().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
 
@@ -126,7 +126,7 @@ public class MatchSettleServiceTests
         matchSettleService.ScoreMismatched(match, matchChecking);
 
         // Assert
-        logService.DidNotReceive().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Any<string>());
+        logService.DidNotReceive().ActionLog(Arg.Any<Match>(), Arg.Any<MatchInfo>(), Arg.Any<Models.Result>());
         autoInstantResultService.DidNotReceive().Insert(match, matchChecking);
         notificationService.DidNotReceive().AddNotification(Arg.Any<Match>(), Arg.Any<bool>(), Arg.Any<string>());
     }
