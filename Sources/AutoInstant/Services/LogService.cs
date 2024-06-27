@@ -16,7 +16,7 @@ public class LogServiceImp : LogService
 
     private readonly LogCriteriaService logCriteriaService;
 
-    private const int ErrorNeedToShow = 1001003;
+    private const int ErrorNeedToShow = 1_001_003;
 
     public LogServiceImp(
         IDynamicRepository repository,
