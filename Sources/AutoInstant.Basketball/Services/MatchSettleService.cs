@@ -40,8 +40,13 @@ public class MatchSettleServiceImp : MatchSettleService
 
         if (scoresValid.Count > 0)
         {
+            List<string> templateResources = match.SportType == 2
+                ? ["01", "NOT_DEFINE", "00", "Q1", "Q2", "Q3", "Q4", "OT"]
+                : ["01", "NOT_DEFINE", "00", "0101", "0102", "0103", "0104", "0105", "0106", "0107", "0108", "0109", "EI"];
+
             var resource = generateService.CreateResources(scoresValid);
-            var determinedType = generateService.GetDeterminedType(scoresValid);
+
+            var determinedType = generateService.GetDeterminedType(scoresValid, templateResources);
 
             await UpdateResourceStatus(match.MatchId, resource, Status.Waitting);
 

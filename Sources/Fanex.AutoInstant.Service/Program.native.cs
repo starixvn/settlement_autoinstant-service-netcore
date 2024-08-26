@@ -17,7 +17,7 @@ builder.Services.AutoInstantsConfigServices(builder.Configuration);
 
 builder.Services.AutoInstantsBasketballConfigServices();
 
-builder.Services.AddHostedService<AutoInstantService>();
+//builder.Services.AddHostedService<AutoInstantService>();
 
 builder.Services.AddHostedService<AutoInstantBasketballService>();
 

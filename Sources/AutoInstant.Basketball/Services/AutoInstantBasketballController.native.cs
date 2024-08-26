@@ -22,10 +22,15 @@ public class AutoInstantBasketballControllerImp : AutoInstantBasketballControlle
     {
         var newMatches = await matchSettlingPoolService.PeekNewMatch();
 
-        newMatches.ForEach(m =>
+        foreach (var item in newMatches)
         {
-            Task.Run(() => settleMatchService.Process(m))
-                .ConfigureAwait(false);
-        });
+            await settleMatchService.Process(item);
+        }
+
+        //newMatches.ForEach(m =>
+        //{
+        //    Task.Run(() => settleMatchService.Process(m))
+        //        .ConfigureAwait(false);
+        //});
     }
 }

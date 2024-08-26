@@ -4,7 +4,7 @@ namespace AutoInstant.Basketball.Criteria;
 
 public class MatchWaitingCriteria : CriteriaBase
 {
-    public int SportType { get; set; } = 2;
+    public string SportType { get; set; } = "2,8";
 
     public override bool IsValid() => true;
 

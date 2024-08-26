@@ -3,6 +3,7 @@
 public class Match
 {
     public int MatchId { get; set; }
+    public int SportType { get; set; }
     public int LeagueId { get; set; }
 
     public IEnumerable<ResultDetail> ResultDetails { get; set; }

@@ -67,7 +67,7 @@ public class AutoInstantBasketballService : IHostedService
 
     private void ThreadProcess()
     {
-        while (running)
+        //while (running)
         {
             if (!maintenanceService.IsMaintenance)
             {

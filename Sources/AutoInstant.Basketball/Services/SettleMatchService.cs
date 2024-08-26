@@ -35,6 +35,11 @@ public class SettleMatchServiceImp : SettleMatchService
 
             await matchSettleService.HandleScoreFailed(match);
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
         finally
         {
             matchSettlingPoolService.Remove(match);
