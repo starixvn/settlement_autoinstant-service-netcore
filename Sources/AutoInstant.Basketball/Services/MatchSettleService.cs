@@ -43,7 +43,7 @@ public class MatchSettleServiceImp : MatchSettleService
             var resource = generateService.CreateResources(scoresValid);
             var determinedType = generateService.GetDeterminedType(scoresValid);
 
-            await UpdateResourceStatus(match.MatchId, resource, Status.Waitting);
+            await UpdateResourceStatus(match.MatchId, resource, Status.Waiting);
 
             var criteria = new SettleProfileCriteria
             {
@@ -54,7 +54,10 @@ public class MatchSettleServiceImp : MatchSettleService
 
             logService.WriteDirectlyLog(criteria);
 
-            Execute(criteria);
+            await Execute(criteria);
+
+            await UpdateResourceStatus(match.MatchId, resource, Status.Success);
+
         }
     }
 
@@ -72,13 +75,17 @@ public class MatchSettleServiceImp : MatchSettleService
         }
     }
 
-    private void Execute(SettleProfileCriteria criteria)
+    private async Task Execute(SettleProfileCriteria criteria)
     {
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+        var servers = appSettingsKey.SiteDbServer;
+        var tasks = servers.Select(server => ExecuteOneSite(criteria, server)).ToArray();
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ExecuteOneSite(SettleProfileCriteria criteria, string server)
+    {
+        criteria.DbServer = server;
+        await repository.ExecuteAsync(criteria);
     }
 
     private async Task UpdateResourceStatus(int matchId, string resource, int status)

@@ -57,7 +57,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
         if (result.ErrorCode == 0)
         {
-            await autoInstantResultService.Update(match, false, MatchStatus.Completed);
+            await autoInstantResultService.Update(match, false, MatchStatus.Waiting);
             var betStatus = GetBetStatus(goal, matchChecking, match);
             await UpdateMatchInfo(match, resourceResult, betStatus);
 
@@ -66,20 +66,28 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
             logDirectlyService.WriteLog(criteria);
 
-            Execute(criteria);
+            await Execute(criteria);
+
+            await autoInstantResultService.Update(match, false, MatchStatus.Completed);
+
         }
 
         return result;
     }
 
-    private void Execute(PushingCalculationCriteria criteria)
+    private async Task Execute(PushingCalculationCriteria criteria)
     {
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+        var server = appSettingsKey.SiteDbServer;
+        var tasks = server.Select(s => ExecuteOneSite(criteria, s)).ToArray();
+        await Task.WhenAll(tasks);
     }
+
+    private async Task ExecuteOneSite(PushingCalculationCriteria criteria, string server)
+    {
+        criteria.DbServer = server;
+        await repository.ExecuteAsync(criteria);
+    }
+
 
     private string GetBetStatus(Goal goal, MatchInfo matchChecking, Match match)
     {
