@@ -9,6 +9,8 @@ public interface AutoInstantResultService
 {
     Task Update(Match match, bool isInstCalculated, int statusId);
 
+    Task UpdateAutoResultStatus(Match match, int statusId);
+
     Task Insert(Match match, MatchInfo matchChecking);
 }
 
@@ -67,5 +69,20 @@ public class AutoInstantResultServiceImp : AutoInstantResultService
     private static bool IsFullTimeCalculated(Match match, MatchInfo matchChecking)
     {
         return match.TypeId == SettleType.SecondHalf && matchChecking.IsCalculatedFT;
+    }
+
+    public async Task UpdateAutoResultStatus(Match match, int statusId)
+    {
+        var criteria = new AutoPayoutResultUpdCriteria
+        {
+            MatchId = match.MatchId,
+            TypeId = match.TypeId,
+            StatusId = statusId,
+            SourceId = match.ChildMatchType == MatchType.Corner
+                ? Source.AdminSite
+                : Source.SoccerWay
+        };
+
+        await repository.ExecuteAsync(criteria);
     }
 }

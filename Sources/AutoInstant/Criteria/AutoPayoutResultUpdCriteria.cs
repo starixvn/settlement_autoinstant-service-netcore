@@ -1,5 +1,3 @@
-using System;
-
 namespace AutoInstant.Criteria;
 
 public class AutoPayoutResultUpdCriteria : INonQueryCommand
@@ -10,6 +8,7 @@ public class AutoPayoutResultUpdCriteria : INonQueryCommand
 
     public int TypeId { get; set; }
     public int StatusId { get; set; }
+
     public string GetSettingKey() => "NAP_Set_AutoPayoutResultUpd";
 
     public bool IsValid() => true;

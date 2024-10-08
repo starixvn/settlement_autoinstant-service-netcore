@@ -68,8 +68,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
             await Execute(criteria);
 
-            await autoInstantResultService.Update(match, false, MatchStatus.Completed);
-
+            await autoInstantResultService.UpdateAutoResultStatus(match, MatchStatus.Completed);
         }
 
         return result;
@@ -87,7 +86,6 @@ public class PushingCalculationServiceImp : PushingCalculationService
         criteria.DbServer = server;
         await repository.ExecuteAsync(criteria);
     }
-
 
     private string GetBetStatus(Goal goal, MatchInfo matchChecking, Match match)
     {
