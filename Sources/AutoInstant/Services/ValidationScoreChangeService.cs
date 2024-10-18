@@ -14,13 +14,13 @@ public class ValidationScoreChangeServiceImp : ValidationScoreChangeService
     {
         if (IsWrongScore(match, matchChecking))
         {
-            if (matchChecking.InstantKey > match.InstantKey)
+            if (matchChecking.InstantKey <= match.InstantKey)
             {
-                var score = $"{matchChecking.PreviousHomeScore}-{matchChecking.PreviousAwayScore}";
-                throw new ManualCalculatedException(score, true);
+                throw new ScoreChangedException();
             }
 
-            throw new ScoreChangedException();
+            var score = $"{matchChecking.PreviousHomeScore}-{matchChecking.PreviousAwayScore}";
+            throw new ManualCalculatedException(score, true);
         }
     }
 

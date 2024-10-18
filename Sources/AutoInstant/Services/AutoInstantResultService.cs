@@ -14,15 +14,8 @@ public interface AutoInstantResultService
     Task Insert(Match match, MatchInfo matchChecking);
 }
 
-public class AutoInstantResultServiceImp : AutoInstantResultService
+public class AutoInstantResultServiceImp(IDynamicRepository repository) : AutoInstantResultService
 {
-    private readonly IDynamicRepository repository;
-
-    public AutoInstantResultServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public async Task Update(Match match, bool isInstCalculated, int statusId)
     {
         var updateResultCriteria = new AddAutoResultCriteria

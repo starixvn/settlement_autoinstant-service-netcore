@@ -7,19 +7,12 @@ public interface ScoreRetryService
     Task<bool> IsScoreMatch(Match match);
 }
 
-public class ScoreRetryServiceImp : ScoreRetryService
+public class ScoreRetryServiceImp(
+    ScoreMatcherService scoreMatcherService,
+    IOptions<AppSettingsKey> appSettingsKey)
+    : ScoreRetryService
 {
-    private readonly ScoreMatcherService scoreMatcherService;
-
-    private readonly AppSettingsKey appSettingsKey;
-
-    public ScoreRetryServiceImp(
-        ScoreMatcherService scoreMatcherService,
-        IOptions<AppSettingsKey> appSettingsKey)
-    {
-        this.scoreMatcherService = scoreMatcherService;
-        this.appSettingsKey = appSettingsKey.Value;
-    }
+    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
 
     public async Task<bool> IsScoreMatch(Match match)
     {

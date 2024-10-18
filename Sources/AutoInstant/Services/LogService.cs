@@ -10,21 +10,12 @@ public interface LogService
     Task ActionLog(Match match, MatchInfo matchChecking, AutoInstantException exception);
 }
 
-public class LogServiceImp : LogService
+public class LogServiceImp(
+    IDynamicRepository repository,
+    LogCriteriaService logCriteriaService)
+    : LogService
 {
-    private readonly IDynamicRepository repository;
-
-    private readonly LogCriteriaService logCriteriaService;
-
     private const int ErrorNeedToShow = 1_001_003;
-
-    public LogServiceImp(
-        IDynamicRepository repository,
-        LogCriteriaService logCriteriaService)
-    {
-        this.repository = repository;
-        this.logCriteriaService = logCriteriaService;
-    }
 
     public async Task ActionLog(Match match, MatchInfo matchChecking, Models.Result resultValidate)
     {

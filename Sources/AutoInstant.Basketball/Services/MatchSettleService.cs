@@ -13,27 +13,13 @@ public interface MatchSettleService
     Task HandleScoreFailed(Match match);
 }
 
-public class MatchSettleServiceImp : MatchSettleService
+public class MatchSettleServiceImp(
+    IDynamicRepository repository,
+    IOptions<AppSettingsBasketballKey> appSettingsKey,
+    LogService logService,
+    GenerateService generateService)
+    : MatchSettleService
 {
-    private readonly IDynamicRepository repository;
-
-    private readonly AppSettingsBasketballKey appSettingsKey;
-
-    private readonly LogService logService;
-
-    private readonly GenerateService generateService;
-
-    public MatchSettleServiceImp(IDynamicRepository repository,
-        IOptions<AppSettingsBasketballKey> appSettingsBasketballKey,
-        LogService logService,
-        GenerateService generateService)
-    {
-        this.repository = repository;
-        this.appSettingsKey = appSettingsBasketballKey.Value;
-        this.logService = logService;
-        this.generateService = generateService;
-    }
-
     public async Task Settle(Match match)
     {
         var scoresValid = match.ResultDetails.Where(r => !r.Invalid).ToList();
@@ -57,7 +43,6 @@ public class MatchSettleServiceImp : MatchSettleService
             await Execute(criteria);
 
             await UpdateResourceStatus(match.MatchId, resource, Status.Success);
-
         }
     }
 
@@ -77,7 +62,7 @@ public class MatchSettleServiceImp : MatchSettleService
 
     private async Task Execute(SettleProfileCriteria criteria)
     {
-        var servers = appSettingsKey.SiteDbServer;
+        var servers = appSettingsKey.Value.SiteDbServer;
         var tasks = servers.Select(server => ExecuteOneSite(criteria, server)).ToArray();
         await Task.WhenAll(tasks);
     }

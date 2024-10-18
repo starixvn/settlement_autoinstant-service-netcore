@@ -10,15 +10,8 @@ public interface LogService
     Task WriteLog(int matchId, string message);
 }
 
-public class LogServiceImp : LogService
+public class LogServiceImp(IDynamicRepository repository) : LogService
 {
-    private readonly IDynamicRepository repository;
-
-    public LogServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public void WriteDirectlyLog(SettleProfileCriteria settleProfileCriteria)
     {
         try

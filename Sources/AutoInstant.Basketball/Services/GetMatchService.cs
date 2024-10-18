@@ -12,22 +12,15 @@ public interface GetMatchService
     public Task<List<Match>> GetMatches();
 }
 
-public class GetMatchServiceImp : GetMatchService
+public class GetMatchServiceImp(
+    IDynamicRepository repository,
+    ICache cache,
+    IOptions<AppSettingsBasketballKey> appSettingsBasketballKey)
+    : GetMatchService
 {
     private const string KeyLeagueId = "Settlement-AutoPayoutOtherSport-LeagueId";
 
-    private readonly ICache cache;
-
-    private readonly IDynamicRepository repository;
-
-    private readonly AppSettingsBasketballKey appSettingsBasketballKey;
-
-    public GetMatchServiceImp(IDynamicRepository repository, ICache cache, IOptions<AppSettingsBasketballKey> appSettingsBasketballKey)
-    {
-        this.repository = repository;
-        this.cache = cache;
-        this.appSettingsBasketballKey = appSettingsBasketballKey.Value;
-    }
+    private readonly AppSettingsBasketballKey appSettingsBasketballKey = appSettingsBasketballKey.Value;
 
     public async Task<List<Match>> GetMatches()
     {

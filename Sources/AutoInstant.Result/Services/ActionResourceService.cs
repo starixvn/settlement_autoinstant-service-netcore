@@ -20,19 +20,12 @@ public interface ActionResourceService
     XmlResource TwoHFirstCornerResource(string fullTimeGoal);
 }
 
-public class ActionResourceServiceImp : ActionResourceService
+public class ActionResourceServiceImp(FirstGoalService goalResultService) : ActionResourceService
 {
     private const byte ManuallySettled = 5;
     private const byte Completed = 4;
     private const char HomeValue = 'H';
     private const int Ten = 10;
-
-    private readonly FirstGoalService goalResultService;
-
-    public ActionResourceServiceImp(FirstGoalService goalResultService)
-    {
-        this.goalResultService = goalResultService;
-    }
 
     public XmlResource HalftimeFirstGoalResources(string halftimeGoal)
     {

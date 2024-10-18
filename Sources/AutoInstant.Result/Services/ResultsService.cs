@@ -9,20 +9,11 @@ public interface ResultsService
     string FullTimeResults(Goal goal);
 }
 
-public class ResultsServiceImp : ResultsService
+public class ResultsServiceImp(
+    XmlConvertService xmlConvertService,
+    ResourceService resourceService)
+    : ResultsService
 {
-    private readonly XmlConvertService xmlConvertService;
-
-    private readonly ResourceService resourceService;
-
-    public ResultsServiceImp(
-        XmlConvertService xmlConvertService,
-        ResourceService resourceService)
-    {
-        this.xmlConvertService = xmlConvertService;
-        this.resourceService = resourceService;
-    }
-
     public string HalftimeResults(Goal goal)
     {
         var resources = resourceService.Halftime(goal);
