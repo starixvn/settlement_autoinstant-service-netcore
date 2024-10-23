@@ -20,16 +20,8 @@ public class MatchSettleControllerImp(
         try
         {
             match.IsChecking = true;
-            var isScoreMatch = MatchType.Corner == match.ChildMatchType || await scoreRetryService.IsScoreMatch(match);
             var matchCheckingInfo = await matchQueryService.GetMatchInfo(match);
-            if (isScoreMatch)
-            {
-                await matchSettleService.ScoreMatched(match, matchCheckingInfo);
-            }
-            else
-            {
-                await matchSettleService.ScoreMismatched(match, matchCheckingInfo);
-            }
+            await matchSettleService.ScoreMatched(match, matchCheckingInfo);
         }
         finally
         {

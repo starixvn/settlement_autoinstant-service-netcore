@@ -1,7 +1,6 @@
 ﻿using AutoInstant.Constants;
 using AutoInstant.Criteria;
 using AutoInstant.Models;
-using MatchType = AutoInstant.Constants.MatchType;
 
 namespace AutoInstant.Services;
 
@@ -28,7 +27,7 @@ public class AutoInstantResultServiceImp(IDynamicRepository repository) : AutoIn
             IsInstCalculated = isInstCalculated,
             ChildMatchType = match.ChildMatchType,
             StatusId = statusId,
-            SourceId = match.ChildMatchType == MatchType.Corner ? Source.AdminSite : Source.SoccerWay
+            SourceId = Source.AdminSite
         };
 
         await repository.ExecuteAsync(updateResultCriteria);
@@ -71,9 +70,7 @@ public class AutoInstantResultServiceImp(IDynamicRepository repository) : AutoIn
             MatchId = match.MatchId,
             TypeId = match.TypeId,
             StatusId = statusId,
-            SourceId = match.ChildMatchType == MatchType.Corner
-                ? Source.AdminSite
-                : Source.SoccerWay
+            SourceId = Source.AdminSite
         };
 
         await repository.ExecuteAsync(criteria);

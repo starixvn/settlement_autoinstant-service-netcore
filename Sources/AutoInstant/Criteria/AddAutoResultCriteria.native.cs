@@ -6,7 +6,7 @@ public class AddAutoResultCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
 
-    public int SourceId { get; set; } = Source.SoccerWay;
+    public int SourceId { get; set; }
 
     public int TypeId { get; set; }
 
