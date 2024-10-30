@@ -7,15 +7,8 @@ public interface ScoreMatcherService
     Task<bool> IsScoreMatch(Match match);
 }
 
-public class ScoreMatcherServiceImp : ScoreMatcherService
+public class ScoreMatcherServiceImp(ScoreService scoreService) : ScoreMatcherService
 {
-    private readonly ScoreService scoreService;
-
-    public ScoreMatcherServiceImp(ScoreService scoreService)
-    {
-        this.scoreService = scoreService;
-    }
-
     public async Task<bool> IsScoreMatch(Match match)
     {
         var scores = await scoreService.GetScore(match.MatchId);

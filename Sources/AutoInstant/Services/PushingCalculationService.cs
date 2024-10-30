@@ -14,40 +14,16 @@ public interface PushingCalculationService
     Task<Models.Result> Push(Match match, MatchInfo matchChecking);
 }
 
-public class PushingCalculationServiceImp : PushingCalculationService
+public class PushingCalculationServiceImp(
+    IDynamicRepository repository,
+    ResultsService resultsService,
+    PushingCalculationCriteriaService pushingCalculationCriteriaService,
+    ScaleOutSettleService scaleOutSettleService,
+    AutoInstantResultService autoInstantResultService,
+    IOptions<AppSettingsKey> appSettingsKey,
+    LogDirectlyService logDirectlyService)
+    : PushingCalculationService
 {
-    private readonly IDynamicRepository repository;
-
-    private readonly ResultsService resultsService;
-
-    private readonly PushingCalculationCriteriaService pushingCalculationCriteriaService;
-
-    private readonly AppSettingsKey appSettingsKey;
-
-    private readonly ScaleOutSettleService scaleOutSettleService;
-
-    private readonly AutoInstantResultService autoInstantResultService;
-
-    private readonly LogDirectlyService logDirectlyService;
-
-    public PushingCalculationServiceImp(
-        IDynamicRepository repository,
-        ResultsService resultsService,
-        PushingCalculationCriteriaService pushingCalculationCriteriaService,
-        ScaleOutSettleService scaleOutSettleService,
-        AutoInstantResultService autoInstantResultService,
-        IOptions<AppSettingsKey> appSettingsKey,
-        LogDirectlyService logDirectlyService)
-    {
-        this.repository = repository;
-        this.resultsService = resultsService;
-        this.pushingCalculationCriteriaService = pushingCalculationCriteriaService;
-        this.appSettingsKey = appSettingsKey.Value;
-        this.scaleOutSettleService = scaleOutSettleService;
-        this.autoInstantResultService = autoInstantResultService;
-        this.logDirectlyService = logDirectlyService;
-    }
-
     public async Task<Models.Result> Push(Match match, MatchInfo matchChecking)
     {
         var goal = await GetGoal(matchChecking.GoalRecord, match.MatchId);
@@ -57,7 +33,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
         if (result.ErrorCode == 0)
         {
-            await autoInstantResultService.Update(match, false, MatchStatus.Completed);
+            await autoInstantResultService.Update(match, false, MatchStatus.Waiting);
             var betStatus = GetBetStatus(goal, matchChecking, match);
             await UpdateMatchInfo(match, resourceResult, betStatus);
 
@@ -66,19 +42,25 @@ public class PushingCalculationServiceImp : PushingCalculationService
 
             logDirectlyService.WriteLog(criteria);
 
-            Execute(criteria);
+            await Execute(criteria);
+
+            await autoInstantResultService.UpdateAutoResultStatus(match, MatchStatus.Completed);
         }
 
         return result;
     }
 
-    private void Execute(PushingCalculationCriteria criteria)
+    private async Task Execute(PushingCalculationCriteria criteria)
     {
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+        var server = appSettingsKey.Value.SiteDbServer;
+        var tasks = server.Select(s => ExecuteOneSite(criteria, s)).ToArray();
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ExecuteOneSite(PushingCalculationCriteria criteria, string server)
+    {
+        criteria.DbServer = server;
+        await repository.ExecuteAsync(criteria);
     }
 
     private string GetBetStatus(Goal goal, MatchInfo matchChecking, Match match)
@@ -111,7 +93,7 @@ public class PushingCalculationServiceImp : PushingCalculationService
     {
         var listTicketInfo = new List<MatchTicketChecking>();
         var criteria = new MatchTicketCheckingCriteria { MatchId = matchId };
-        foreach (var server in appSettingsKey.SiteDbServer)
+        foreach (var server in appSettingsKey.Value.SiteDbServer)
         {
             criteria.DbServer = server;
             var item = await repository.GetAsync<MatchTicketChecking>(criteria) ?? new MatchTicketChecking();

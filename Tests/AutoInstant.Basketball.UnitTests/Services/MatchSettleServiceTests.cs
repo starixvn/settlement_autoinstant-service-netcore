@@ -22,9 +22,9 @@ public class MatchSettleServiceTests
         repository = Substitute.For<IDynamicRepository>();
         logService = Substitute.For<LogService>();
         generateService = Substitute.For<GenerateService>();
-        var settings = new AppSettingsBasketballKey()
+        var settings = new AppSettingsBasketballKey
         {
-            SiteDbServer = new List<string> { "site1", "site2" }
+            SiteDbServer = ["site1", "site2"]
         };
         var appSettingsOptions = Options.Create(settings);
 
@@ -47,9 +47,9 @@ public class MatchSettleServiceTests
 
         generateService.Received().CreateResources(Arg.Is<List<ResultDetail>>(i => i.Count == 1 && i[0].ResourceId == "Q1"));
         repository.Received()
-            .ExecuteAsync(Arg.Is<UpdateMatchCriteria>(c => c.MatchId == 123 && c.SelectedResources == "<Resources />" && c.StatusId == Status.Waitting));
+            .ExecuteAsync(Arg.Is<UpdateMatchCriteria>(c => c.MatchId == 123 && c.SelectedResources == "<Resources />" && c.StatusId == Status.Waiting));
         logService.Received().WriteDirectlyLog(Arg.Any<SettleProfileCriteria>());
-        repository.Received(2).Execute(Arg.Any<SettleProfileCriteria>());
+        repository.Received(2).ExecuteAsync(Arg.Any<SettleProfileCriteria>());
     }
 
     [Fact]

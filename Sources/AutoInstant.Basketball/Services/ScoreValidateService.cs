@@ -9,15 +9,8 @@ public interface ScoreValidateService
     Task ScoreValidation(Match match);
 }
 
-public class ScoreValidateServiceImp : ScoreValidateService
+public class ScoreValidateServiceImp(IDynamicRepository repository) : ScoreValidateService
 {
-    private readonly IDynamicRepository repository;
-
-    public ScoreValidateServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public async Task ScoreValidation(Match match)
     {
         var criteria = new GetLatestScoreCriteria

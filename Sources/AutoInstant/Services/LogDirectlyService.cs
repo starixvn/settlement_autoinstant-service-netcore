@@ -7,15 +7,8 @@ public interface LogDirectlyService
     void WriteLog(PushingCalculationCriteria calculationCriteria);
 }
 
-public class LogDirectlyServiceImp : LogDirectlyService
+public class LogDirectlyServiceImp(IDynamicRepository repository) : LogDirectlyService
 {
-    private readonly IDynamicRepository repository;
-
-    public LogDirectlyServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public void WriteLog(PushingCalculationCriteria calculationCriteria)
     {
         try

@@ -19,7 +19,7 @@ public class ValidationSettingMatchServiceImp : ValidationSettingMatchService
 
         var remark = matchChecking.Remark;
 
-        bool[] conditionsToCheck = { remark.IsMtdHold, remark.IsUndecided, remark.IsPending, remark.IsUnderSettle, remark.IsHoldKey };
+        bool[] conditionsToCheck = [remark.IsMtdHold, remark.IsUndecided, remark.IsPending, remark.IsUnderSettle, remark.IsHoldKey];
 
         if (Array.Exists(conditionsToCheck, item => item))
         {

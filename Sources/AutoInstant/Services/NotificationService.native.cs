@@ -9,15 +9,8 @@ public interface NotificationService
     Task AddNotification(Match match, bool isSendToLetsTalk, string messageContent);
 }
 
-public class NotificationServiceImp : NotificationService
+public class NotificationServiceImp(IDynamicRepository repository) : NotificationService
 {
-    private readonly IDynamicRepository repository;
-
-    public NotificationServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public async Task AddNotification(Match match, bool isSendToLetsTalk, string messageContent)
     {
         if (isSendToLetsTalk)

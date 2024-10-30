@@ -49,7 +49,7 @@ public class PushingCalculationServiceTests
         pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), "HalftimeResults")
             .Returns(new PushingCalculationCriteria(new Match()) { ResourceResult = "HalftimeResults" });
 
-        var appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = new() { "ABC" } });
+        var appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = ["ABC"] });
 
         var pushingCalculationService = new PushingCalculationServiceImp(
             repository,
@@ -65,9 +65,9 @@ public class PushingCalculationServiceTests
         var result = await pushingCalculationService.Push(match, matchChecking);
 
         // Assert
-        repository.Received().Execute(Arg.Is<PushingCalculationCriteria>(criteria =>
-           criteria.ResourceResult == "HalftimeResults"
-       ));
+        await repository.Received().ExecuteAsync(Arg.Is<PushingCalculationCriteria>(criteria =>
+            criteria.ResourceResult == "HalftimeResults"
+        ));
         Assert.Equal(result.ErrorMessage, string.Empty);
     }
 
@@ -82,7 +82,7 @@ public class PushingCalculationServiceTests
         var matchChecking = new MatchInfo();
         pushingCalculationCriteriaService.CreateCriteria(Arg.Any<Match>(), Arg.Any<string>())
             .Returns(new PushingCalculationCriteria(new Match()) { ResourceResult = "FullTimeResults" });
-        var appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = new() { "ABC" } });
+        var appSettingsKey = Options.Create(new AppSettingsKey { SiteDbServer = ["ABC"] });
 
         var pushingCalculationService = new PushingCalculationServiceImp(
             repository,
@@ -98,7 +98,7 @@ public class PushingCalculationServiceTests
         var result = await pushingCalculationService.Push(match, matchChecking);
 
         // Assert
-        repository.Received().Execute(Arg.Is<PushingCalculationCriteria>(criteria =>
+        await repository.Received().ExecuteAsync(Arg.Is<PushingCalculationCriteria>(criteria =>
             criteria.ResourceResult == "FullTimeResults"
        ));
         Assert.Equal(result.ErrorMessage, string.Empty);
@@ -137,6 +137,6 @@ public class PushingCalculationServiceTests
         var result = await pushingCalculationService.Push(match, matchChecking);
 
         // Assert
-        Assert.True(result.ErrorMessage == "Fail");
+        Assert.Equal("Fail", result.ErrorMessage);
     }
 }

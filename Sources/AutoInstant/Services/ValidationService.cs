@@ -10,24 +10,12 @@ public interface ValidationService
     void VerifyMatchAfterComparing(Match match, MatchInfo matchChecking);
 }
 
-public class ValidationServiceImp : ValidationService
+public class ValidationServiceImp(
+    ValidationScoreChangeService validationScoreChangeService,
+    ValidationSettingMatchService validationSettingMatchService,
+    ValidationStatusMatchService validationStatusMatchService)
+    : ValidationService
 {
-    private readonly ValidationScoreChangeService validationScoreChangeService;
-
-    private readonly ValidationSettingMatchService validationSettingMatchService;
-
-    private readonly ValidationStatusMatchService validationStatusMatchService;
-
-    public ValidationServiceImp(
-        ValidationScoreChangeService validationScoreChangeService,
-        ValidationSettingMatchService validationSettingMatchService,
-        ValidationStatusMatchService validationStatusMatchService)
-    {
-        this.validationScoreChangeService = validationScoreChangeService;
-        this.validationSettingMatchService = validationSettingMatchService;
-        this.validationStatusMatchService = validationStatusMatchService;
-    }
-
     public void VerifyMatchBeforeExecution(Match match, MatchInfo matchChecking)
     {
         VerifyMatch(match, matchChecking);

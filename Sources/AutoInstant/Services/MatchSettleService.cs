@@ -10,32 +10,14 @@ public interface MatchSettleService
     Task ScoreMismatched(Match match, MatchInfo matchInfo);
 }
 
-public class MatchSettleServiceImp : MatchSettleService
+public class MatchSettleServiceImp(
+    ValidationService validationService,
+    PushingCalculationService pushingCalculationService,
+    AutoInstantResultService autoInstantResultService,
+    LogService logService,
+    NotificationService notificationService)
+    : MatchSettleService
 {
-    private readonly ValidationService validationService;
-
-    private readonly PushingCalculationService pushingCalculationService;
-
-    private readonly AutoInstantResultService autoInstantResultService;
-
-    private readonly LogService logService;
-
-    private readonly NotificationService notificationService;
-
-    public MatchSettleServiceImp(
-      ValidationService validationService,
-      PushingCalculationService pushingCalculationService,
-      AutoInstantResultService autoInstantResultService,
-      LogService logService,
-      NotificationService notificationService)
-    {
-        this.validationService = validationService;
-        this.pushingCalculationService = pushingCalculationService;
-        this.autoInstantResultService = autoInstantResultService;
-        this.logService = logService;
-        this.notificationService = notificationService;
-    }
-
     public async Task ScoreMatched(Match match, MatchInfo matchInfo)
     {
         try

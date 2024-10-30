@@ -9,20 +9,11 @@ public interface ResourceService
     List<XmlResource> FullTime(Goal goal);
 }
 
-public class ResourceServiceImp : ResourceService
+public class ResourceServiceImp(
+    ActionResourceService actionResourceService,
+    GoalRecordService goalRecordService)
+    : ResourceService
 {
-    private readonly ActionResourceService actionResourceService;
-
-    private readonly GoalRecordService goalRecordService;
-
-    public ResourceServiceImp(
-        ActionResourceService actionResourceService,
-        GoalRecordService goalRecordService)
-    {
-        this.actionResourceService = actionResourceService;
-        this.goalRecordService = goalRecordService;
-    }
-
     public List<XmlResource> Halftime(Goal goal)
     {
         var resources = new List<XmlResource>();

@@ -1,55 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Functions>
-  <Function Name="AutoInstant">
-    <Setting Key="NAP_Set_AutoInstant_ScheduleSel" SpName="NAP_Set_AutoInstant_ScheduleSel" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Set_AutoInstantOS_ScheduleSel" SpName="NAP_Set_AutoInstantOS_ScheduleSel" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Set_AutoPayout_ResultDetailByMatchIdSel" SpName="NAP_Set_AutoPayout_ResultDetailByMatchIdSel" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Set_AutoInstant_GetMatchInfo" SpName="NAP_Set_AutoInstant_GetMatchInfo" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Set_AutoPayoutResultIns" SpName="NAP_Set_AutoPayoutResultIns" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Set_LetstalkMessage_Insert" SpName="NAP_Set_LetstalkMessage_Insert" DbName="DBTXN.bodb02.wsv_nap" />
-    <Setting Key="NAP_Admin_Settlement_Validation_Event" SpName="NAP_Admin_Settlement_Validation_Event" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Set_SettlementStatusUpd" SpName="NAP_Set_SettlementStatusUpd" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Admin_MatchInfoUpd" SpName="NAP_Admin_MatchInfoUpd" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Set_AutoPayoutResultIns" SpName="NAP_Set_AutoPayoutResultIns" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_UserLog_WriteLogPreSettlement" SpName="NAP_UserLog_WriteLogPreSettlement" DbName="DBUserLog.LogTDB.wsv_nap" />
-    <Setting Key="WriteLog_UserLog_Settle" SpName="WriteLog_UserLog_Settle" DbName="DBLOG.bodb_CustomerLog.wsv_nap" TimeOut="20" />
-    <Setting Key="NAP_Set_AutoInstantOS_ResultSel" SpName="NAP_Set_AutoInstantOS_ResultSel" DbName="DBPRO.bodb02.wsv_nap" />
-    <Setting Key="NAP_Set_AutoPayoutResultOS_Update" SpName="NAP_Set_AutoPayoutResultOS_Update" DbName="DBPRO.bodb02.wsv_nap" />
-  </Function>
+	<Function Name="AutoInstant">
+		<Setting Key="NAP_Set_AutoInstant_ScheduleSel" SpName="NAP_Set_AutoInstant_ScheduleSel" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_AutoInstantOS_ScheduleSel" SpName="NAP_Set_AutoInstantOS_ScheduleSel" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_AutoPayout_ResultDetailByMatchIdSel" SpName="NAP_Set_AutoPayout_ResultDetailByMatchIdSel" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_AutoInstant_GetMatchInfo" SpName="NAP_Set_AutoInstant_GetMatchInfo" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_AutoPayoutResultIns" SpName="NAP_Set_AutoPayoutResultIns" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_AutoPayoutResultUpd" SpName="NAP_Set_AutoPayoutResultUpd" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_LetstalkMessage_Insert" SpName="NAP_Set_LetstalkMessage_Insert" DbName="DBTXN.bodb02.wsv_nap" />
+		<Setting Key="NAP_Admin_Settlement_Validation_Event" SpName="NAP_Admin_Settlement_Validation_Event" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_SettlementStatusUpd" SpName="NAP_Set_SettlementStatusUpd" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Admin_MatchInfoUpd" SpName="NAP_Admin_MatchInfoUpd" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_UserLog_WriteLogPreSettlement" SpName="NAP_UserLog_WriteLogPreSettlement" DbName="DBUserLog.LogTDB.wsv_nap" />
+		<Setting Key="WriteLog_UserLog_Settle" SpName="WriteLog_UserLog_Settle" DbName="DBLOG.bodb_CustomerLog.wsv_nap" TimeOut="20" />
+		<Setting Key="NAP_Set_AutoInstantOS_ResultSel" SpName="NAP_Set_AutoInstantOS_ResultSel" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_AutoPayoutResultOS_Update" SpName="NAP_Set_AutoPayoutResultOS_Update" DbName="DBPRO.bodb02.wsv_nap" />
+	</Function>
 
-  <Function Name="Scale Out TransDb">
-    <Function Name="NAP_Admin_Settlement_Validation_Ticket">
-      <Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBTXN" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBTXN.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBSITE01" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBSITE01.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBSITE02" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBSITE02.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBSITE03" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBSITE03.bodb02.wsv_nap" />
-    </Function>
+	<Function Name="Scale Out TransDb">
+		<Function Name="NAP_Admin_Settlement_Validation_Ticket">
+			<Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBTXN" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBTXN.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBSITE01" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBSITE01.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBSITE02" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBSITE02.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_Validation_Ticket_DBSITE03" SpName="NAP_Admin_Settlement_Validation_Ticket" DbName="DBSITE03.bodb02.wsv_nap" />
+		</Function>
 
-    <Function Name="NAP_Set_AutoInstant_GetTicketInfo">
-      <Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBTXN" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBTXN.bodb02.wsv_nap" />
-      <Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBSITE01" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBSITE01.bodb02.wsv_nap" />
-      <Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBSITE02" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBSITE02.bodb02.wsv_nap" />
-      <Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBSITE03" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBSITE03.bodb02.wsv_nap" />
-    </Function>
+		<Function Name="NAP_Set_AutoInstant_GetTicketInfo">
+			<Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBTXN" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBTXN.bodb02.wsv_nap" />
+			<Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBSITE01" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBSITE01.bodb02.wsv_nap" />
+			<Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBSITE02" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBSITE02.bodb02.wsv_nap" />
+			<Setting Key="NAP_Set_AutoInstant_GetTicketInfo_DBSITE03" SpName="NAP_Set_AutoInstant_GetTicketInfo" DbName="DBSITE03.bodb02.wsv_nap" />
+		</Function>
 
-    <Function Name="NAP_Admin_Settlement_InstantCalculation_Push">
-      <Setting Key="NAP_Admin_Settlement_InstantCalculation_Push_DBTXN" SpName="NAP_Admin_Settlement_InstantCalculation_Push" DbName="DBTXN.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_InstantCalculation_Push_DBSITE01" SpName="NAP_Admin_Settlement_InstantCalculation_Push" DbName="DBSITE01.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_InstantCalculation_Push_DBSITE02" SpName="NAP_Admin_Settlement_InstantCalculation_Push" DbName="DBSITE02.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_InstantCalculation_Push_DBSITE03" SpName="NAP_Admin_Settlement_InstantCalculation_Push" DbName="DBSITE03.bodb02.wsv_nap" />
-    </Function>
+		<Function Name="NAP_Admin_Settlement_InstantCalculation_Push">
+			<Setting Key="NAP_Admin_Settlement_InstantCalculation_Push_DBTXN" SpName="NAP_Admin_Settlement_InstantCalculation_Push" DbName="DBTXN.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_InstantCalculation_Push_DBSITE01" SpName="NAP_Admin_Settlement_InstantCalculation_Push" DbName="DBSITE01.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_InstantCalculation_Push_DBSITE02" SpName="NAP_Admin_Settlement_InstantCalculation_Push" DbName="DBSITE02.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_InstantCalculation_Push_DBSITE03" SpName="NAP_Admin_Settlement_InstantCalculation_Push" DbName="DBSITE03.bodb02.wsv_nap" />
+		</Function>
 
-    <Function Name="NAP_Settlement_InstantCalculation_Checking">
-      <Setting Key="NAP_Settlement_InstantCalculation_Checking_DBTXN" SpName="NAP_Settlement_InstantCalculation_Checking" DbName="DBTXN.bodb02.wsv_nap" />
-      <Setting Key="NAP_Settlement_InstantCalculation_Checking_DBSITE01" SpName="NAP_Settlement_InstantCalculation_Checking" DbName="DBSITE01.bodb02.wsv_nap" />
-      <Setting Key="NAP_Settlement_InstantCalculation_Checking_DBSITE02" SpName="NAP_Settlement_InstantCalculation_Checking" DbName="DBSITE02.bodb02.wsv_nap" />
-      <Setting Key="NAP_Settlement_InstantCalculation_Checking_DBSITE03" SpName="NAP_Settlement_InstantCalculation_Checking" DbName="DBSITE03.bodb02.wsv_nap" />
-    </Function>
-    <Function Name="NAP_Admin_Settlement_Profile_Instant_Push">
-      <Setting Key="NAP_Admin_Settlement_Profile_Instant_Push_DBTXN" SpName="NAP_Admin_Settlement_Profile_Instant_Push" DbName="DBTXN.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_Profile_Instant_Push_DBSITE01" SpName="NAP_Admin_Settlement_Profile_Instant_Push" DbName="DBSITE01.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_Profile_Instant_Push_DBSITE02" SpName="NAP_Admin_Settlement_Profile_Instant_Push" DbName="DBSITE02.bodb02.wsv_nap" />
-      <Setting Key="NAP_Admin_Settlement_Profile_Instant_Push_DBSITE03" SpName="NAP_Admin_Settlement_Profile_Instant_Push" DbName="DBSITE03.bodb02.wsv_nap" />
-    </Function>
-  </Function>
+		<Function Name="NAP_Settlement_InstantCalculation_Checking">
+			<Setting Key="NAP_Settlement_InstantCalculation_Checking_DBTXN" SpName="NAP_Settlement_InstantCalculation_Checking" DbName="DBTXN.bodb02.wsv_nap" />
+			<Setting Key="NAP_Settlement_InstantCalculation_Checking_DBSITE01" SpName="NAP_Settlement_InstantCalculation_Checking" DbName="DBSITE01.bodb02.wsv_nap" />
+			<Setting Key="NAP_Settlement_InstantCalculation_Checking_DBSITE02" SpName="NAP_Settlement_InstantCalculation_Checking" DbName="DBSITE02.bodb02.wsv_nap" />
+			<Setting Key="NAP_Settlement_InstantCalculation_Checking_DBSITE03" SpName="NAP_Settlement_InstantCalculation_Checking" DbName="DBSITE03.bodb02.wsv_nap" />
+		</Function>
+		<Function Name="NAP_Admin_Settlement_Profile_Instant_Push">
+			<Setting Key="NAP_Admin_Settlement_Profile_Instant_Push_DBTXN" SpName="NAP_Admin_Settlement_Profile_Instant_Push" DbName="DBTXN.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_Profile_Instant_Push_DBSITE01" SpName="NAP_Admin_Settlement_Profile_Instant_Push" DbName="DBSITE01.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_Profile_Instant_Push_DBSITE02" SpName="NAP_Admin_Settlement_Profile_Instant_Push" DbName="DBSITE02.bodb02.wsv_nap" />
+			<Setting Key="NAP_Admin_Settlement_Profile_Instant_Push_DBSITE03" SpName="NAP_Admin_Settlement_Profile_Instant_Push" DbName="DBSITE03.bodb02.wsv_nap" />
+		</Function>
+	</Function>
 </Functions>

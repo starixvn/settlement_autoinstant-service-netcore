@@ -10,19 +10,12 @@ public interface GenerateService
     string CreateResources(IEnumerable<ResultDetail> resultDetails);
 }
 
-public class GenerateServiceImp : GenerateService
+public class GenerateServiceImp(XmlConvertService xmlConvertService) : GenerateService
 {
-    private readonly XmlConvertService xmlConvertService;
-
-    public GenerateServiceImp(XmlConvertService xmlConvertService)
-    {
-        this.xmlConvertService = xmlConvertService;
-    }
-
     public int GetDeterminedType(IEnumerable<ResultDetail> resultDetails)
     {
         const int binary = 2;
-        List<string> resourceIds = new() { "01", "NOT_DEFINE", "00", "Q1", "Q2", "Q3", "Q4", "OT" };
+        List<string> resourceIds = ["01", "NOT_DEFINE", "00", "Q1", "Q2", "Q3", "Q4", "OT"];
         var bitArray = new bool[8];
         foreach (var resultDetail in resultDetails.Where(resultDetail => resourceIds.IndexOf(resultDetail.ResourceId) > -1))
         {

@@ -9,15 +9,8 @@ public interface ScoreService
     Task<List<Score>> GetScore(int matchId);
 }
 
-public class ScoreServiceImp : ScoreService
+public class ScoreServiceImp(IDynamicRepository repository) : ScoreService
 {
-    private readonly IDynamicRepository repository;
-
-    public ScoreServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public async Task<List<Score>> GetScore(int matchId)
     {
         var criteria = new MatchScoreCriteria { MatchId = matchId };

@@ -13,27 +13,13 @@ public interface MatchSettleService
     Task HandleScoreFailed(Match match);
 }
 
-public class MatchSettleServiceImp : MatchSettleService
+public class MatchSettleServiceImp(
+    IDynamicRepository repository,
+    IOptions<AppSettingsBasketballKey> appSettingsKey,
+    LogService logService,
+    GenerateService generateService)
+    : MatchSettleService
 {
-    private readonly IDynamicRepository repository;
-
-    private readonly AppSettingsBasketballKey appSettingsKey;
-
-    private readonly LogService logService;
-
-    private readonly GenerateService generateService;
-
-    public MatchSettleServiceImp(IDynamicRepository repository,
-        IOptions<AppSettingsBasketballKey> appSettingsBasketballKey,
-        LogService logService,
-        GenerateService generateService)
-    {
-        this.repository = repository;
-        this.appSettingsKey = appSettingsBasketballKey.Value;
-        this.logService = logService;
-        this.generateService = generateService;
-    }
-
     public async Task Settle(Match match)
     {
         var scoresValid = match.ResultDetails.Where(r => !r.Invalid).ToList();
@@ -43,7 +29,7 @@ public class MatchSettleServiceImp : MatchSettleService
             var resource = generateService.CreateResources(scoresValid);
             var determinedType = generateService.GetDeterminedType(scoresValid);
 
-            await UpdateResourceStatus(match.MatchId, resource, Status.Waitting);
+            await UpdateResourceStatus(match.MatchId, resource, Status.Waiting);
 
             var criteria = new SettleProfileCriteria
             {
@@ -54,7 +40,9 @@ public class MatchSettleServiceImp : MatchSettleService
 
             logService.WriteDirectlyLog(criteria);
 
-            Execute(criteria);
+            await Execute(criteria);
+
+            await UpdateResourceStatus(match.MatchId, resource, Status.Success);
         }
     }
 
@@ -72,13 +60,17 @@ public class MatchSettleServiceImp : MatchSettleService
         }
     }
 
-    private void Execute(SettleProfileCriteria criteria)
+    private async Task Execute(SettleProfileCriteria criteria)
     {
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+        var servers = appSettingsKey.Value.SiteDbServer;
+        var tasks = servers.Select(server => ExecuteOneSite(criteria, server)).ToArray();
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ExecuteOneSite(SettleProfileCriteria criteria, string server)
+    {
+        criteria.DbServer = server;
+        await repository.ExecuteAsync(criteria);
     }
 
     private async Task UpdateResourceStatus(int matchId, string resource, int status)
