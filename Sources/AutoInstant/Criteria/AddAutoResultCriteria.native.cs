@@ -1,6 +1,4 @@
-﻿using AutoInstant.Constants;
-
-namespace AutoInstant.Criteria;
+﻿namespace AutoInstant.Criteria;
 
 public class AddAutoResultCriteria : NonQueryCommand
 {

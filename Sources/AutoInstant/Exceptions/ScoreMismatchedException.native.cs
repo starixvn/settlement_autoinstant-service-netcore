@@ -19,7 +19,6 @@ public class ScoreMismatchedException : AutoInstantException
     {
     }
 
-    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected ScoreMismatchedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

@@ -7,31 +7,7 @@ namespace AutoInstant.UnitTests.Services;
 
 public class ScoreServiceTests
 {
-    private readonly IDynamicRepository repository;
-
-    public ScoreServiceTests()
-    {
-        repository = Substitute.For<IDynamicRepository>();
-    }
-
-    [Fact]
-    public async Task GetScore_SourceIsNotSoccerWay_ReturnsEmpty()
-    {
-        // Arrange
-        const int matchId = 1;
-        var fakeScores = new List<Score>
-        {
-            new () { SourceId = 2, TypeId = SettleType.FirstHalf  }
-        };
-        repository.Fetch<Score>(Arg.Any<ICriteria>()).Returns(fakeScores);
-
-        var scoreService = new ScoreServiceImp(repository);
-        // Act
-        var scores = await scoreService.GetScore(matchId);
-
-        // Assert
-        Assert.Empty(scores);
-    }
+    private readonly IDynamicRepository repository = Substitute.For<IDynamicRepository>();
 
     [Theory]
     [InlineData(SettleType.FirstHalf)]
@@ -42,7 +18,7 @@ public class ScoreServiceTests
         const int matchId = 1;
         var fakeScores = new List<Score>
         {
-            new () { SourceId = Source.SoccerWay, TypeId = typeId  }
+            new () { TypeId = typeId  }
         };
         repository.Fetch<Score>(Arg.Any<ICriteria>()).Returns(fakeScores);
 

@@ -52,7 +52,7 @@ public class AutoInstantService : IHostedService
     {
         running = true;
         var autoRefundThread = new Thread(ThreadProcess);
-        Console.WriteLine($"Auto Instant Starting at {DateTime.Now}");
+        Console.WriteLine($"Auto Instant Starting at {DateTimeOffset.Now}");
         autoRefundThread.Start();
         return Task.CompletedTask;
     }
@@ -60,7 +60,7 @@ public class AutoInstantService : IHostedService
     public Task StopAsync(CancellationToken cancellationToken)
     {
         running = false;
-        Console.WriteLine($"Auto Instant Stopping at {DateTime.Now}");
+        Console.WriteLine($"Auto Instant Stopping at {DateTimeOffset.Now}");
         return Task.CompletedTask;
     }
 

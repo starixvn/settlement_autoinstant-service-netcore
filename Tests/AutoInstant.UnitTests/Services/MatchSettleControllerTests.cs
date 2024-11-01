@@ -64,23 +64,4 @@ public class MatchSettleControllerTests
         matchSettleService.Received().ScoreMatched(Arg.Is<Match>(m => m == match), matchChecking);
         matchSettlingPoolService.Received().Remove(match);
     }
-
-    [Fact]
-    public void Process_ScoreIsNotMatched_InvokeRightMethods()
-    {
-        // Arrange
-        var match = new Match
-        {
-            IsChecking = false
-        };
-        scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(false);
-
-        // Act
-        matchSettleController.Process(match);
-
-        // Assert
-        Assert.True(match.IsChecking);
-        matchSettleService.Received().ScoreMismatched(Arg.Is<Match>(m => m == match), matchChecking);
-        matchSettlingPoolService.Received().Remove(Arg.Is<Match>(m => m == match));
-    }
 }

@@ -1,5 +1,4 @@
 ﻿using AutoInstant.Models;
-using MatchType = AutoInstant.Constants.MatchType;
 
 namespace AutoInstant.Services;
 

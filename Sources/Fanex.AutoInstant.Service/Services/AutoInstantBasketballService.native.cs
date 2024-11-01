@@ -53,7 +53,7 @@ public class AutoInstantBasketballService : IHostedService
     {
         running = true;
         var autoRefundThread = new Thread(ThreadProcess);
-        Console.WriteLine($"Auto Instant Basketball Starting at {DateTime.Now}");
+        Console.WriteLine($"Auto Instant Basketball Starting at {DateTimeOffset.Now}");
         autoRefundThread.Start();
         return Task.CompletedTask;
     }
@@ -61,7 +61,7 @@ public class AutoInstantBasketballService : IHostedService
     public Task StopAsync(CancellationToken cancellationToken)
     {
         running = false;
-        Console.WriteLine($"Auto Instant Basketball Stopping at {DateTime.Now}");
+        Console.WriteLine($"Auto Instant Basketball Stopping at {DateTimeOffset.Now}");
         return Task.CompletedTask;
     }
 

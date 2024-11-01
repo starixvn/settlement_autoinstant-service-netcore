@@ -15,6 +15,6 @@ public class ScoreServiceImp(IDynamicRepository repository) : ScoreService
     {
         var criteria = new MatchScoreCriteria { MatchId = matchId };
         return (await repository.FetchAsync<Score>(criteria))
-                         .Where(s => (s.TypeId == SettleType.FirstHalf || s.TypeId == SettleType.SecondHalf)).ToList();
+                         .Where(s => s.TypeId is SettleType.FirstHalf or SettleType.SecondHalf).ToList();
     }
 }

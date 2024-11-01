@@ -18,7 +18,6 @@ public class HalfTimeNotDoneException : AutoInstantException
     {
     }
 
-    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected HalfTimeNotDoneException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
