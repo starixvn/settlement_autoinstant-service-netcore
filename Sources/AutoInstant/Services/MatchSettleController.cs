@@ -9,7 +9,6 @@ public interface MatchSettleController
 
 public class MatchSettleControllerImp(
     MatchSettleService matchSettleService,
-    ScoreRetryService scoreRetryService,
     MatchSettlingPoolService matchSettlingPoolService,
     MatchQueryService matchQueryService)
     : MatchSettleController

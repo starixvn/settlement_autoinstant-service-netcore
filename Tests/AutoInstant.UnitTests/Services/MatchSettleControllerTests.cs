@@ -6,7 +6,6 @@ namespace AutoInstant.UnitTests.Services;
 public class MatchSettleControllerTests
 {
     private readonly MatchSettleService matchSettleService;
-    private readonly ScoreRetryService scoreRetryService;
     private readonly MatchSettlingPoolService matchSettlingPoolService;
     private readonly MatchSettleController matchSettleController;
     private readonly MatchInfo matchChecking = new();
@@ -14,14 +13,12 @@ public class MatchSettleControllerTests
     public MatchSettleControllerTests()
     {
         matchSettleService = Substitute.For<MatchSettleService>();
-        scoreRetryService = Substitute.For<ScoreRetryService>();
         matchSettlingPoolService = Substitute.For<MatchSettlingPoolService>();
         var matchQueryService = Substitute.For<MatchQueryService>();
         matchQueryService.GetMatchInfo(Arg.Any<Match>()).Returns(matchChecking);
 
         matchSettleController = new MatchSettleControllerImp(
             matchSettleService,
-            scoreRetryService,
             matchSettlingPoolService,
             matchQueryService);
     }
@@ -34,7 +31,6 @@ public class MatchSettleControllerTests
         {
             IsChecking = false
         };
-        scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(true);
 
         // Act
         matchSettleController.Process(match);
@@ -54,7 +50,6 @@ public class MatchSettleControllerTests
             IsChecking = false,
             ChildMatchType = 204
         };
-        scoreRetryService.IsScoreMatch(Arg.Any<Match>()).Returns(false);
 
         // Act
         matchSettleController.Process(match);

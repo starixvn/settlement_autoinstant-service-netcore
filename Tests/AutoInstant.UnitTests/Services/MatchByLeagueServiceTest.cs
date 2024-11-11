@@ -12,24 +12,24 @@ public class MatchByLeagueServiceTest
 
     private readonly ICache cache;
 
-    private readonly MatchByLeagueService matchByLeagueService;
+    private readonly MatchByLeagueServiceImp matchByLeagueService;
 
-    private static List<Match> CreateMatchesWithLeagueOne(params int[] matchIds)
+    private static IEnumerable<Match> CreateMatchesWithLeagueOne(params int[] matchIds)
     {
         const int leagueId = 58339;
-        return matchIds.Select(i => new Match { MatchId = i, LeagueId = leagueId }).ToList();
+        return matchIds.Select(i => new Match { MatchId = i, LeagueId = leagueId });
     }
 
-    private static List<Match> CreateMatchesWithLeagueTwo(params int[] matchIds)
+    private static IEnumerable<Match> CreateMatchesWithLeagueTwo(params int[] matchIds)
     {
         const int leagueId = 45793;
-        return matchIds.Select(i => new Match { MatchId = i, LeagueId = leagueId }).ToList();
+        return matchIds.Select(i => new Match { MatchId = i, LeagueId = leagueId });
     }
 
-    private static List<Match> CreateMatchesWithLeagueThree(params int[] matchIds)
+    private static IEnumerable<Match> CreateMatchesWithLeagueThree(params int[] matchIds)
     {
         const int leagueId = 58087;
-        return matchIds.Select(i => new Match { MatchId = i, LeagueId = leagueId }).ToList();
+        return matchIds.Select(i => new Match { MatchId = i, LeagueId = leagueId });
     }
 
     private static List<Match> CreateMatches
@@ -58,7 +58,7 @@ public class MatchByLeagueServiceTest
             ApplicationName = "Settlement-LOCAL"
         });
 
-        var settings = new AppSettingsKey()
+        var settings = new AppSettingsKey
         {
             RetryInterval = 1000,
             RetryCount = 1,

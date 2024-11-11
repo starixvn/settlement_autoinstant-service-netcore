@@ -11,7 +11,7 @@ public class MatchSettlingPoolServiceTests
     }
 
     [Fact]
-    public async void PeekNewMatch_InvokeDynamicRepositoryMethod()
+    public async Task PeekNewMatch_InvokeDynamicRepositoryMethod()
     {
         // Arrange
         var emptyMatchList = new List<Match>();
@@ -27,7 +27,7 @@ public class MatchSettlingPoolServiceTests
     }
 
     [Fact]
-    public async void PeekNewMatch_Twice_OnlyAddNewMatchToPool()
+    public async Task PeekNewMatch_Twice_OnlyAddNewMatchToPool()
     {
         // Arrange
         var matchByLeagueService = Substitute.For<MatchByLeagueService>();
@@ -46,7 +46,7 @@ public class MatchSettlingPoolServiceTests
     }
 
     [Fact]
-    public async void Remove_ExistedMatchId_ExistingMatchIsRemove()
+    public async Task Remove_ExistedMatchId_ExistingMatchIsRemove()
     {
         // Arrange
         var matchByLeagueService = Substitute.For<MatchByLeagueService>();
@@ -63,7 +63,7 @@ public class MatchSettlingPoolServiceTests
     }
 
     [Fact]
-    public async void Remove_NotExistedMatchId_NoChange()
+    public async Task Remove_NotExistedMatchId_NoChange()
     {
         // Arrange
         var matchByLeagueService = Substitute.For<MatchByLeagueService>();
