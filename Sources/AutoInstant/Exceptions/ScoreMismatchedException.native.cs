@@ -18,9 +18,4 @@ public class ScoreMismatchedException : AutoInstantException
         : base(message, innerException)
     {
     }
-
-    protected ScoreMismatchedException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
 }

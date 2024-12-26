@@ -17,11 +17,6 @@ public class AutoInstantException : Exception
     {
     }
 
-    protected AutoInstantException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
-
     public string Description { get; set; }
 
     public bool IsShowOnReferenceActions { get; set; }

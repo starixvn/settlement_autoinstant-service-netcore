@@ -11,9 +11,9 @@ public interface MatchSettlingPoolService
 
 public class MatchSettlingPoolServiceImp(MatchByLeagueService matchByLeagueService) : MatchSettlingPoolService
 {
-    private readonly object lockObject = new();
+    private readonly Lock lockObject = new();
 
-    public List<Match> PoolOfMatches { get; } = new();
+    public List<Match> PoolOfMatches { get; } = [];
 
     public async Task<List<Match>> PeekNewMatch()
     {

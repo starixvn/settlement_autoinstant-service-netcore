@@ -5,14 +5,14 @@ namespace AutoInstant.Basketball.Services;
 
 public interface LogService
 {
-    void WriteDirectlyLog(SettleProfileCriteria settleProfileCriteria);
+    Task WriteDirectlyLog(SettleProfileCriteria settleProfileCriteria);
 
     Task WriteLog(int matchId, string message);
 }
 
 public class LogServiceImp(IDynamicRepository repository) : LogService
 {
-    public void WriteDirectlyLog(SettleProfileCriteria settleProfileCriteria)
+    public async Task WriteDirectlyLog(SettleProfileCriteria settleProfileCriteria)
     {
         try
         {
@@ -22,11 +22,11 @@ public class LogServiceImp(IDynamicRepository repository) : LogService
                 Doing = GenerateLogData(settleProfileCriteria)
             };
 
-            repository.Execute(criteria);
+            await repository.ExecuteAsync(criteria);
         }
         catch (Exception e)
         {
-            Fanex.Logging.LogService.Error("Fanex.AutoInstant.Service(Write Directly):", e);
+            await Fanex.Logging.LogService.ErrorAsync("Fanex.AutoInstant.Service(Write Directly):", e);
         }
     }
 

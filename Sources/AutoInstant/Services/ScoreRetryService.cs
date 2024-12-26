@@ -12,11 +12,9 @@ public class ScoreRetryServiceImp(
     IOptions<AppSettingsKey> appSettingsKey)
     : ScoreRetryService
 {
-    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
-
     public async Task<bool> IsScoreMatch(Match match)
     {
-        for (var i = 0; i <= appSettingsKey.RetryCount; i++)
+        for (var i = 0; i <= appSettingsKey.Value.RetryCount; i++)
         {
             var score = await scoreMatcherService.IsScoreMatch(match);
 
@@ -25,9 +23,9 @@ public class ScoreRetryServiceImp(
                 return true;
             }
 
-            if (i < appSettingsKey.RetryCount)
+            if (i < appSettingsKey.Value.RetryCount)
             {
-                await Task.Delay(appSettingsKey.RetryInterval);
+                await Task.Delay(appSettingsKey.Value.RetryInterval);
             }
         }
 

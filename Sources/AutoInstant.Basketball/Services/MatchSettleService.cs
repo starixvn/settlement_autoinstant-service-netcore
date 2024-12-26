@@ -38,7 +38,7 @@ public class MatchSettleServiceImp(
                 DeterminedType = determinedType
             };
 
-            logService.WriteDirectlyLog(criteria);
+            await logService.WriteDirectlyLog(criteria);
 
             await Execute(criteria);
 

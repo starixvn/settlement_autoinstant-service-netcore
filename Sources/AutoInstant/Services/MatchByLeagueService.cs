@@ -1,4 +1,5 @@
-﻿using AutoInstant.Models;
+﻿using AutoInstant.Constants;
+using AutoInstant.Models;
 
 namespace AutoInstant.Services;
 
@@ -13,13 +14,11 @@ public class MatchByLeagueServiceImp(
     IOptions<AppSettingsKey> appSettingsKey)
     : MatchByLeagueService
 {
-    private const string KeyLeagueId = "Settlement-AutoPayout-AutoInstant-LeagueId";
-
     public async Task<List<Match>> GetMatches()
     {
         var matches = await matchQueryService.GetWaitingMatches();
 
-        cache.TryGet(KeyLeagueId, out int leagueId);
+        var (_, leagueId) = await cache.TryGetAsync<int>(CacheKey.LeagueId);
 
         return appSettingsKey.Value.EnvironmentName switch
         {

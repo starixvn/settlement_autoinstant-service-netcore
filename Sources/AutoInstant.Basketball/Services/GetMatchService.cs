@@ -1,4 +1,5 @@
-﻿using AutoInstant.Basketball.Criteria;
+﻿using AutoInstant.Basketball.Constants;
+using AutoInstant.Basketball.Criteria;
 using AutoInstant.Basketball.Models;
 using Fanex.Caching;
 using Fanex.Data.Repository;
@@ -18,18 +19,14 @@ public class GetMatchServiceImp(
     IOptions<AppSettingsBasketballKey> appSettingsBasketballKey)
     : GetMatchService
 {
-    private const string KeyLeagueId = "Settlement-AutoPayoutOtherSport-LeagueId";
-
-    private readonly AppSettingsBasketballKey appSettingsBasketballKey = appSettingsBasketballKey.Value;
-
     public async Task<List<Match>> GetMatches()
     {
         var matches = await GetWaitingMatches();
 
-        var (_, response) = await cache.TryGetAsync<string>(KeyLeagueId);
+        var (_, response) = await cache.TryGetAsync<string>(CacheKey.LeagueId);
         var leagueIds = (response ?? "").Split(",");
 
-        return appSettingsBasketballKey.EnvironmentName switch
+        return appSettingsBasketballKey.Value.EnvironmentName switch
         {
             "PRO" => leagueIds.Length > 0
                 ? matches.Where(m => !leagueIds.Contains(m.LeagueId.ToString())).ToList()

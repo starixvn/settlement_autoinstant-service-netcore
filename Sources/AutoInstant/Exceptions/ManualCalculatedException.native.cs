@@ -17,9 +17,4 @@ public class ManualCalculatedException : AutoInstantException
         : base(message, innerException)
     {
     }
-
-    protected ManualCalculatedException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
 }

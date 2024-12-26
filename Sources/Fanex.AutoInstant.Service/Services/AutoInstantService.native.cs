@@ -1,94 +1,48 @@
 ﻿using AutoInstant.Services;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
+using ONEbook.UM.Services;
 using LogService = Fanex.Logging.LogService;
 
 namespace Fanex.AutoInstant.Service.Services;
 
-public class AutoInstantService : IHostedService
+public class AutoInstantService(
+    AutoInstantController autoInstantController,
+    IConfiguration configuration,
+    IMaintenanceService maintenanceService)
+    : BackgroundService
 {
-    private readonly AutoInstantController autoInstantController;
-
-    private readonly IMaintenanceService maintenanceService;
-
-    private readonly IConfiguration configuration;
-
-    private bool running;
-
     private int counter;
 
-    public AutoInstantService(
-        AutoInstantController autoInstantController,
-        IConfiguration configuration,
-        IMaintenanceService maintenanceService)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        this.autoInstantController = autoInstantController;
-        this.configuration = configuration;
-        this.maintenanceService = maintenanceService;
-        InitializeExtraComponent();
+        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(configuration.GetValue<int>("ServiceInterval")));
+
+        while (await timer.WaitForNextTickAsync(stoppingToken))
+        {
+            await HandleAutoAsync();
+        }
     }
 
-    private static void InitializeExtraComponent()
+    private async Task HandleAutoAsync()
     {
-        TaskScheduler.UnobservedTaskException += TaskSchedulerUnobservedTaskException;
-    }
-
-    private static void TaskSchedulerUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-    {
-        e.SetObserved();
-        e.Exception.Handle(exception =>
+        try
+        {
+            var isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
+            if (!isMaintenance)
+            {
+                await autoInstantController.ProcessAsync();
+                HandleGarbageCollector();
+            }
+        }
+        catch (Exception exception)
         {
             var logMessage = new LogMessage(exception.Message)
                 .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                 .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .ToString();
-            LogService.Error(logMessage);
-            return true;
-        });
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        running = true;
-        var autoRefundThread = new Thread(ThreadProcess);
-        Console.WriteLine($"Auto Instant Starting at {DateTimeOffset.Now}");
-        autoRefundThread.Start();
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        running = false;
-        Console.WriteLine($"Auto Instant Stopping at {DateTimeOffset.Now}");
-        return Task.CompletedTask;
-    }
-
-    private void ThreadProcess()
-    {
-        while (running)
-        {
-            if (!maintenanceService.IsMaintenance)
-            {
-                MainProcess();
-
-                var interval = configuration.GetSection("ServiceInterval").Value ?? "0";
-
-                Thread.Sleep(int.Parse(interval));
-            }
-        }
-    }
-
-    private void MainProcess()
-    {
-        try
-        {
-            autoInstantController.ProcessAsync();
-            HandleGarbageCollector();
-        }
-        catch (Exception exception)
-        {
-            LogService.Error("Error from AutoInstant Service(Soccer):", exception);
+            await LogService.ErrorAsync(logMessage);
         }
     }
 

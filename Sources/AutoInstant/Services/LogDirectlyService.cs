@@ -4,12 +4,12 @@ namespace AutoInstant.Services;
 
 public interface LogDirectlyService
 {
-    void WriteLog(PushingCalculationCriteria calculationCriteria);
+    Task WriteLog(PushingCalculationCriteria calculationCriteria);
 }
 
 public class LogDirectlyServiceImp(IDynamicRepository repository) : LogDirectlyService
 {
-    public void WriteLog(PushingCalculationCriteria calculationCriteria)
+    public async Task WriteLog(PushingCalculationCriteria calculationCriteria)
     {
         try
         {
@@ -19,11 +19,11 @@ public class LogDirectlyServiceImp(IDynamicRepository repository) : LogDirectlyS
                 Doing = GenerateLogData(calculationCriteria)
             };
 
-            repository.Execute(criteria);
+            await repository.ExecuteAsync(criteria);
         }
         catch (Exception e)
         {
-            Fanex.Logging.LogService.Error("Fanex.AutoInstant.Service(Write Directly):", e);
+            await Fanex.Logging.LogService.ErrorAsync("Fanex.AutoInstant.Service(Write Directly):", e);
         }
     }
 

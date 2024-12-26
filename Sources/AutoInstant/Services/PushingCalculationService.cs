@@ -40,7 +40,7 @@ public class PushingCalculationServiceImp(
             var criteria = pushingCalculationCriteriaService.CreateCriteria(match, resourceResult);
             criteria.GoalRecord = matchChecking.GoalRecord;
 
-            logDirectlyService.WriteLog(criteria);
+            await logDirectlyService.WriteLog(criteria);
 
             await Execute(criteria);
 

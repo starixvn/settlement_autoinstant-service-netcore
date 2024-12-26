@@ -1,4 +1,5 @@
-﻿using AutoInstant.Models;
+﻿using AutoInstant.Constants;
+using AutoInstant.Models;
 using AutoInstant.Services;
 using Fanex.Caching;
 using Fanex.Caching.Redis;
@@ -72,11 +73,10 @@ public class MatchByLeagueServiceTest
     public async Task GetMatches_ExistedIncludeLeagueIds_ReturnsRightMatches()
     {
         // Arrange
-        const string keyLeagueId = "Settlement-AutoPayout-AutoInstant-LeagueId";
         const int cacheExpiredInDays = 1095;
         var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(cacheExpiredInDays));
 
-        await cache.SetAsync(keyLeagueId, 58087, cachePolicy);
+        await cache.SetAsync(CacheKey.LeagueId, 58087, cachePolicy);
 
         matchQueryService.GetWaitingMatches().Returns(CreateMatches);
 

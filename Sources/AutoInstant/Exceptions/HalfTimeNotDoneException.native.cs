@@ -17,9 +17,4 @@ public class HalfTimeNotDoneException : AutoInstantException
         : base(message, innerException)
     {
     }
-
-    protected HalfTimeNotDoneException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
 }

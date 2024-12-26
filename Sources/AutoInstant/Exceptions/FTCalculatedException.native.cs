@@ -18,9 +18,4 @@ public class FTCalculatedException : AutoInstantException
         : base(message, innerException)
     {
     }
-
-    protected FTCalculatedException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
 }

@@ -1,20 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-	  <Nullable>disable</Nullable>
-	  <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <CodeAnalysisRuleSet>..\..\.sonarlint\autoinstant-service-netcorecsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Fanex.Data.Repository" Version="4.3.0.2" />
+    <PackageReference Include="Fanex.Data.Repository" Version="4.3.2" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <AdditionalFiles Remove="C:\Users\kaden.trinh\AppData\Roaming\SonarLint for Visual Studio\Bindings\Fanex.AutoInstant.Service\csharp\SonarLint.xml" />
   </ItemGroup>
-
 </Project>

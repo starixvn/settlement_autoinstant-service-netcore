@@ -18,9 +18,4 @@ public class SettingOffException : AutoInstantException
         : base(message, innerException)
     {
     }
-
-    protected SettingOffException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
 }

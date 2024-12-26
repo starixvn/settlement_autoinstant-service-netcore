@@ -1,4 +1,5 @@
-﻿using AutoInstant.Basketball.Models;
+﻿using AutoInstant.Basketball.Constants;
+using AutoInstant.Basketball.Models;
 using AutoInstant.Basketball.Services;
 using Fanex.Caching;
 using Fanex.Caching.Redis;
@@ -9,11 +10,15 @@ namespace AutoInstant.Basketball.UnitTests.Services;
 
 public class GetMatchServiceTests
 {
-    private readonly ICache cache;
+    private readonly ICache cache = new RedisCache(new RedisCacheOptions
+    {
+        ConnectionString = "10.18.200.131:16379,password=foo1@bared,defaultDatabase=11",
+        ApplicationName = "Settlement-LOCAL"
+    });
 
-    private readonly IDynamicRepository repository;
+    private readonly IDynamicRepository repository = Substitute.For<IDynamicRepository>();
 
-    private readonly GetMatchService service;
+    private GetMatchServiceImp service;
 
     private static IEnumerable<ResultDetail> CreateResultDetailsWithLeagueOne(IEnumerable<int> resultDetailIds)
     {
@@ -50,31 +55,41 @@ public class GetMatchServiceTests
         }
     }
 
-    public GetMatchServiceTests()
+    [Fact]
+    public async Task GetMatches_NotExistLeagueTest_ReturnsAllMatches()
     {
-        cache = new RedisCache(new RedisCacheOptions
+        // Arrange
+        var settings = new AppSettingsBasketballKey
         {
-            ConnectionString = "10.18.200.131:16379,password=foo1@bared,defaultDatabase=11",
-            ApplicationName = "Settlement-LOCAL"
-        });
-
-        var settings = new AppSettingsBasketballKey()
-        {
-            EnvironmentName = "UAT"
+            EnvironmentName = "Local"
         };
-        repository = Substitute.For<IDynamicRepository>();
         var appSettingsOptions = Options.Create(settings);
+
         service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
+
+        repository.FetchAsync<ResultDetail>(Arg.Any<CriteriaBase>()).Returns(CreateResultDetails);
+
+        // Act
+        var matches = await service.GetMatches();
+
+        // Assert
+        Assert.Equal(5, matches.Count);
     }
 
     [Fact]
-    public async Task GetMatches_ExistedIncludeLeagueIds_ReturnsRightMatches()
+    public async Task GetMatches_ExcludeLeagueIdAndInUAT_ReturnsOneMatches()
     {
         // Arrange
-        const string keyLeagueId = "Settlement-AutoPayoutOtherSport-LeagueId";
         const int cacheExpiredInDays = 1095;
         var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(cacheExpiredInDays));
-        await cache.SetAsync(keyLeagueId, "58087", cachePolicy);
+        await cache.SetAsync(CacheKey.LeagueId, "58087", cachePolicy);
+        var settings = new AppSettingsBasketballKey
+        {
+            EnvironmentName = "UAT"
+        };
+        var appSettingsOptions = Options.Create(settings);
+
+        service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
 
         repository.FetchAsync<ResultDetail>(Arg.Any<CriteriaBase>()).Returns(CreateResultDetails);
 
@@ -83,5 +98,29 @@ public class GetMatchServiceTests
 
         // Assert
         Assert.Single(matches);
+    }
+
+    [Fact]
+    public async Task GetMatches_ExcludeLeagueIdAndInPRO_ReturnsTwoMatches()
+    {
+        // Arrange
+        const int cacheExpiredInDays = 1095;
+        var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(cacheExpiredInDays));
+        await cache.SetAsync(CacheKey.LeagueId, "58087", cachePolicy);
+        var settings = new AppSettingsBasketballKey
+        {
+            EnvironmentName = "PRO"
+        };
+        var appSettingsOptions = Options.Create(settings);
+
+        service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
+
+        repository.FetchAsync<ResultDetail>(Arg.Any<CriteriaBase>()).Returns(CreateResultDetails);
+
+        // Act
+        var matches = await service.GetMatches();
+
+        // Assert
+        Assert.Equal(4, matches.Count);
     }
 }

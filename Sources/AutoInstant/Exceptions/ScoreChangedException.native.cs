@@ -18,9 +18,4 @@ public class ScoreChangedException : AutoInstantException
         : base(message, innerException)
     {
     }
-
-    protected ScoreChangedException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
 }
