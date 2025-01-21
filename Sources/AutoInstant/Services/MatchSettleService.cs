@@ -22,7 +22,7 @@ public class MatchSettleServiceImp(
     {
         try
         {
-            validationService.VerifyMatchBeforeExecution(match, matchInfo);
+            await validationService.VerifyMatchBeforeExecution(match, matchInfo);
             var result = await pushingCalculationService.Push(match, matchInfo);
 
             if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
@@ -43,7 +43,7 @@ public class MatchSettleServiceImp(
     {
         try
         {
-            validationService.VerifyMatchAfterComparing(match, matchInfo);
+            await validationService.VerifyMatchAfterComparing(match, matchInfo);
         }
         catch (AutoInstantException exception)
         {

@@ -7,6 +7,8 @@ public interface ResultsService
     string HalftimeResults(Goal goal);
 
     string FullTimeResults(Goal goal);
+
+    string Resources();
 }
 
 public class ResultsServiceImp(
@@ -14,6 +16,10 @@ public class ResultsServiceImp(
     ResourceService resourceService)
     : ResultsService
 {
+
+    private const string HalfTimeResult = "01";
+
+    private const string FullTimeResult = "00";
     public string HalftimeResults(Goal goal)
     {
         var resources = resourceService.Halftime(goal);
@@ -35,5 +41,11 @@ public class ResultsServiceImp(
         }
 
         return string.Empty;
+    }
+
+    public string Resources()
+    {
+        List<XmlResource> resources = [new() { ResourceId = HalfTimeResult }, new() { ResourceId = FullTimeResult }];
+        return SerializeObjectToString(resources);
     }
 }
