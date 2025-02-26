@@ -5,35 +5,38 @@ namespace AutoInstant.Services;
 
 public interface ValidationService
 {
-    void VerifyMatchBeforeExecution(Match match, MatchInfo matchChecking);
+    Task VerifyMatchBeforeExecution(Match match, MatchInfo matchChecking);
 
-    void VerifyMatchAfterComparing(Match match, MatchInfo matchChecking);
+    Task VerifyMatchAfterComparing(Match match, MatchInfo matchChecking);
 }
 
 public class ValidationServiceImp(
     ValidationScoreChangeService validationScoreChangeService,
     ValidationSettingMatchService validationSettingMatchService,
-    ValidationStatusMatchService validationStatusMatchService)
+    ValidationStatusMatchService validationStatusMatchService,
+    ValidateHoldStatusService validateHoldStatusService)
     : ValidationService
 {
-    public void VerifyMatchBeforeExecution(Match match, MatchInfo matchChecking)
+    public async Task VerifyMatchBeforeExecution(Match match, MatchInfo matchChecking)
     {
-        VerifyMatch(match, matchChecking);
+        await VerifyMatch(match, matchChecking);
     }
 
-    public void VerifyMatchAfterComparing(Match match, MatchInfo matchChecking)
+    public async Task VerifyMatchAfterComparing(Match match, MatchInfo matchChecking)
     {
-        VerifyMatch(match, matchChecking);
+        await VerifyMatch(match, matchChecking);
 
         throw new ScoreMismatchedException();
     }
 
-    private void VerifyMatch(Match match, MatchInfo matchChecking)
+    private async Task VerifyMatch(Match match, MatchInfo matchChecking)
     {
         validationSettingMatchService.VerifySettingMatch(matchChecking);
 
         validationStatusMatchService.VerifyStatusMatch(match, matchChecking);
 
         validationScoreChangeService.VerifyScoreChanged(match, matchChecking);
+
+        await validateHoldStatusService.ValidateHoldStatus(match);
     }
 }

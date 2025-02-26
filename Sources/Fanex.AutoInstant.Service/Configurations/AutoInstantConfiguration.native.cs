@@ -40,6 +40,7 @@ public static class AutoInstantConfiguration
         service.AddSingleton<ValidationService, ValidationServiceImp>();
         service.AddSingleton<ValidationSettingMatchService, ValidationSettingMatchServiceImp>();
         service.AddSingleton<ValidationStatusMatchService, ValidationStatusMatchServiceImp>();
+        service.AddSingleton<ValidateHoldStatusService, ValidateHoldStatusServiceImp>();
         service.AddTransient<GeneralService, GeneralServiceImp>();
         service.AddSingleton<LogDirectlyService, LogDirectlyServiceImp>();
         service.AddTransient<ScaleOutSettleService, ScaleOutSettleServiceImp>();

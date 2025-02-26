@@ -43,3 +43,14 @@ public static class CacheKey
 {
     public const string LeagueId = "Settlement-AutoPayout-AutoInstant-LeagueId";
 }
+
+public static class ResourceType
+{
+    public const string HalfTime = "01";
+
+    public const string FullTime = "00";
+
+    public const string HalfTimeText = "HT";
+
+    public const string FullTimeText = "FT";
+}

@@ -6,51 +6,49 @@ namespace AutoInstant.UnitTests.Services;
 
 public class ValidationServiceTests
 {
-    [Fact]
-    public void VerifyMatchBeforeExecution_NotThrowException()
-    {
-        // Arrange
-        var validationScoreChangeService = Substitute.For<ValidationScoreChangeService>();
-        var validationSettingMatchService = Substitute.For<ValidationSettingMatchService>();
-        var validationStatusMatchService = Substitute.For<ValidationStatusMatchService>();
-        var service = new ValidationServiceImp(validationScoreChangeService, validationSettingMatchService, validationStatusMatchService);
+    private readonly ValidationScoreChangeService _validationScoreChangeService;
+    private readonly ValidationSettingMatchService _validationSettingMatchService;
+    private readonly ValidationStatusMatchService _validationStatusMatchService;
+    private readonly ValidateHoldStatusService _validateHoldStatusService;
+    private readonly ValidationServiceImp _service;
 
+    public ValidationServiceTests()
+    {
+        _validationScoreChangeService = Substitute.For<ValidationScoreChangeService>();
+        _validationSettingMatchService = Substitute.For<ValidationSettingMatchService>();
+        _validationStatusMatchService = Substitute.For<ValidationStatusMatchService>();
+        _validateHoldStatusService = Substitute.For<ValidateHoldStatusService>();
+        _service = new ValidationServiceImp(_validationScoreChangeService, _validationSettingMatchService, _validationStatusMatchService, _validateHoldStatusService);
+    }
+
+    [Fact]
+    public async Task VerifyMatchBeforeExecution_NotThrowException()
+    {
         // Assert
-        var exception = Record.Exception(() => service.VerifyMatchBeforeExecution(new Match(), new MatchInfo()));
+        var exception = await Record.ExceptionAsync(() => _service.VerifyMatchBeforeExecution(new Match(), new MatchInfo()));
         Assert.Null(exception);
     }
 
     [Fact]
     public void VerifyMatchBeforeExecution_InvokeRightOrderService()
     {
-        // Arrange
-        var validationScoreChangeService = Substitute.For<ValidationScoreChangeService>();
-        var validationSettingMatchService = Substitute.For<ValidationSettingMatchService>();
-        var validationStatusMatchService = Substitute.For<ValidationStatusMatchService>();
-        var service = new ValidationServiceImp(validationScoreChangeService, validationSettingMatchService, validationStatusMatchService);
-
         // Act
-        service.VerifyMatchBeforeExecution(new Match(), new MatchInfo());
+        _ = _service.VerifyMatchBeforeExecution(new Match(), new MatchInfo());
 
         // Assert
         Received.InOrder(() =>
         {
-            validationSettingMatchService.Received().VerifySettingMatch(Arg.Any<MatchInfo>());
-            validationStatusMatchService.Received().VerifyStatusMatch(Arg.Any<Match>(), Arg.Any<MatchInfo>());
-            validationScoreChangeService.Received().VerifyScoreChanged(Arg.Any<Match>(), Arg.Any<MatchInfo>());
+            _validationSettingMatchService.Received().VerifySettingMatch(Arg.Any<MatchInfo>());
+            _validationStatusMatchService.Received().VerifyStatusMatch(Arg.Any<Match>(), Arg.Any<MatchInfo>());
+            _validationScoreChangeService.Received().VerifyScoreChanged(Arg.Any<Match>(), Arg.Any<MatchInfo>());
+            _validateHoldStatusService.Received().ValidateHoldStatus(Arg.Any<Match>());
         });
     }
 
     [Fact]
-    public void VerifyMatchAfterComparing_ThrowScoreMismatchedException()
+    public async Task VerifyMatchAfterComparing_ThrowScoreMismatchedException()
     {
-        // Arrange
-        var validationScoreChangeService = Substitute.For<ValidationScoreChangeService>();
-        var validationSettingMatchService = Substitute.For<ValidationSettingMatchService>();
-        var validationStatusMatchService = Substitute.For<ValidationStatusMatchService>();
-        var service = new ValidationServiceImp(validationScoreChangeService, validationSettingMatchService, validationStatusMatchService);
-
         // Assert
-        Assert.Throws<ScoreMismatchedException>(() => service.VerifyMatchAfterComparing(new Match(), new MatchInfo()));
+        await Assert.ThrowsAsync<ScoreMismatchedException>(() => _service.VerifyMatchAfterComparing(new Match(), new MatchInfo()));
     }
 }

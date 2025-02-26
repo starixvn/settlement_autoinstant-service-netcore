@@ -123,7 +123,8 @@ public class PushingCalculationServiceImp(
             SpName = "NAP_Admin_Settlement_InstantCalculation_Push",
             IsAuto = true,
             Mode = null,
-            InstantKey = match.InstantKey
+            InstantKey = match.InstantKey,
+            SelectedResources = resultsService.Resources()
         };
         var resultMessage = await scaleOutSettleService.ValidateEventAndTicket(request);
 
