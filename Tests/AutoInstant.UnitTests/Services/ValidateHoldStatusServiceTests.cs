@@ -5,12 +5,12 @@ using AutoInstant.Models;
 using AutoInstant.Services;
 using Fanex.Data.Repository;
 
-namespace AutoInstant.Result.UnitTests.Services;
+namespace AutoInstant.UnitTests.Services;
 
 public class ValidateHoldStatusServiceTests
 {
     private readonly IDynamicRepository repository;
-    private readonly ValidateHoldStatusService validateHoldStatusService;
+    private readonly ValidateHoldStatusServiceImp validateHoldStatusService;
 
     public ValidateHoldStatusServiceTests()
     {

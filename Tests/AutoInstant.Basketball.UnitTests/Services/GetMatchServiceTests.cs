@@ -18,8 +18,6 @@ public class GetMatchServiceTests
 
     private readonly IDynamicRepository repository = Substitute.For<IDynamicRepository>();
 
-    private GetMatchServiceImp service;
-
     private static IEnumerable<ResultDetail> CreateResultDetailsWithLeagueOne(IEnumerable<int> resultDetailIds)
     {
         const int leagueId = 58339;
@@ -65,7 +63,7 @@ public class GetMatchServiceTests
         };
         var appSettingsOptions = Options.Create(settings);
 
-        service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
+        var service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
 
         repository.FetchAsync<ResultDetail>(Arg.Any<CriteriaBase>()).Returns(CreateResultDetails);
 
@@ -89,7 +87,7 @@ public class GetMatchServiceTests
         };
         var appSettingsOptions = Options.Create(settings);
 
-        service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
+        var service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
 
         repository.FetchAsync<ResultDetail>(Arg.Any<CriteriaBase>()).Returns(CreateResultDetails);
 
@@ -113,7 +111,7 @@ public class GetMatchServiceTests
         };
         var appSettingsOptions = Options.Create(settings);
 
-        service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
+        var service = new GetMatchServiceImp(repository, cache, appSettingsOptions);
 
         repository.FetchAsync<ResultDetail>(Arg.Any<CriteriaBase>()).Returns(CreateResultDetails);
 
