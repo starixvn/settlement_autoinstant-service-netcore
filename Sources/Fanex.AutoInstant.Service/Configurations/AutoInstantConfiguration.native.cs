@@ -1,6 +1,5 @@
 ﻿using AutoInstant.Result.Services;
 using AutoInstant.Services;
-using AutoMapper;
 using Fanex.Caching;
 using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
@@ -62,12 +61,9 @@ public static class AutoInstantConfiguration
 
     public static void AddAutoMapper(this IServiceCollection service)
     {
-        var mapperConfig = new MapperConfiguration(mc =>
+        service.AddAutoMapper(mc =>
         {
-            mc.AddProfile(typeof(ScaleOutMappingProfile));
+            mc.AddProfile<ScaleOutMappingProfile>();
         });
-
-        var mapper = mapperConfig.CreateMapper();
-        service.AddSingleton(mapper);
     }
 }
