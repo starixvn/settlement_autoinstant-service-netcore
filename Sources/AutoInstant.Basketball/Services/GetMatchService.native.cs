@@ -40,8 +40,9 @@ public class GetMatchServiceImp(
     private async Task<List<Match>> GetWaitingMatches()
     {
         var criteria = new MatchWaitingCriteria();
-        var resultDetailsTest = await repository.GetAsync<ResultDetailTest>(new MatchWaitingTestCriteria());
-        await LogServices.ErrorAsync("ResultDetails Test: " + System.Text.Json.JsonSerializer.Serialize(resultDetailsTest));
+        var resultDetailsTest = await repository.FetchAsync<ResultDetailTest>(criteria);
+        await LogServices.InfoAsync("ResultDetails Test: " + System.Text.Json.JsonSerializer.Serialize(resultDetailsTest));
+
         var resultDetails = (await repository.FetchAsync<ResultDetail>(criteria)).ToList();
 
         var groupResult = resultDetails.GroupBy(r => r.MatchId);
