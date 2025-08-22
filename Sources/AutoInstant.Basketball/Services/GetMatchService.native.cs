@@ -4,6 +4,7 @@ using AutoInstant.Basketball.Models;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using Microsoft.Extensions.Options;
+using LogServices = Fanex.Logging.LogService;
 using Match = AutoInstant.Basketball.Models.Match;
 
 namespace AutoInstant.Basketball.Services;
@@ -39,7 +40,10 @@ public class GetMatchServiceImp(
     private async Task<List<Match>> GetWaitingMatches()
     {
         var criteria = new MatchWaitingCriteria();
+        var resultDetailsTest = await repository.GetAsync<ResultDetailTest>(new MatchWaitingTestCriteria());
+        await LogServices.ErrorAsync("ResultDetails Test: " + System.Text.Json.JsonSerializer.Serialize(resultDetailsTest));
         var resultDetails = (await repository.FetchAsync<ResultDetail>(criteria)).ToList();
+
         var groupResult = resultDetails.GroupBy(r => r.MatchId);
         return groupResult.Select(r => new Match { MatchId = r.Key, ResultDetails = r.ToList(), LeagueId = r.First().LeagueId }).ToList();
     }

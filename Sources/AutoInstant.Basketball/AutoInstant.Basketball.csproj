@@ -6,9 +6,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fanex.Caching" Version="2.2.8" />
-    <PackageReference Include="Fanex.Data.Repository" Version="4.3.4.3" />
+    <PackageReference Include="Fanex.Data.Repository" Version="4.3.4.5" />
     <PackageReference Include="Fanex.Logging" Version="2.0.2" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
   </ItemGroup>
 </Project>
