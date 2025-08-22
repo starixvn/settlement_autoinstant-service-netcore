@@ -7,13 +7,8 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Services\GetMatchServiceTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="Fanex.Caching.Redis" Version="2.2.8" />
     <PackageReference Include="Fanex.Logging" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.3.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="NSubstitute" Version="5.3.0" />
     <PackageReference Include="xunit" Version="2.9.3" />

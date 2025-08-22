@@ -14,10 +14,3 @@ public class ResultDetail
 
     public bool Invalid { get; set; }
 }
-
-public class ResultDetailTest
-{
-    public string MatchId { get; set; }
-
-
-}
